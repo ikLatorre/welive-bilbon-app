@@ -1,0 +1,38 @@
+<ion-view>
+  <ion-nav-title>
+    {{ 'register-page.title' | translate }}
+  </ion-nav-title>
+  <ion-content class="cuerposearch">
+    <p>{{ 'register-page.text' | translate }}</p>
+
+    <div class="list">
+
+      <label class="item item-input item-stacked-label">
+        <span class="input-label">{{ 'register-page.user-label' | translate }}</span>
+        <input type="text" placeholder="{{ 'register-page.user-placeholder' | translate }}"></input>
+      </label>
+
+      <label class="item item-input item-stacked-label">
+        <span class="input-label">{{ 'register-page.email-label' | translate }}</span>
+        <input type="text" placeholder="{{ 'register-page.email-placeholder' | translate }}"></input>
+      </label>
+
+      <label class="item item-input item-floating-label">
+        <span class="input-label">{{ 'register-page.pass-label' | translate }}</span>
+        <input type="password" placeholder="{{ 'register-page.pass-placeholder' | translate }}">
+      </label>
+
+      <label class="item item-input item-floating-label">
+        <span class="input-label">{{ 'register-page.pass-repeat-label' | translate }}</span>
+        <input type="password" placeholder="{{ 'register-page.pass-repeat-placeholder' | translate }}">
+      </label>
+
+      <br/><p>{{ 'register-page.terms-conditions-label' | translate }} <a href="#">{{ 'register-page.terms-conditions-link-label' | translate }}</a>.</p><br/>
+      
+      <button class="button button-full icon-right ion-chevron-right button-assertive">
+        {{ 'register-page.register-submit-button-label' | translate }}
+      </button>
+
+    </div>
+  </ion-content>
+</ion-view>

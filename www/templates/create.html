@@ -1,0 +1,54 @@
+<ion-view>
+  <ion-nav-title>
+    {{ 'proposal-create-page.title' | translate }}
+  </ion-nav-title>
+  <ion-content class="cuerposearch">
+    <p>{{ 'proposal-create-page.request-text' | translate }}</p>
+
+    <form name='proposalForm'>
+      <div class="list">
+
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">* {{ 'proposal-create-page.title-label' | translate }}</span>
+          <input type="text" ng-form='step1form' ng-model="newProposal.title" placeholder="{{ 'proposal-create-page.title-placeholder' | translate }}" required ng-maxlength="200"></input>
+        </label>
+        <div role="alert">
+          <div class="error error-text" ng-show="proposalForm.step1form.$error.maxlength">{{ 'proposal-create-page.form.title-too-long-error-label' | translate }}</div>
+        </div>
+
+        <label class="item item-input item-select">
+          <div class="input-label">
+            * {{ 'proposal-create-page.zone-label' | translate }}
+          </div>
+          <select  ng-form='step2form' ng-model="newProposal.zone" ng-options="zone.id as zone.label for zone in zones" required>
+            <option value="">{{ 'proposal-create-page.search.select-empty-option' | translate }}</option>
+          </select>
+        </label>
+
+        <label class="item item-input item-select">
+          <div class="input-label">
+            * {{ 'proposal-create-page.category-label' | translate }}
+          </div>
+          <select ng-form='step3form' ng-model="newProposal.category" ng-options="category.id as category.label for category in translatedCategories" required>
+            <option value="">{{ 'proposal-create-page.search.select-empty-option' | translate }}</option>
+          </select>
+        </label>
+
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">* {{ 'proposal-create-page.description-label' | translate }}</span>
+          <textarea ng-form='step4form' ng-model="newProposal.description" placeholder="{{ 'proposal-create-page.description-placeholder' | translate }}" rows="4" required></textarea>
+        </label>
+        
+        <button ng-disabled="!step1form.$valid || !step2form.$valid || !step3form.$valid || !step4form.$valid" 
+                ng-click="submitProposal()" class="button button-full icon-right ion-chevron-right button-assertive">
+          {{ 'proposal-create-page.submit-button-label' | translate }}
+        </button>
+
+        <div class="texto-informativo-registro">
+          <p>{{ 'proposal-create-page.form.advert-label' | translate }}</p>
+        </div>
+
+      </div>
+    </form>
+  </ion-content>
+</ion-view>

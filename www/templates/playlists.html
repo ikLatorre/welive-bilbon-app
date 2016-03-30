@@ -1,0 +1,125 @@
+<ion-view> <!--view-title="{{ 'proposal-list-page.title' | translate }}">-->
+  <ion-nav-title> <!-- set title this way to correct use of angular-translate -->
+    {{ 'proposal-list-page.title' | translate }}
+  </ion-nav-title>
+  <ion-nav-buttons side="secondary">
+    <i class="icon ion-android-more-vertical filters_show" ng-click="openPopover($event)"></i>
+  </ion-nav-buttons>
+  <ion-content class="fondo">
+
+    <div class="datos_detalle_peticion titulo slideInLeft animated2"><h2>{{ 'proposal-list-page.search.title' | translate }}</h2>
+<!--    <label class="item item-input item-select">
+      <div class="input-label">
+        {{ 'proposal-list-page.search.zone-label' | translate }}
+      </div>
+      <select ng-model="search.zone" ng-options="zone.id as zone.label for zone in zones" >
+        <option value="">{{ 'proposal-list-page.search.zone-all-option' | translate }}</option>
+      </select>
+    </label>
+
+    <label class="item item-input item-select">
+      <div class="input-label">
+        {{ 'proposal-list-page.search.category-label' | translate }}
+      </div>
+      <select ng-model="search.category" ng-options="category.id as category.label for category in translatedCategories" >
+        <option value="">{{ 'proposal-list-page.search.category-all-option' | translate }}</option>
+      </select>
+    </label>
+
+    <label class="item item-input buscador_general">
+      <i class="icon ion-search placeholder-icon"></i>
+      <input ng-model="search.text" type="text" placeholder="{{ 'proposal-list-page.search.text-placeholder' | translate }}">
+    </label>
+
+    <button class="button button-full button-assertive" ng-click="searchProposals()">
+      {{ 'proposal-list-page.search.button-label' | translate }}
+    </button>
+-->
+    <div class="datos_detalle_peticion slideInLeft animated2"><h2>{{ 'proposal-list-page.proposals-title' | translate }}</h2>
+  
+    <!-- Error messages if there are no proposals -->
+<!--    <div ng-hide="proposalsError || (getProposalsList().length && !proposalsError)">
+      <p>{{ 'proposal-list-page.empty-label' | translate }}</p>
+    </div>
+    <div ng-show="proposalsError">
+      <p>{{ 'proposal-list-page.get-proposals-error-label' | translate }}</p>
+    </div>
+-->
+    <!-- Load list of proposals -->
+<!--    <a ng-repeat="proposal in getProposalsList() | orderBy: order" class="card" ui-sref="app.proposal({playlistId:proposal.objectID})" >
+      <div class="peticion_pre">
+        <div class="peticion_barrio"><div>{{proposal.zone}}</div></div>
+        <div class="peticion_estado" ng-hide="proposal.isExpired">{{ 'proposal-list-page.proposal.opened-status' | translate | uppercase}}</div>
+        <div class="peticion_estado_cerrado" ng-show="proposal.isExpired">{{ 'proposal-list-page.proposal.closed-status' | translate | uppercase}}</div>
+      </div>
+      <div class="item  header_peticion">
+        {{proposal.title}} 
+      </div>
+
+      <div class="item item-divider datos_peticion">
+        <div class="valoracion_general">
+
+          <span>{{proposal.averageRating}} / 5 (</span><!--
+
+          - -><span ng-show="proposal.feedbackError === false && proposal.feedbackCount == 1">{{ 'proposal-list-page.proposal.votes-izq' | translate }}</span><!--
+          - ->{{proposal.feedbackCount}}<!--
+          - -><span ng-show="proposal.feedbackError === false && proposal.feedbackCount == 1">{{ 'proposal-list-page.proposal.votes-dch' | translate }})</span><!--
+
+          - -><span  ng-show="proposal.feedbackError === false && proposal.feedbackCount != 1">{{ 'proposal-list-page.proposal.votes' | translate }})</span><!--
+
+          - -><span  ng-show="{{'proposal.feedbackError === true'}}">{{ 'proposal-list-page.proposal.votes-error-label' | translate }})</span>
+
+        </div>     
+        <div class="votos_general">
+          <div class="votos_up_empty">{{proposal.votesInFavor}}</div> 
+          <div class="votos_down_empty">{{proposal.votesAgainst}}</div>
+        </div>
+      </div>
+    </a>
+-->
+    <!-- Scroll-up button if there are more than 5 proposals -->
+<!--    <div class="text-center" ng-show="getProposalsList().length >= 6">
+      <button class="button button-assertive" ng-click="scrollTop()">
+        {{ 'proposal-list-page.scroll-button-label' | translate }}
+      </button>
+    </div>
+-->
+    <!-- List's infinite-scroll -->
+<!--    <ion-infinite-scroll ng-if="getProposalsList().length && !noMoreItemsAvailable" on-infinite="loadMore()" distance="1%" 
+                         immediate-check="false" spinner="circles"></ion-infinite-scroll>
+-->    
+    <!-- orderBy 'creationDate' is equal to orderBy 'objectID' because the date is generated automatically
+         when a proposal is registered, and the ocjectID identifier is created incrementally -->
+    <script id="popover.html" type="text/ng-template">
+      <style>.popover { height:365px; width: 220px; }</style>
+      <ion-popover-view>
+        <ion-header-bar>
+          <h1 class="title">{{ 'proposal-list-page.orderby-popover.title' | translate }}</h1>
+        </ion-header-bar>
+        <ion-content class="list-sorting-popover">
+          <div class="list">
+            <a class="item" ng-class="{'active': order=='-objectID'}" href="#" target="" ng-click="setOrder('-objectID')">
+              {{ 'proposal-list-page.orderby-popover.date-item' | translate }}
+            </a>
+            <a class="item" ng-class="{'active': order=='zone'}" href="#" target="" ng-click="setOrder('zone')">
+              {{ 'proposal-list-page.orderby-popover.zone-item' | translate }}
+            </a>
+            <a class="item" ng-class="{'active': order=='title'}" href="#" target="" ng-click="setOrder('title')">
+              {{ 'proposal-list-page.orderby-popover.title-item' | translate }}
+            </a>
+            <a class="item" ng-class="{'active': order=='-averageRating'}" href="#" target="" ng-click="setOrder('-averageRating')">
+              {{ 'proposal-list-page.orderby-popover.rating-item' | translate }}
+            </a>
+            <a class="item" ng-class="{'active': order=='-votesInFavor'}" href="#" target="" ng-click="setOrder('-votesInFavor')">
+              {{ 'proposal-list-page.orderby-popover.votes-up-item' | translate }}
+            </a>
+            <a class="item" ng-class="{'active': order=='-votesAgainst'}" href="#" target="" ng-click="setOrder('-votesAgainst')">
+              {{ 'proposal-list-page.orderby-popover.votes-down-item' | translate }}
+            </a>
+          </div>
+        </ion-content>
+      </ion-popover-view>
+  </script>
+  </ion-content>
+</ion-view>
+
