@@ -4,8 +4,8 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic','ionic.service.core', 'starter.controllers',
-  'LocalStorageModule', 'pascalprecht.translate', 'bilbonApp.config'])
+angular.module('starter', ['ionic','ionic.service.core', 'starter.controllers', 'bilbonApp.config',
+  'LocalStorageModule', 'pascalprecht.translate'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -48,65 +48,14 @@ angular.module('starter', ['ionic','ionic.service.core', 'starter.controllers',
   // Each state's controller can be found in controllers.js
   $stateProvider
 
-      // setup an abstract state for show the menu
-      .state('app', {
+    // setup an abstract state for show the menu
+    .state('app', {
       url: '/app',
       abstract: true,
       templateUrl: 'templates/menu.html',
       controller: 'AppCtrl'
     })
 
-    .state('app.create', {
-      url: '/create',
-      views: {
-        'menuContent': {
-          templateUrl: 'templates/create.html',
-          controller: 'CreateCtrl'
-        }
-      }
-    })
-
-    .state('app.map', {
-        url: '/map',
-        views: {
-          'menuContent': {
-            templateUrl: 'templates/map.html',
-            controller: 'MapCtrl'
-          }
-        }
-      })
-
-    .state('app.playlists', {
-        url: '/playlists?zone',
-        //cache: false,
-        views: {
-          'menuContent': {
-            templateUrl: 'templates/playlists.html',
-            controller: 'ProposalListCtrl'
-          }
-        }
-      })
-
-    .state('app.proposal', {
-      url: '/playlists/:playlistId',
-      views: {
-        'menuContent': {
-          templateUrl: 'templates/playlist.html',
-          controller: 'ProposalCtrl'
-        }
-      }
-    })
-
-    .state('app.statistics', {
-      url: '/playlists/:playlistId/statistics',
-      views: {
-        'menuContent': {
-          templateUrl: 'templates/statistics.html',
-          controller: 'StatisticsCtrl'
-        }
-      }
-    })
-    
     .state('app.login', {
       url: '/login',
       views: {
@@ -126,6 +75,36 @@ angular.module('starter', ['ionic','ionic.service.core', 'starter.controllers',
       }
     })
 
+    .state('app.map', {
+        url: '/map',
+        views: {
+          'menuContent': {
+            templateUrl: 'templates/map.html',
+            controller: 'MapCtrl'
+          }
+        }
+    })
+
+    .state('app.create', {
+      url: '/create',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/create.html',
+          controller: 'CreateCtrl'
+        }
+      }
+    })
+
+    .state('app.proposal', {
+      url: '/poi/:poiId',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/poi.html',
+          controller: 'POICtrl'
+        }
+      }
+    })
+
     .state('app.about', {
       url: '/about',
       views: {
@@ -136,6 +115,6 @@ angular.module('starter', ['ionic','ionic.service.core', 'starter.controllers',
     });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/playlists');
+  $urlRouterProvider.otherwise('/app/map');
 
 });

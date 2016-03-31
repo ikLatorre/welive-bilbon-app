@@ -2,7 +2,7 @@ var myApp = angular.module('starter.controllers', []);
 
 
 
-myApp.controller('AppCtrl', function($scope, $ionicModal, $timeout, $translate, $ionicHistory, 
+myApp.controller('AppCtrl', function($scope, $timeout, $translate, $ionicHistory, 
   $ionicPopup, $filter, $state, LoginService) {
 
   // With the new view caching in Ionic, Controllers are only called
@@ -46,12 +46,12 @@ myApp.controller('AppCtrl', function($scope, $ionicModal, $timeout, $translate, 
   //LoginService.removeUserData(); 
 
   // Create the login modal that we will use later
-  $ionicModal.fromTemplateUrl('templates/login.html', {
+  /*$ionicModal.fromTemplateUrl('templates/login.html', {
       scope: $scope,
       animation: 'slide-in-up'
   }).then(function(modal) {
       $scope.modal = modal;
-  });
+  });*/
 
   // Define function to show menu's login/logout items
   $scope.getCurrentUserId = function (){
@@ -59,9 +59,9 @@ myApp.controller('AppCtrl', function($scope, $ionicModal, $timeout, $translate, 
   }
 
   // Open the login modal
-  $scope.openLoginModal = function() {
+ /*$scope.openLoginModal = function() {
     $scope.modal.show();
-  };
+  };*/
 
   // Triggered in doLogin() to close it
   $scope.closeLoginModal = function() {
@@ -105,6 +105,7 @@ myApp.controller('AppCtrl', function($scope, $ionicModal, $timeout, $translate, 
         $scope.loginData = {};
     }, 200)
     .then(function(){
+          $state.go('app.login');
           var myPopup = $ionicPopup.show({
             template: '<center>' + $filter('translate')('info-alert-popup-logout-label') + "</center>",
             cssClass: 'custom-class custom-class-popup'
@@ -150,11 +151,11 @@ myApp.controller('RegistryCtrl', function($scope, $state) {
 
 
 
-myApp.controller('ProposalListCtrl', function($scope, $rootScope, $translate, $http, $ionicPopover, $ionicScrollDelegate,
+/*myApp.controller('ProposalListCtrl', function($scope, $rootScope, $translate, $http, $ionicPopover, $ionicScrollDelegate,
   $stateParams) { 
   //Proposals, WELIVE_SERVICE_ID, BILBOZKATU_BB_URL, USERS_FEEDBACK_BB_URL, ITEMS_DISPLAYED_IN_LIST_IN_EVERY_BLOCK,
   //PROPOSAL_EXPIRATION_MEASUREMENT_MODE, PROPOSAL_EXPIRATION_MEASUREMENT_VALUE) {
-/*
+
   $scope.zones = zones; // load 'zones' list from zones.js for combobox
   $scope.noMoreItemsAvailable = false; // initialize variable for infinite-scroll
   $scope.proposalsError = false; // initialize variable for get proposals' call 
@@ -379,8 +380,7 @@ myApp.controller('ProposalListCtrl', function($scope, $rootScope, $translate, $h
       $scope.order = order;
       $scope.popover.hide();
   };
-*/
-});
+});*/
 
 
 
@@ -502,7 +502,7 @@ myApp.factory('LoginService', function(localStorageService){
 
 
 
-myApp.controller('ProposalCtrl', function($scope, $state, $stateParams, $filter, $http, $ionicHistory,
+myApp.controller('POICtrl', function($scope, $state, $stateParams, $filter, $http, $ionicHistory,
             $ionicScrollDelegate , $ionicPopup, $interval, Proposals, LoginService, BILBOZKATU_BB_URL, 
             USERS_FEEDBACK_BB_URL, WELIVE_SERVICE_ID, ITEMS_DISPLAYED_IN_LIST_IN_EVERY_BLOCK,
             NEW_FEEDBACKS_CHECKING_INTERVAL_MODE, NEW_FEEDBACKS_CHECKING_INTERVAL_VALUE ) {
@@ -985,7 +985,7 @@ myApp.controller('ProposalCtrl', function($scope, $state, $stateParams, $filter,
 
 
 
-myApp.controller('StatisticsCtrl', function($scope, $filter, $translate, Proposals) {
+/*myApp.controller('StatisticsCtrl', function($scope, $filter, $translate, Proposals) {
 
   $scope.currentProposal = Proposals.getCurrentProposal();
 
@@ -1064,7 +1064,7 @@ myApp.controller('StatisticsCtrl', function($scope, $filter, $translate, Proposa
 
   }
 
-});
+});*/
 
 
 

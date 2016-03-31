@@ -18,7 +18,7 @@
     </ion-header-bar>
     <ion-content>
       <ion-list>
-        <ion-item ng-show="getCurrentUserId() == null" menu-close ng-click="openLoginModal()">
+        <ion-item ng-show="getCurrentUserId() == null" menu-close ui-sref="app.login">
           <i class="icon ion-log-in"></i>
           {{ 'menu.login-item' | translate }}
         </ion-item>
@@ -26,10 +26,10 @@
           <i class="icon ion-log-out"></i>
           {{ 'menu.logout-item' | translate }}
         </ion-item>
-        <ion-item menu-close ng-click="reloadProposalsList()">
+        <!--<ion-item menu-close ng-click="reloadProposalsList()">
           <i class="icon ion-ios-list-outline"></i>
           {{ 'menu.proposal-list-item' | translate }}
-        </ion-item>
+        </ion-item>-->
         <ion-item menu-close ui-sref="app.create">
           <i class="icon ion-compose"></i>
           {{ 'menu.new-proposal-item' | translate }}
