@@ -1,5 +1,31 @@
 {
 
+ "all-menu.back-button-label": "Atrás", 
+ "menu.title": "Menú",
+ "menu.login-item": "Iniciar sesión",
+ "menu.logout-item": "Cerrar sesión",
+ "menu.map-item": "Mapa",
+ "menu.categories-item": "Categorías",
+ "menu.about-item": "Información y términos de uso",
+ "menu.language-item": "Idioma",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
  "info-alert-popup-title": "Bilbozkatu",
  "info-alert-popup-ok-button-label": "Aceptar",
  "error-alert-popup-title": "Error",
@@ -9,16 +35,6 @@
  "info-alert-popup-logout-label": "Ha cerrado la sesión.",
  "info-alert-popup-login-label-left": "Ha iniciado sesión como ",
  "info-alert-popup-login-label-right": ".",
-
- "all-menu.back-button-label": "Atrás", 
- "menu.title": "Menú",
- "menu.login-item": "Iniciar sesión",
- "menu.logout-item": "Cerrar sesión",
- "menu.proposal-list-item": "Lista de peticiones",
- "menu.new-proposal-item": "Nueva petición",
- "menu.map-item": "Mapa",
- "menu.about-item": "Información y términos de uso",
- "menu.language-item": "Idioma",
 
  "proposal-map-page.proposals-count-error-label": "No se ha podido obtener el número de propuestas por zona.",
  "proposal-map-page.proposals-label-sing": "petición",

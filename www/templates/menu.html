@@ -18,27 +18,28 @@
     </ion-header-bar>
     <ion-content>
       <ion-list>
-        <ion-item ng-show="getCurrentUserId() == null" menu-close ui-sref="app.login">
+        <ion-item class="item-text-wrap" ng-show="getCurrentUserId() == null" menu-close ui-sref="app.login">
           <i class="icon ion-log-in"></i>
           {{ 'menu.login-item' | translate }}
         </ion-item>
-        <ion-item ng-hide="getCurrentUserId() == null" menu-close ng-click="doLogout()">
+        <ion-item class="item-text-wrap" ng-hide="getCurrentUserId() == null" menu-close ng-click="doLogout()">
           <i class="icon ion-log-out"></i>
           {{ 'menu.logout-item' | translate }}
         </ion-item>
-        <!--<ion-item menu-close ng-click="reloadProposalsList()">
-          <i class="icon ion-ios-list-outline"></i>
-          {{ 'menu.proposal-list-item' | translate }}
-        </ion-item>-->
-        <ion-item menu-close ui-sref="app.create">
-          <i class="icon ion-compose"></i>
-          {{ 'menu.new-proposal-item' | translate }}
-        </ion-item>
-        <ion-item menu-close ng-click="reloadMap()"> <!--ui-sref="app.map">-->
+        <ion-item class="item-text-wrap" menu-close ng-click="reloadMap()"> <!--ui-sref="app.map">-->
           <i class="icon ion-ios-location"></i>
           {{ 'menu.map-item' | translate }} 
         </ion-item>
-        <ion-item menu-close ui-sref="app.about" class="item-text-wrap">
+
+        <ion-item ng-click="toggleCategories(categoryFilter)" ng-class="{active: isCategoriesShown(categoryFilter)}">
+          {{ 'menu.categories-item' | translate }} &nbsp;
+          <i class="icon" ng-class="isCategoriesShown(categoryFilter) ? 'ion-arrow-up-b' : 'ion-arrow-down-b'"></i>
+        </ion-item>
+          <ion-item class="item-accordion" ng-repeat="category in translatedCategories" ng-show="isCategoriesShown(categoryFilter)">
+            <ion-checkbox class="checkbox-assertive item-text-wrap" ng-model="categoryFilter.categories[category.id]">{{category.label}}</ion-checkbox>
+          </ion-item>
+
+        <ion-item class="item-text-wrap" menu-close ui-sref="app.about">
           <i class="icon ion-ios-information-outline"></i>
           {{ 'menu.about-item' | translate }}
         </ion-item>

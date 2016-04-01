@@ -1,5 +1,31 @@
 {
 
+ "all-menu.back-button-label": "Atzera", 
+ "menu.title": "Menua",
+ "menu.login-item": "Saioa hasi",
+ "menu.logout-item": "Saioa itxi",
+ "menu.map-item": "Mapa",
+ "menu.categories-item": "Kategoriak",
+ "menu.about-item": "Informazio eta erabilera-baldintzak",
+ "menu.language-item": "Hizkuntza",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
  "info-alert-popup-title": "Bilbozkatu",
  "info-alert-popup-ok-button-label": "Ados",
  "error-alert-popup-title": "Errorea",
@@ -9,16 +35,6 @@
  "info-alert-popup-logout-label": "Saioa itxi duzu.",
  "info-alert-popup-login-label-left": "",
  "info-alert-popup-login-label-right": " bezala saioa ireki duzu.",
-
- "all-menu.back-button-label": "Atzera", 
- "menu.title": "Menua",
- "menu.login-item": "Saioa hasi",
- "menu.logout-item": "Saioa itxi",
- "menu.proposal-list-item": "Eskaera zerrenda",
- "menu.new-proposal-item": "Eskaera berria",
- "menu.map-item": "Mapa",
- "menu.about-item": "Informazio eta erabilera-baldintzak",
- "menu.language-item": "Hizkuntza",
 
  "proposal-map-page.proposals-count-error-label": "Ez da leku bakoitzetik eskaera kopurua lortzerik izan.",
  "proposal-map-page.proposals-label-sing": "eskaera",

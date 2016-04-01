@@ -2,8 +2,28 @@ var myApp = angular.module('starter.controllers', []);
 
 
 
-myApp.controller('AppCtrl', function($scope, $timeout, $translate, $ionicHistory, 
-  $ionicPopup, $filter, $state, LoginService) {
+
+myApp.factory('LoginService', function(localStorageService){
+    return {
+        getUserId: function(){
+          var userData = localStorageService.get('userData');
+          if(userData != null) return JSON.parse(userData).currentUser.userId;
+          else userData;
+        },
+        setUserData: function(userData) {
+          return localStorageService.set('userData', JSON.stringify(userData));
+        },
+        removeUserData: function() {
+          return localStorageService.remove('userData');
+        }
+    };
+});
+
+
+
+
+myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $translate, $ionicHistory, $ionicPopup, 
+  $filter, LoginService) {
 
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
@@ -11,35 +31,103 @@ myApp.controller('AppCtrl', function($scope, $timeout, $translate, $ionicHistory
   // listen for the $ionicView.enter event:
   //$scope.$on('$ionicView.enter', function(e) {
   //});
-
-  // Configure language of categories' array to use in the corresponding combobox'es
-/*  $scope.translatedCategories = []; // this variable will contain categories' list in the current language (used in ng-options)
+ 
+  // Configure language of categories' array to use in the corresponding combobox/lists
+  $scope.translatedCategories = []; // this variable will contain categories' list in the current language (used in ng-options)
   $scope.spanishCategoriesArray = [];
   $scope.basqueCategoriesArray = [];
+
+  $scope.categoryFilter = {}; // store model's categories' filter
+  $scope.categoryFilter.categories = []; // store categories' selection's value (false | true)
+
   // Build spanish categories' array
   angular.forEach(categories, function(item){
-      $scope.spanishCategoriesArray.push({id:item.id, label:item.es_ES}); 
+      $scope.spanishCategoriesArray.push({id:item.id, datasetId:item.datasetId, jsonId:item.jsonId, 
+        label:item.es_ES, img_src:item.img_src}); 
+      $scope.categoryFilter.categories[item.id] = false; // initialize model's categories to false (checkbox selection)
   });
-    $scope.translatedCategories = $scope.spanishCategoriesArray;
+  $scope.translatedCategories = $scope.spanishCategoriesArray; // initialize categories' language to spanish
   // Build basque categories' array
   angular.forEach(categories, function(item){
-      $scope.basqueCategoriesArray.push({id:item.id, label:item.eu_ES}); 
+      $scope.basqueCategoriesArray.push({id:item.id, datasetId:item.datasetId, jsonId:item.jsonId, 
+        label:item.eu_ES, img_src:item.img_src});  
   });
-*/
+  // Define functionality for menu's categories' item (toggle element)
+  $scope.toggleCategories = function(categoryFilter) {
+    if ($scope.isCategoriesShown(categoryFilter)) {
+      $scope.shownGroup = null;
+    } else {
+      $scope.shownGroup = categoryFilter;
+    }
+  };
+  $scope.isCategoriesShown = function(categoryFilter) {
+    return $scope.shownGroup === categoryFilter;
+  };
+  
+
   // Configure language changing (UI's switch and $translate's language)
   $scope.selectedLang = false; // false: es_ES | true: eu_ES
   $scope.changeLang = function() {
+
+    /*$timeout(function() {
+       
       if ($scope.selectedLang == false) {
-          $scope.selectedLang = true;
-          $scope.switchLanguage('eu_ES');
+          $scope.translatedCategories = $scope.basqueCategoriesArray; // change language of menu's items of categories
       } else{
-          $scope.selectedLang = false;
-          $scope.switchLanguage('es_ES');
+          $scope.translatedCategories = $scope.spanishCategoriesArray;  
+      } 
+    }, 500)
+    .then(function(){
+          
+        if ($scope.selectedLang == false) {
+            $scope.selectedLang = true;
+            $scope.switchLanguage('eu_ES');
+            
+        } else{
+            $scope.selectedLang = false;
+            $scope.switchLanguage('es_ES');
+        }
       }
+    );*/
+
+    if ($scope.selectedLang == false) {
+        $scope.selectedLang = true;
+        //$scope.translatedCategories = $scope.basqueCategoriesArray; // change language of menu's items of categories
+        $scope.switchLanguage('eu_ES');
+        
+    } else{
+        $scope.selectedLang = false;
+        //$scope.translatedCategories = $scope.spanishCategoriesArray;
+        $scope.switchLanguage('es_ES');
+        
+    }
   };
   $scope.switchLanguage = function (key) {
-      $translate.use(key);
+      $translate.use(key).then(
+          function() {
+            //$scope.translatedCategories = [];
+            //cambiarCategorias();
+            //console.log("hecho then");
+          }
+        ).then(
+          function() {
+            //cambiarCategorias();
+          }
+        );
   }; 
+
+  $rootScope.$on('$translateChangeEnd', function() { //translateChangeEnd | $translateLoadingEnd
+    cambiarCategorias();
+    //console.log("ya");
+  });
+
+  function cambiarCategorias() {
+    if ($translate.use() == 'eu_ES') {
+        $scope.translatedCategories = $scope.basqueCategoriesArray; // change language of menu's items of categories
+    } else{
+        $scope.translatedCategories = $scope.spanishCategoriesArray;
+    }
+  }
 
   
   $scope.loginData = {}; // initialize form data for the login modal
@@ -64,9 +152,9 @@ myApp.controller('AppCtrl', function($scope, $timeout, $translate, $ionicHistory
   };*/
 
   // Triggered in doLogin() to close it
-  $scope.closeLoginModal = function() {
+  /*$scope.closeLoginModal = function() {
     $scope.modal.hide();
-  };
+  };*/
 
   // Perform the login action when the user submits the login form
   $scope.doLogin = function() {
@@ -83,7 +171,7 @@ myApp.controller('AppCtrl', function($scope, $timeout, $translate, $ionicHistory
             }
         };
         LoginService.setUserData(currentUserSession)
-        $scope.closeLoginModal();
+        //$scope.closeLoginModal();
     }, 500)
     .then(function(){
           var myPopup = $ionicPopup.show({
@@ -115,10 +203,10 @@ myApp.controller('AppCtrl', function($scope, $timeout, $translate, $ionicHistory
     );
   }
 
-  $scope.$on('$destroy', function() {
+  /*$scope.$on('$destroy', function() {
     $scope.modal.remove();
-  });
-/*
+  });*/
+  /*
   // Reload proposal list when clicking 'Proposal list' menu item
   $scope.reloadProposalsList = function(){
     if($state.current.name == 'app.playlists'){
@@ -127,7 +215,7 @@ myApp.controller('AppCtrl', function($scope, $timeout, $translate, $ionicHistory
         $ionicHistory.clearCache().then(function(){ $state.go('app.playlists')});
     }
   };
-*/
+  */
   // Reload map when clicking 'Map' menu item
   $scope.reloadMap = function(){
     if($state.current.name != 'app.map'){
@@ -143,372 +231,162 @@ myApp.controller('AppCtrl', function($scope, $timeout, $translate, $ionicHistory
 myApp.controller('RegistryCtrl', function($scope, $state) {
   // Registry is shown from Login modal, so is neccesary to set 'back' button enabled 
   // false because the previous screen of the history is not login. 
-  $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
+  /*$scope.$on('$ionicView.beforeEnter', function (event, viewData) {
     viewData.enableBack = false;
-  }); 
+  }); */
 });
 
 
 
 
-/*myApp.controller('ProposalListCtrl', function($scope, $rootScope, $translate, $http, $ionicPopover, $ionicScrollDelegate,
-  $stateParams) { 
-  //Proposals, WELIVE_SERVICE_ID, BILBOZKATU_BB_URL, USERS_FEEDBACK_BB_URL, ITEMS_DISPLAYED_IN_LIST_IN_EVERY_BLOCK,
-  //PROPOSAL_EXPIRATION_MEASUREMENT_MODE, PROPOSAL_EXPIRATION_MEASUREMENT_VALUE) {
+myApp.controller('MapCtrl', function($scope, $state, $ionicPopup, $window, $filter, $http) {
 
-  $scope.zones = zones; // load 'zones' list from zones.js for combobox
-  $scope.noMoreItemsAvailable = false; // initialize variable for infinite-scroll
-  $scope.proposalsError = false; // initialize variable for get proposals' call 
-  $scope.initialSearchCompleted = false; // avoid loadMore() function on page load
-  $scope.proposalsSearchMode = false; // false: get all proposals
-                                      // true: proposals are filtered based on different criteria
-  $scope.search = {zone:"all", category:0, text:""}; // object to store search form's values
-  // initialize search criteria (used when searching proposals (and loadMore function))
-  $scope.selectedZoneParam = "";
-  $scope.selectedCategoryParam = ""; 
-  $scope.selectedTextParam = "";
+  // recalculate map's height based on screen's height
+  var screenHeight = $window.innerHeight - 105;
+  var mapElement = angular.element( document.querySelector( '#mapa' ) );
+  mapElement.css('height', screenHeight + 'px');
+
+  // initialize map's variables
+  var infoWindowArray = null; // array of initialized markers
+  $scope.currentMarkerZoneId = null;
+  $scope.currentMarkerTitle = null; // 
+  $scope.proposalsCountByZones = [];
+
+  // manage infoWindow's content's language
+  //$scope.proposalLabel_sing = $filter('translate')('proposal-map-page.proposals-label-sing');
+  //$scope.proposalLabel_plu = $filter('translate')('proposal-map-page.proposals-label-plu');
+  // monitorize language changing
+  /*$scope.$watchGroup(
+      [ function() { return $filter('translate')('proposal-map-page.proposals-label-sing'); },
+        function() { return $filter('translate')('proposal-map-page.proposals-label-plu'); }],
+
+      function(newval, oldval, scope) { 
+        $scope.proposalLabel_sing = newval[0];
+        $scope.proposalLabel_plu = newval[1];
+
+        // if a marker's infoWindow is opened, update its content based on selected language, even if
+        // the language changing happens in the same map's page
+        if(infoWindowArray != null && $scope.currentMarkerZoneId != null){
+          infoWindowArray[$scope.currentMarkerZoneId].setContent(
+            // if a marker's infoWindow is opened, change its content because of language changing
+            getInfoWindowContent($scope.currentMarkerZoneId, $scope.currentMarkerTitle, 
+                                 $scope.proposalsCountByZones, $scope.proposalLabel_sing, $scope.proposalLabel_plu)
+          );
+        }
+      } 
+  );*/
   
-  // Set 'Proposals' factory functions to $scope
-  Proposals.resetProposals(); 
+  // get proposals count of each zone
+  /*$http({
+    method: 'GET',
+    url: BILBOZKATU_BB_URL + '/proposal/zones/count',
+    timeout: 10000
+  }).then(function successCallback(successCallback) {
 
-  $scope.addProposalToList = function(item){
-      Proposals.addProposalToList(item);
-  };
-  $scope.getProposalsList = function(){
-      return Proposals.getProposalsList();
-  };
-  $scope.setListProposalFeedbackRating = function(objectID, averageRating, feedbackCount){
-      return Proposals.setListProposalFeedbackRating(objectID, averageRating, feedbackCount);
-  };
-  $scope.setFeedbacksError = function(objectID){
-      return Proposals.setFeedbacksError(objectID);
-  };
+        // this callback will be called asynchronously when the successCallback is available
+        var response_data = successCallback.data;
+        if(!response_data.hasOwnProperty('message')){  
+            $scope.proposalsCountByZones = response_data;
+        } // else response_data.message is "There are no proposals in the database"
 
-  // function to call bilbozkatuBB to obtain proposals
-  $scope.callProposalsList = function(url, timeout){
+      }, function errorCallback(errorCallback) {
+        $ionicPopup.alert({
+            title: $filter('translate')('error-alert-popup-title'),
+            template: $filter('translate')('proposal-map-page.proposals-count-error-label'),
+            okText: $filter('translate')('error-alert-popup-ok-button-label'),
+            okType: 'button-assertive' 
+        });
+      }
 
-      var getProposalsCall = $http({
-        method: 'GET',
-        url: url,
-        timeout: timeout
-      }).then(
-        function successCallback(successCallback){
-            $scope.proposalsError = false;
-            // there are proposals (not empty)
-            if(!successCallback.data.hasOwnProperty('message') 
-               && successCallback.data.message != 'There are no proposals with the requested parameters'){
+  ).finally(
+      function finallyCallback(callback, notifyCallback){
+        // initialize the map (with or without data about proposals' count)
+        infoWindowArray = initialize($scope.proposalsCountByZones, $scope);
+      }
+  );*/
+  infoWindowArray = initialize($scope);
 
-                  // iterate proposals. get status from creation date and average feedback's rating 
-                  angular.forEach(successCallback.data, function(item){
+});
 
-                      // calculate proposal status with creation date:
-                      var date = item.creationDate;
-                      // use angular-momentjs component to calculate the difference in months between dates
-                      // (months [0-11]). Constructor parameters: [year, month, day, hour, min]
-                      var _proposalDate = moment([date.substr(6,4), date.substr(3,2)-1, date.substr(0,2),
-                        date.substr(13,2), date.substr(16,4)]);
-                      var _now = moment();
-                      // add 'isExpired' property to the json item:
-                      var monthsDiff = _now.diff(_proposalDate, PROPOSAL_EXPIRATION_MEASUREMENT_MODE);
-                      item.isExpired = ( monthsDiff >= PROPOSAL_EXPIRATION_MEASUREMENT_VALUE) ? true : false; 
-                      /*console.log("Expired: " + item.isExpired 
-                        + " (" + monthsDiff + " " + PROPOSAL_EXPIRATION_MEASUREMENT_MODE 
-                        + ", limit " + PROPOSAL_EXPIRATION_MEASUREMENT_VALUE + ")");* /
 
-                      item.averageRating = 0;
-                      item.feedbackCount = 0;
-                      item.feedbackError = false;
-                      // get feedback average rating from usersFeedback's Building Block
-                      $http({
-                        method: 'GET',
-                        url: USERS_FEEDBACK_BB_URL + 'feedback/list/average?serviceID='+ WELIVE_SERVICE_ID + '&objectID=' + item.objectID,
-                        timeout: 10000
-                      }).then(function successCallback(successCallback) {
-                          // this callback will be called asynchronously when the successCallback is available
-                          var response_data = successCallback.data;
-                          if(!response_data.hasOwnProperty('message') && 
-                            response_data.message != 'There are no feedbacks with the requested parameters'){
-                              // update proposal's properties asynchronously if it is timeout error
-                              $scope.setListProposalFeedbackRating(item.objectID, 
-                                  response_data.averageRating, response_data.feedbackCount);
-                          }
-                        }, function errorCallback(errorCallback) {
-                          $scope.setFeedbacksError(item.objectID);
-                          //if(errorCallback.status <= 1 || errorCallback.status == 404){
-                            // net::ERR_CONNECTION_REFUSED (API is offline) || Not found
-                          //}
-                        }
-                      );
-                      $scope.addProposalToList(item); // add loaded new proposal to the list
-                  })
-                  
-                  console.log(successCallback.data.length + "/" + ITEMS_DISPLAYED_IN_LIST_IN_EVERY_BLOCK 
-                              + " new items added to proposals' list.");
-                  if(successCallback.data.length < ITEMS_DISPLAYED_IN_LIST_IN_EVERY_BLOCK){
-                    $scope.noMoreItemsAvailable = true;
-                    console.log("There are no more proposals to add to the list.");
+
+
+myApp.controller('CreateCtrl', function($scope, $state, $filter, $ionicPopup, $http, LoginService, BILBOZKATU_BB_URL) {
+
+  $scope.zones = zones; // load 'zones' list from  zones.js for combobox
+  $scope.newProposal = {}; // store form data
+
+  /*$scope.submitProposal = function(){
+
+    // verify if current user is logged
+      var currentUserId = LoginService.getUserId();
+      if(currentUserId == null){
+          $ionicPopup.confirm({
+              title: $filter('translate')('info-alert-popup-title'),
+              template: $filter('translate')('proposal-create-page.proposal.user-not-logged-error-label'),
+              cancelText: $filter('translate')('info-confirm-popup-cancel-button-label'),
+              cancelType: 'button-default',
+              okText: $filter('translate')('info-confirm-popup-login-button-label'),
+              okType: 'button-assertive'
+          }).then(function(res) { if(res) { $scope.openLoginModal(); } });
+          return;
+      }
+      // send the feedback
+      $http({
+          method: 'GET',
+          url: BILBOZKATU_BB_URL + '/proposal/add?'
+                              + 'title='+ $scope.newProposal.title
+                              + '&userID=' + currentUserId
+                              + '&zone=' + $scope.newProposal.zone
+                              + '&category=' + $scope.newProposal.category
+                              + '&description=' + $scope.newProposal.description
+                              + '&type=' + 'Ciudadano',
+          timeout: 10000
+        }).then(function successCallback(successCallback) {
+              // this callback will be called asynchronously when the successCallback is available
+              var response_data = successCallback.data;
+              if(response_data.hasOwnProperty('message')){ 
+                  if(response_data.message == "The proposal was successfully created"){
+                      $scope.newProposal = {};
+                      $ionicPopup.alert({
+                          title: $filter('translate')('info-alert-popup-title'),
+                          template: $filter('translate')('proposal-create-page.proposal.succesfully-submitted-label'),
+                          okText: $filter('translate')('info-alert-popup-ok-button-label'),
+                          okType: 'button-assertive' 
+                      });
+                  }else if(response_data.message == "The 'userID' does not exist in the database"){
+                      $ionicPopup.alert({
+                          title: $filter('translate')('error-alert-popup-title'),
+                          template: $filter('translate')('proposal-create-page.proposal.user-unregistered-error-label'),
+                          okText: $filter('translate')('error-alert-popup-ok-button-label'),
+                          okType: 'button-assertive' 
+                      });
                   }
-                  
-            }else{
-                  $scope.noMoreItemsAvailable = true;
-                  console.log("There are no more proposals to add to the list.");
-            }
-
-        }, function errorCallback(errorCallback){
-            // called asynchronously if an error occurs or server returns errorCallback with an error status.
-            // 'time out' error is not handled by angular (there is no status code to use), but executes this function
-            $scope.proposalsError = true;
-            console.log("Get proposals/Error status code: " + errorCallback.status);
-            //if(errorCallback.status <= 1 || errorCallback.status == 404){
-              // net::ERR_CONNECTION_REFUSED (API is offline) || Not found
-            //}
-        }
-      );
-      getProposalsCall.finally(
-          function finallyCallback(callback, notifyCallback){
-            $scope.initialSearchCompleted = true;
-          }
-      );
-      return getProposalsCall;
-  };
-
-  // define functions to use ion-infinite-scroll
-  /*$scope.$on('$stateChangeSuccess', function() {
-    // $scope.loadMore(); // execute when opens 'New proposal' page and so on (avoid it).
-  });* /
-  $scope.loadMore = function() {
-      if($scope.initialSearchCompleted && !$scope.noMoreItemsAvailable){ // <ion-infinite-scroll immediate-check="false"...>
-                                                                         // and <ion-infinite-scroll ng-if="proposals.length"...> fails
-          if(!$scope.proposalsSearchMode){
-              $scope.callProposalsList(BILBOZKATU_BB_URL + 'proposal/list?resultsFrom=' + $scope.getProposalsList().length 
-                                      + '&resultsCount=' + ITEMS_DISPLAYED_IN_LIST_IN_EVERY_BLOCK, 10000)
-                  .finally(function finallyCallback(callback, notifyCallback){
-                      $scope.$broadcast('scroll.infiniteScrollComplete');
-                  });
-          }else{
-              $scope.callProposalsList(BILBOZKATU_BB_URL + 'proposal/list/search?resultsFrom=' + $scope.getProposalsList().length 
-                                      + '&resultsCount=' + ITEMS_DISPLAYED_IN_LIST_IN_EVERY_BLOCK
-                                      + $scope.selectedZoneParam + $scope.selectedCategoryParam + $scope.selectedTextParam, 10000)
-                  .finally(function finallyCallback(callback, notifyCallback){
-                      $scope.$broadcast('scroll.infiniteScrollComplete');
-                  });
-          }
-          //$scope.$broadcast('scroll.infiniteScrollComplete');
-      }
-  };
-
-  // Scroll to top button
-  $scope.scrollTop = function() {
-    $ionicScrollDelegate.scrollTop();
-  };
-
-  // Search button
-  $scope.searchProposals = function() {
-    var selectedAuxZoneParam = ($scope.search.zone == null || $scope.search.zone == "all")? "" : "&zone=" + $scope.search.zone.trim();
-    var selectedAuxCategoryParam = ($scope.search.category == null || $scope.search.category == 0)? "" : "&category=" + $scope.search.category;
-    var selectedAuxTextParam = ($scope.search.text.trim() == "")? "" : "&text=" + $scope.search.text.trim(); 
-
-    if(selectedAuxZoneParam == "" && selectedAuxCategoryParam == "" && selectedAuxTextParam == ""){
-        // criteria don't specified
-        if($scope.proposalsSearchMode == false){
-            $scope.noMoreItemsAvailable = false; // load more proposals without search's criteria if exists
-        }else{
-            // search all proposals again
-            Proposals.resetProposals();
-            $scope.noMoreItemsAvailable = false;
-            $scope.proposalsSearchMode = false;
-            $scope.callProposalsList(
-                BILBOZKATU_BB_URL + 'proposal/list?resultsFrom=0&resultsCount=' + ITEMS_DISPLAYED_IN_LIST_IN_EVERY_BLOCK,
-                10000);
-        }
-    }else{
-        // criteria specified
-        if(selectedAuxZoneParam == $scope.selectedZoneParam && selectedAuxCategoryParam == $scope.selectedCategoryParam
-          && selectedAuxTextParam == $scope.selectedTextParam){
-            // same search criteria already used
-            $scope.noMoreItemsAvailable = false;
-        }else{
-            //search proposals
-            $scope.selectedZoneParam = selectedAuxZoneParam;
-            $scope.selectedCategoryParam = selectedAuxCategoryParam; 
-            $scope.selectedTextParam = selectedAuxTextParam;
-            Proposals.resetProposals();
-            $scope.noMoreItemsAvailable = false;
-            $scope.proposalsSearchMode = true;
-            $scope.callProposalsList(BILBOZKATU_BB_URL + 'proposal/list/search?resultsFrom=0'
-                                          + '&resultsCount=' + ITEMS_DISPLAYED_IN_LIST_IN_EVERY_BLOCK
-                                          + $scope.selectedZoneParam + $scope.selectedCategoryParam + $scope.selectedTextParam, 10000);
-        }
-    }
-  };
-
-  // Load first block of proposals' list on page load
-  if($stateParams.zone != null){
-      // load proposals of the zone specified on the map
-      $scope.search.zone = $stateParams.zone;
-      $scope.searchProposals();
-  }
-  else{
-      // load proposals without criteria
-      $scope.callProposalsList(
-          BILBOZKATU_BB_URL + 'proposal/list?resultsFrom=0&resultsCount=' + ITEMS_DISPLAYED_IN_LIST_IN_EVERY_BLOCK,
-          10000);
-  }
-
-  // Reload categories' combobox if language changes
-  $rootScope.$on('$translateChangeSuccess', function () {
-      if($translate.use() == "es_ES"){    
-          $scope.translatedCategories = $scope.spanishCategoriesArray;
-      }else{
-          $scope.translatedCategories = $scope.basqueCategoriesArray;
-      }
-  });
-
-  // orderBy navbar button
-  $ionicPopover.fromTemplateUrl('popover.html', {
-    scope: $scope
-  }).then(function(popover) {
-      $scope.popover = popover;
-  });
-  $scope.openPopover = function($event) {
-      $scope.popover.show($event);
-  };
-  $scope.closePopover = function() {
-      $scope.popover.hide();
-  };
-  $scope.setOrder = function (order) {
-      $scope.order = order;
-      $scope.popover.hide();
-  };
-});*/
-
-
-
-
-myApp.factory('Proposals', function(){
-    var proposals = {
-        list: [],
-        currentProposal: {}
-    };
-
-    return {
-        resetProposals: function() {
-          proposals.list = [];
-          proposals.currentProposal = {};
-        },
-        addProposalToList: function(item) {
-            proposals.list.push(item);
-        },
-        getProposalsList: function() {
-            return proposals.list;
-        },
-        setListProposalFeedbackRating: function(objectID, averageRating, feedbackCount) {
-            var i = 0, len = proposals.list.length;
-            for (; i < len; i++) {
-              if (proposals.list[i].objectID === parseInt(objectID)) {
-                proposals.list[i].averageRating = averageRating;
-                proposals.list[i].feedbackCount = feedbackCount;
-                return true;
               }
-            }
-            return false;
-        },
-        setFeedbacksError: function(objectID) {
-            var i = 0, len = proposals.list.length;
-            for (; i < len; i++) {
-              if (proposals.list[i].objectID === parseInt(objectID)) {
-                proposals.list[i].feedbackCount = "";
-                proposals.list[i].feedbackError = true;
-                return true;
-              }
-            }
-            return false;
-        },
-        getCurrentProposal: function() {
-            return proposals.currentProposal;
-        },
-        setCurrentProposal: function(item) {
-            proposals.currentProposal = item;
-            proposals.currentProposal.votesCount = item.votesInFavor + item.votesAgainst;
 
-            // get category's image
-            var category = categories.filter( function(item){ return item.id == proposals.currentProposal.categoryID; } );
-            if(category.length > 0) proposals.currentProposal.categoryImageSrc = category[0]['img_src'];
-
-            // initialize status and feedback's average rating values
-            proposals.currentProposal.isExpired = false;
-            proposals.currentProposal.averageRating = 0;
-            proposals.currentProposal.feedbackCount = 0;
-            proposals.currentProposal.feedbackError = false;
-            // obtain 'isExpired' that is calculated when ProposalListCtrl is loaded
-            var i = 0, len = proposals.list.length;
-            for (; i < len; i++) {
-              if (proposals.list[i].objectID == proposals.currentProposal.objectID) {
-                proposals.currentProposal.isExpired = proposals.list[i].isExpired;
-                // update votes in proposal's list
-                proposals.list[i].votesInFavor = proposals.currentProposal.votesInFavor;
-                proposals.list[i].votesAgainst = proposals.currentProposal.votesAgainst;
-                break;
-              }
+            }, function errorCallback(errorCallback) {
+              $ionicPopup.alert({
+                  title: $filter('translate')('error-alert-popup-title'),
+                  template: $filter('translate')('proposal-create-page.proposal.user-proposal-submit-error-label'),
+                  okText: $filter('translate')('error-alert-popup-ok-button-label'),
+                  okType: 'button-assertive' 
+              });
+              //if(errorCallback.status <= 1 || errorCallback.status == 404){
+                // net::ERR_CONNECTION_REFUSED (API is offline) || Not found
+              //}
             }
-        },
-        setCurrentProposalFeedbacksRating: function(averageRating, feedbackCount) {
-            proposals.currentProposal.averageRating = averageRating;
-            proposals.currentProposal.feedbackCount = feedbackCount;
-        },
-        setCurrentProposalFeedbacksError: function() {
-            proposals.currentProposal.feedbackCount = "";
-            proposals.currentProposal.feedbackError = true;
-        },
-        setCurrentProposalVoteAndUpdateList: function(isFavorVote) {
-            // update vote's in current proposal
-            if(isFavorVote) proposals.currentProposal.votesInFavor++;
-            else proposals.currentProposal.votesAgainst++;
-            proposals.currentProposal.votesCount = proposals.currentProposal.votesInFavor 
-                                                 + proposals.currentProposal.votesAgainst;
-            // update vote's in list
-            var i = 0, len = proposals.list.length;
-            for (; i < len; i++) {
-              if (proposals.list[i].objectID == proposals.currentProposal.objectID) {
-                proposals.list[i].votesInFavor = proposals.currentProposal.votesInFavor;
-                proposals.list[i].votesAgainst = proposals.currentProposal.votesAgainst;
-                break;
-              }
-            }
-        }
-    };
+        );
+  };*/
 });
-
-
-
-
-myApp.factory('LoginService', function(localStorageService){
-    return {
-        getUserId: function(){
-          var userData = localStorageService.get('userData');
-          if(userData != null) return JSON.parse(userData).currentUser.userId;
-          else userData;
-        },
-        setUserData: function(userData) {
-          return localStorageService.set('userData', JSON.stringify(userData));
-        },
-        removeUserData: function() {
-          return localStorageService.remove('userData');
-        }
-    };
-});
-
 
 
 
 
 myApp.controller('POICtrl', function($scope, $state, $stateParams, $filter, $http, $ionicHistory,
-            $ionicScrollDelegate , $ionicPopup, $interval, Proposals, LoginService, BILBOZKATU_BB_URL, 
-            USERS_FEEDBACK_BB_URL, WELIVE_SERVICE_ID, ITEMS_DISPLAYED_IN_LIST_IN_EVERY_BLOCK,
-            NEW_FEEDBACKS_CHECKING_INTERVAL_MODE, NEW_FEEDBACKS_CHECKING_INTERVAL_VALUE ) {
+            $ionicScrollDelegate , $ionicPopup, $interval, LoginService, WELIVE_SERVICE_ID) {
 
   // configure rating's input element
-  $scope.ratingsObject = {
+/*  $scope.ratingsObject = {
         iconOn : 'ion-ios-star',
         iconOff : 'ion-ios-star-outline',
         iconOnColor: '#FFCC33', //'rgb(200, 200, 100)',
@@ -979,8 +857,399 @@ myApp.controller('POICtrl', function($scope, $state, $stateParams, $filter, $htt
   $scope.scrollTop = function() {
     $ionicScrollDelegate.scrollTop();
   };
-  
+*/
 });
+
+
+
+
+
+myApp.directive('ionToggleText', function () {
+  var $ = angular.element;
+  return {
+    restrict: 'A',
+    link: function ($scope, $element, $attrs) {
+      // Try to figure out what text values we're going to use 
+      var textOn = $attrs.ngTrueValue || "EU",
+          textOff = $attrs.ngFalseValue || 'ES';
+      if ($attrs.ionToggleText) {
+        var x = $attrs.ionToggleText.split(';');
+        if (x.length === 2) {
+          textOn = x[0] || textOn;
+          textOff = x[1] || textOff;
+        }
+      }
+      textOn = textOn.replace(/'/g, "");
+      textOff = textOff.replace(/'/g, "");
+
+      // Create the text elements
+      var $handleTrue = $("<div class='handle-text handle-text-true'>" + textOn + "</div>"),
+          $handleFalse = $('<div class="handle-text handle-text-false">' + textOff + '</div>');
+      var label = $element.find('label');
+
+      if (label.length) {
+        label.addClass('toggle-text');
+        // Locate both the track and handle elements
+        var $divs = label.find('div'), $track, $handle;
+        angular.forEach($divs, function (div) {
+          var $div = $(div);
+          if ($div.hasClass('handle')) {
+            $handle = $div;
+          } else if ($div.hasClass('track')) {
+            $track = $div;
+          }
+        });
+
+        if ($handle && $track) {
+          // Append the text elements
+          $handle.append($handleTrue);
+          $handle.append($handleFalse);
+          // Grab the width of the elements
+          var wTrue = $handleTrue[0].offsetWidth,
+              wFalse = $handleFalse[0].offsetWidth;
+          // Adjust the offset of the left element
+          $handleTrue.css('left', '-' + (wTrue + 10) + 'px');
+          // Ensure that the track element fits the largest text
+          var wTrack = Math.max(wTrue, wFalse);
+          $track.css('width', (wTrack + 60) + 'px');
+        }
+      }
+
+    }
+  };
+});
+
+
+
+
+/*myApp.controller('ProposalListCtrl', function($scope, $rootScope, $translate, $http, $ionicPopover, $ionicScrollDelegate,
+  $stateParams) { 
+  //Proposals, WELIVE_SERVICE_ID, BILBOZKATU_BB_URL, USERS_FEEDBACK_BB_URL, ITEMS_DISPLAYED_IN_LIST_IN_EVERY_BLOCK,
+  //PROPOSAL_EXPIRATION_MEASUREMENT_MODE, PROPOSAL_EXPIRATION_MEASUREMENT_VALUE) {
+
+  $scope.zones = zones; // load 'zones' list from zones.js for combobox
+  $scope.noMoreItemsAvailable = false; // initialize variable for infinite-scroll
+  $scope.proposalsError = false; // initialize variable for get proposals' call 
+  $scope.initialSearchCompleted = false; // avoid loadMore() function on page load
+  $scope.proposalsSearchMode = false; // false: get all proposals
+                                      // true: proposals are filtered based on different criteria
+  $scope.search = {zone:"all", category:0, text:""}; // object to store search form's values
+  // initialize search criteria (used when searching proposals (and loadMore function))
+  $scope.selectedZoneParam = "";
+  $scope.selectedCategoryParam = ""; 
+  $scope.selectedTextParam = "";
+  
+  // Set 'Proposals' factory functions to $scope
+  Proposals.resetProposals(); 
+
+  $scope.addProposalToList = function(item){
+      Proposals.addProposalToList(item);
+  };
+  $scope.getProposalsList = function(){
+      return Proposals.getProposalsList();
+  };
+  $scope.setListProposalFeedbackRating = function(objectID, averageRating, feedbackCount){
+      return Proposals.setListProposalFeedbackRating(objectID, averageRating, feedbackCount);
+  };
+  $scope.setFeedbacksError = function(objectID){
+      return Proposals.setFeedbacksError(objectID);
+  };
+
+  // function to call bilbozkatuBB to obtain proposals
+  $scope.callProposalsList = function(url, timeout){
+
+      var getProposalsCall = $http({
+        method: 'GET',
+        url: url,
+        timeout: timeout
+      }).then(
+        function successCallback(successCallback){
+            $scope.proposalsError = false;
+            // there are proposals (not empty)
+            if(!successCallback.data.hasOwnProperty('message') 
+               && successCallback.data.message != 'There are no proposals with the requested parameters'){
+
+                  // iterate proposals. get status from creation date and average feedback's rating 
+                  angular.forEach(successCallback.data, function(item){
+
+                      // calculate proposal status with creation date:
+                      var date = item.creationDate;
+                      // use angular-momentjs component to calculate the difference in months between dates
+                      // (months [0-11]). Constructor parameters: [year, month, day, hour, min]
+                      var _proposalDate = moment([date.substr(6,4), date.substr(3,2)-1, date.substr(0,2),
+                        date.substr(13,2), date.substr(16,4)]);
+                      var _now = moment();
+                      // add 'isExpired' property to the json item:
+                      var monthsDiff = _now.diff(_proposalDate, PROPOSAL_EXPIRATION_MEASUREMENT_MODE);
+                      item.isExpired = ( monthsDiff >= PROPOSAL_EXPIRATION_MEASUREMENT_VALUE) ? true : false; 
+                      /*console.log("Expired: " + item.isExpired 
+                        + " (" + monthsDiff + " " + PROPOSAL_EXPIRATION_MEASUREMENT_MODE 
+                        + ", limit " + PROPOSAL_EXPIRATION_MEASUREMENT_VALUE + ")");* /
+
+                      item.averageRating = 0;
+                      item.feedbackCount = 0;
+                      item.feedbackError = false;
+                      // get feedback average rating from usersFeedback's Building Block
+                      $http({
+                        method: 'GET',
+                        url: USERS_FEEDBACK_BB_URL + 'feedback/list/average?serviceID='+ WELIVE_SERVICE_ID + '&objectID=' + item.objectID,
+                        timeout: 10000
+                      }).then(function successCallback(successCallback) {
+                          // this callback will be called asynchronously when the successCallback is available
+                          var response_data = successCallback.data;
+                          if(!response_data.hasOwnProperty('message') && 
+                            response_data.message != 'There are no feedbacks with the requested parameters'){
+                              // update proposal's properties asynchronously if it is timeout error
+                              $scope.setListProposalFeedbackRating(item.objectID, 
+                                  response_data.averageRating, response_data.feedbackCount);
+                          }
+                        }, function errorCallback(errorCallback) {
+                          $scope.setFeedbacksError(item.objectID);
+                          //if(errorCallback.status <= 1 || errorCallback.status == 404){
+                            // net::ERR_CONNECTION_REFUSED (API is offline) || Not found
+                          //}
+                        }
+                      );
+                      $scope.addProposalToList(item); // add loaded new proposal to the list
+                  })
+                  
+                  console.log(successCallback.data.length + "/" + ITEMS_DISPLAYED_IN_LIST_IN_EVERY_BLOCK 
+                              + " new items added to proposals' list.");
+                  if(successCallback.data.length < ITEMS_DISPLAYED_IN_LIST_IN_EVERY_BLOCK){
+                    $scope.noMoreItemsAvailable = true;
+                    console.log("There are no more proposals to add to the list.");
+                  }
+                  
+            }else{
+                  $scope.noMoreItemsAvailable = true;
+                  console.log("There are no more proposals to add to the list.");
+            }
+
+        }, function errorCallback(errorCallback){
+            // called asynchronously if an error occurs or server returns errorCallback with an error status.
+            // 'time out' error is not handled by angular (there is no status code to use), but executes this function
+            $scope.proposalsError = true;
+            console.log("Get proposals/Error status code: " + errorCallback.status);
+            //if(errorCallback.status <= 1 || errorCallback.status == 404){
+              // net::ERR_CONNECTION_REFUSED (API is offline) || Not found
+            //}
+        }
+      );
+      getProposalsCall.finally(
+          function finallyCallback(callback, notifyCallback){
+            $scope.initialSearchCompleted = true;
+          }
+      );
+      return getProposalsCall;
+  };
+
+  // define functions to use ion-infinite-scroll
+  /*$scope.$on('$stateChangeSuccess', function() {
+    // $scope.loadMore(); // execute when opens 'New proposal' page and so on (avoid it).
+  });* /
+  $scope.loadMore = function() {
+      if($scope.initialSearchCompleted && !$scope.noMoreItemsAvailable){ // <ion-infinite-scroll immediate-check="false"...>
+                                                                         // and <ion-infinite-scroll ng-if="proposals.length"...> fails
+          if(!$scope.proposalsSearchMode){
+              $scope.callProposalsList(BILBOZKATU_BB_URL + 'proposal/list?resultsFrom=' + $scope.getProposalsList().length 
+                                      + '&resultsCount=' + ITEMS_DISPLAYED_IN_LIST_IN_EVERY_BLOCK, 10000)
+                  .finally(function finallyCallback(callback, notifyCallback){
+                      $scope.$broadcast('scroll.infiniteScrollComplete');
+                  });
+          }else{
+              $scope.callProposalsList(BILBOZKATU_BB_URL + 'proposal/list/search?resultsFrom=' + $scope.getProposalsList().length 
+                                      + '&resultsCount=' + ITEMS_DISPLAYED_IN_LIST_IN_EVERY_BLOCK
+                                      + $scope.selectedZoneParam + $scope.selectedCategoryParam + $scope.selectedTextParam, 10000)
+                  .finally(function finallyCallback(callback, notifyCallback){
+                      $scope.$broadcast('scroll.infiniteScrollComplete');
+                  });
+          }
+          //$scope.$broadcast('scroll.infiniteScrollComplete');
+      }
+  };
+
+  // Scroll to top button
+  $scope.scrollTop = function() {
+    $ionicScrollDelegate.scrollTop();
+  };
+
+  // Search button
+  $scope.searchProposals = function() {
+    var selectedAuxZoneParam = ($scope.search.zone == null || $scope.search.zone == "all")? "" : "&zone=" + $scope.search.zone.trim();
+    var selectedAuxCategoryParam = ($scope.search.category == null || $scope.search.category == 0)? "" : "&category=" + $scope.search.category;
+    var selectedAuxTextParam = ($scope.search.text.trim() == "")? "" : "&text=" + $scope.search.text.trim(); 
+
+    if(selectedAuxZoneParam == "" && selectedAuxCategoryParam == "" && selectedAuxTextParam == ""){
+        // criteria don't specified
+        if($scope.proposalsSearchMode == false){
+            $scope.noMoreItemsAvailable = false; // load more proposals without search's criteria if exists
+        }else{
+            // search all proposals again
+            Proposals.resetProposals();
+            $scope.noMoreItemsAvailable = false;
+            $scope.proposalsSearchMode = false;
+            $scope.callProposalsList(
+                BILBOZKATU_BB_URL + 'proposal/list?resultsFrom=0&resultsCount=' + ITEMS_DISPLAYED_IN_LIST_IN_EVERY_BLOCK,
+                10000);
+        }
+    }else{
+        // criteria specified
+        if(selectedAuxZoneParam == $scope.selectedZoneParam && selectedAuxCategoryParam == $scope.selectedCategoryParam
+          && selectedAuxTextParam == $scope.selectedTextParam){
+            // same search criteria already used
+            $scope.noMoreItemsAvailable = false;
+        }else{
+            //search proposals
+            $scope.selectedZoneParam = selectedAuxZoneParam;
+            $scope.selectedCategoryParam = selectedAuxCategoryParam; 
+            $scope.selectedTextParam = selectedAuxTextParam;
+            Proposals.resetProposals();
+            $scope.noMoreItemsAvailable = false;
+            $scope.proposalsSearchMode = true;
+            $scope.callProposalsList(BILBOZKATU_BB_URL + 'proposal/list/search?resultsFrom=0'
+                                          + '&resultsCount=' + ITEMS_DISPLAYED_IN_LIST_IN_EVERY_BLOCK
+                                          + $scope.selectedZoneParam + $scope.selectedCategoryParam + $scope.selectedTextParam, 10000);
+        }
+    }
+  };
+
+  // Load first block of proposals' list on page load
+  if($stateParams.zone != null){
+      // load proposals of the zone specified on the map
+      $scope.search.zone = $stateParams.zone;
+      $scope.searchProposals();
+  }
+  else{
+      // load proposals without criteria
+      $scope.callProposalsList(
+          BILBOZKATU_BB_URL + 'proposal/list?resultsFrom=0&resultsCount=' + ITEMS_DISPLAYED_IN_LIST_IN_EVERY_BLOCK,
+          10000);
+  }
+
+  // Reload categories' combobox if language changes
+  $rootScope.$on('$translateChangeSuccess', function () {
+      if($translate.use() == "es_ES"){    
+          $scope.translatedCategories = $scope.spanishCategoriesArray;
+      }else{
+          $scope.translatedCategories = $scope.basqueCategoriesArray;
+      }
+  });
+
+  // orderBy navbar button
+  $ionicPopover.fromTemplateUrl('popover.html', {
+    scope: $scope
+  }).then(function(popover) {
+      $scope.popover = popover;
+  });
+  $scope.openPopover = function($event) {
+      $scope.popover.show($event);
+  };
+  $scope.closePopover = function() {
+      $scope.popover.hide();
+  };
+  $scope.setOrder = function (order) {
+      $scope.order = order;
+      $scope.popover.hide();
+  };
+});*/
+
+
+
+/*
+myApp.factory('Proposals', function(){
+    var proposals = {
+        list: [],
+        currentProposal: {}
+    };
+
+    return {
+        resetProposals: function() {
+          proposals.list = [];
+          proposals.currentProposal = {};
+        },
+        addProposalToList: function(item) {
+            proposals.list.push(item);
+        },
+        getProposalsList: function() {
+            return proposals.list;
+        },
+        setListProposalFeedbackRating: function(objectID, averageRating, feedbackCount) {
+            var i = 0, len = proposals.list.length;
+            for (; i < len; i++) {
+              if (proposals.list[i].objectID === parseInt(objectID)) {
+                proposals.list[i].averageRating = averageRating;
+                proposals.list[i].feedbackCount = feedbackCount;
+                return true;
+              }
+            }
+            return false;
+        },
+        setFeedbacksError: function(objectID) {
+            var i = 0, len = proposals.list.length;
+            for (; i < len; i++) {
+              if (proposals.list[i].objectID === parseInt(objectID)) {
+                proposals.list[i].feedbackCount = "";
+                proposals.list[i].feedbackError = true;
+                return true;
+              }
+            }
+            return false;
+        },
+        getCurrentProposal: function() {
+            return proposals.currentProposal;
+        },
+        setCurrentProposal: function(item) {
+            proposals.currentProposal = item;
+            proposals.currentProposal.votesCount = item.votesInFavor + item.votesAgainst;
+
+            // get category's image
+            var category = categories.filter( function(item){ return item.id == proposals.currentProposal.categoryID; } );
+            if(category.length > 0) proposals.currentProposal.categoryImageSrc = category[0]['img_src'];
+
+            // initialize status and feedback's average rating values
+            proposals.currentProposal.isExpired = false;
+            proposals.currentProposal.averageRating = 0;
+            proposals.currentProposal.feedbackCount = 0;
+            proposals.currentProposal.feedbackError = false;
+            // obtain 'isExpired' that is calculated when ProposalListCtrl is loaded
+            var i = 0, len = proposals.list.length;
+            for (; i < len; i++) {
+              if (proposals.list[i].objectID == proposals.currentProposal.objectID) {
+                proposals.currentProposal.isExpired = proposals.list[i].isExpired;
+                // update votes in proposal's list
+                proposals.list[i].votesInFavor = proposals.currentProposal.votesInFavor;
+                proposals.list[i].votesAgainst = proposals.currentProposal.votesAgainst;
+                break;
+              }
+            }
+        },
+        setCurrentProposalFeedbacksRating: function(averageRating, feedbackCount) {
+            proposals.currentProposal.averageRating = averageRating;
+            proposals.currentProposal.feedbackCount = feedbackCount;
+        },
+        setCurrentProposalFeedbacksError: function() {
+            proposals.currentProposal.feedbackCount = "";
+            proposals.currentProposal.feedbackError = true;
+        },
+        setCurrentProposalVoteAndUpdateList: function(isFavorVote) {
+            // update vote's in current proposal
+            if(isFavorVote) proposals.currentProposal.votesInFavor++;
+            else proposals.currentProposal.votesAgainst++;
+            proposals.currentProposal.votesCount = proposals.currentProposal.votesInFavor 
+                                                 + proposals.currentProposal.votesAgainst;
+            // update vote's in list
+            var i = 0, len = proposals.list.length;
+            for (; i < len; i++) {
+              if (proposals.list[i].objectID == proposals.currentProposal.objectID) {
+                proposals.list[i].votesInFavor = proposals.currentProposal.votesInFavor;
+                proposals.list[i].votesAgainst = proposals.currentProposal.votesAgainst;
+                break;
+              }
+            }
+        }
+    };
+});
+*/
 
 
 
@@ -1065,203 +1334,3 @@ myApp.controller('POICtrl', function($scope, $state, $stateParams, $filter, $htt
   }
 
 });*/
-
-
-
-
-myApp.controller('CreateCtrl', function($scope, $state, $filter, $ionicPopup, $http, LoginService, BILBOZKATU_BB_URL) {
-
-  $scope.zones = zones; // load 'zones' list from  zones.js for combobox
-  $scope.newProposal = {}; // store form data
-
-  $scope.submitProposal = function(){
-
-    // verify if current user is logged
-      var currentUserId = LoginService.getUserId();
-      if(currentUserId == null){
-          $ionicPopup.confirm({
-              title: $filter('translate')('info-alert-popup-title'),
-              template: $filter('translate')('proposal-create-page.proposal.user-not-logged-error-label'),
-              cancelText: $filter('translate')('info-confirm-popup-cancel-button-label'),
-              cancelType: 'button-default',
-              okText: $filter('translate')('info-confirm-popup-login-button-label'),
-              okType: 'button-assertive'
-          }).then(function(res) { if(res) { $scope.openLoginModal(); } });
-          return;
-      }
-      // send the feedback
-      $http({
-          method: 'GET',
-          url: BILBOZKATU_BB_URL + '/proposal/add?'
-                              + 'title='+ $scope.newProposal.title
-                              + '&userID=' + currentUserId
-                              + '&zone=' + $scope.newProposal.zone
-                              + '&category=' + $scope.newProposal.category
-                              + '&description=' + $scope.newProposal.description
-                              + '&type=' + 'Ciudadano',
-          timeout: 10000
-        }).then(function successCallback(successCallback) {
-              // this callback will be called asynchronously when the successCallback is available
-              var response_data = successCallback.data;
-              if(response_data.hasOwnProperty('message')){ 
-                  if(response_data.message == "The proposal was successfully created"){
-                      $scope.newProposal = {};
-                      $ionicPopup.alert({
-                          title: $filter('translate')('info-alert-popup-title'),
-                          template: $filter('translate')('proposal-create-page.proposal.succesfully-submitted-label'),
-                          okText: $filter('translate')('info-alert-popup-ok-button-label'),
-                          okType: 'button-assertive' 
-                      });
-                  }else if(response_data.message == "The 'userID' does not exist in the database"){
-                      $ionicPopup.alert({
-                          title: $filter('translate')('error-alert-popup-title'),
-                          template: $filter('translate')('proposal-create-page.proposal.user-unregistered-error-label'),
-                          okText: $filter('translate')('error-alert-popup-ok-button-label'),
-                          okType: 'button-assertive' 
-                      });
-                  }
-              }
-
-            }, function errorCallback(errorCallback) {
-              $ionicPopup.alert({
-                  title: $filter('translate')('error-alert-popup-title'),
-                  template: $filter('translate')('proposal-create-page.proposal.user-proposal-submit-error-label'),
-                  okText: $filter('translate')('error-alert-popup-ok-button-label'),
-                  okType: 'button-assertive' 
-              });
-              //if(errorCallback.status <= 1 || errorCallback.status == 404){
-                // net::ERR_CONNECTION_REFUSED (API is offline) || Not found
-              //}
-            }
-        );
-  };
-});
-
-
-
-
-myApp.controller('MapCtrl', function($scope, $state, $ionicPopup, $window, $filter, $http, BILBOZKATU_BB_URL) {
-
-  // recalculate map's height based on screen's height
-  var screenHeight = $window.innerHeight - 105;
-  var mapElement = angular.element( document.querySelector( '#mapa' ) );
-  mapElement.css('height', screenHeight + 'px');
-
-  // initialize map's variables
-  var infoWindowArray = null; // array of initialized markers
-  $scope.currentMarkerZoneId = null;
-  $scope.currentMarkerTitle = null; // 
-  $scope.proposalsCountByZones = [];
-
-  // manage infoWindow's content's language
-  $scope.proposalLabel_sing = $filter('translate')('proposal-map-page.proposals-label-sing');
-  $scope.proposalLabel_plu = $filter('translate')('proposal-map-page.proposals-label-plu');
-  // monitorize language changing
-  $scope.$watchGroup(
-      [ function() { return $filter('translate')('proposal-map-page.proposals-label-sing'); },
-        function() { return $filter('translate')('proposal-map-page.proposals-label-plu'); }],
-
-      function(newval, oldval, scope) { 
-        $scope.proposalLabel_sing = newval[0];
-        $scope.proposalLabel_plu = newval[1];
-
-        // if a marker's infoWindow is opened, update its content based on selected language, even if
-        // the language changing happens in the same map's page
-        if(infoWindowArray != null && $scope.currentMarkerZoneId != null){
-          infoWindowArray[$scope.currentMarkerZoneId].setContent(
-            // if a marker's infoWindow is opened, change its content because of language changing
-            getInfoWindowContent($scope.currentMarkerZoneId, $scope.currentMarkerTitle, 
-                                 $scope.proposalsCountByZones, $scope.proposalLabel_sing, $scope.proposalLabel_plu)
-          );
-        }
-      } 
-  );
-  
-  // get proposals count of each zone
-  $http({
-    method: 'GET',
-    url: BILBOZKATU_BB_URL + '/proposal/zones/count',
-    timeout: 10000
-  }).then(function successCallback(successCallback) {
-
-        // this callback will be called asynchronously when the successCallback is available
-        var response_data = successCallback.data;
-        if(!response_data.hasOwnProperty('message')){  
-            $scope.proposalsCountByZones = response_data;
-        } // else response_data.message is "There are no proposals in the database"
-
-      }, function errorCallback(errorCallback) {
-        $ionicPopup.alert({
-            title: $filter('translate')('error-alert-popup-title'),
-            template: $filter('translate')('proposal-map-page.proposals-count-error-label'),
-            okText: $filter('translate')('error-alert-popup-ok-button-label'),
-            okType: 'button-assertive' 
-        });
-      }
-
-  ).finally(
-      function finallyCallback(callback, notifyCallback){
-        // initialize the map (with or without data about proposals' count)
-        infoWindowArray = initialize($scope.proposalsCountByZones, $scope);
-      }
-  );
-
-});
-
-
-
-
-myApp.directive('ionToggleText', function () {
-  var $ = angular.element;
-  return {
-    restrict: 'A',
-    link: function ($scope, $element, $attrs) {
-      // Try to figure out what text values we're going to use 
-      var textOn = $attrs.ngTrueValue || "EU",
-          textOff = $attrs.ngFalseValue || 'ES';
-      if ($attrs.ionToggleText) {
-        var x = $attrs.ionToggleText.split(';');
-        if (x.length === 2) {
-          textOn = x[0] || textOn;
-          textOff = x[1] || textOff;
-        }
-      }
-      textOn = textOn.replace(/'/g, "");
-      textOff = textOff.replace(/'/g, "");
-
-      // Create the text elements
-      var $handleTrue = $("<div class='handle-text handle-text-true'>" + textOn + "</div>"),
-          $handleFalse = $('<div class="handle-text handle-text-false">' + textOff + '</div>');
-      var label = $element.find('label');
-
-      if (label.length) {
-        label.addClass('toggle-text');
-        // Locate both the track and handle elements
-        var $divs = label.find('div'), $track, $handle;
-        angular.forEach($divs, function (div) {
-          var $div = $(div);
-          if ($div.hasClass('handle')) {
-            $handle = $div;
-          } else if ($div.hasClass('track')) {
-            $track = $div;
-          }
-        });
-
-        if ($handle && $track) {
-          // Append the text elements
-          $handle.append($handleTrue);
-          $handle.append($handleFalse);
-          // Grab the width of the elements
-          var wTrue = $handleTrue[0].offsetWidth,
-              wFalse = $handleFalse[0].offsetWidth;
-          // Adjust the offset of the left element
-          $handleTrue.css('left', '-' + (wTrue + 10) + 'px');
-          // Ensure that the track element fits the largest text
-          var wTrack = Math.max(wTrue, wFalse);
-          $track.css('width', (wTrack + 60) + 'px');
-        }
-      }
-
-    }
-  };
-});

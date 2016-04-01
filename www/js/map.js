@@ -2,10 +2,12 @@
 /*
     Returns an array of markers identified by zone (id) 
 */
-function initialize(proposalsCountByZones, $scope){
+//function initialize(proposalsCountByZones, $scope){
+function initialize($scope){
+    
     var infoWindow = new google.maps.InfoWindow();
     var options = {
-        zoom: 10, 
+        zoom: 5, 
         center: new google.maps.LatLng(43.263606, -2.935214), // Plaza de Don Federico Moyúa, Bilbao
         mapTypeId: google.maps.MapTypeId.MAP
     };
@@ -14,6 +16,7 @@ function initialize(proposalsCountByZones, $scope){
     var limits = new google.maps.LatLngBounds();
 
     var infoWindowArray = new Array();
+    /*
     angular.forEach(zones, function (zone) {         
         zone.position = new google.maps.LatLng(zone.latitude, zone.longitude);
         var marker = new google.maps.Marker({
@@ -43,7 +46,7 @@ function initialize(proposalsCountByZones, $scope){
             if($scope.currentMarkerZoneId == zone.id) $scope.currentMarkerZoneId = null;
         });
         limits.extend(zone.position);
-    });
+    });*/
 
     map.fitBounds(limits);
     
@@ -58,7 +61,7 @@ function initialize(proposalsCountByZones, $scope){
 
 
 // returns the content of currentInfo windo based on selected language
-function getInfoWindowContent(currentMarkerZoneId, currentMarkerTitle, proposalsCountByZones, 
+/*function getInfoWindowContent(currentMarkerZoneId, currentMarkerTitle, proposalsCountByZones, 
     proposalLabelSing, proposalLabelPlu){
     // get proposals' count of zone (and link to proposals' list if neccesary)
     var proposalsCountOfZoneArray = [];
@@ -87,6 +90,6 @@ function getInfoWindowContent(currentMarkerZoneId, currentMarkerTitle, proposals
         proposalCountInfo = proposalsCountOfZone + " " + proposalLabelPlu;
     }
     return "<p style='text-align:center'>" + currentMarkerTitle + "<br />(" + proposalCountInfo + ")</p>";
-};
+};*/
 
 //google.maps.event.addDomListener(window, 'load', initialize);
