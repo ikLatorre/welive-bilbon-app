@@ -23,7 +23,7 @@ myApp.factory('LoginService', function(localStorageService){
 
 
 myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $translate, $ionicHistory, $ionicPopup, 
-  $filter, LoginService) {
+  $filter, LoginService, $http) {
 
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
@@ -54,81 +54,129 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
   });
   // Define functionality for menu's categories' item (toggle element)
   $scope.toggleCategories = function(categoryFilter) {
-    if ($scope.isCategoriesShown(categoryFilter)) {
+    if ($scope.isCategoriesShown(categoryFilter)) 
       $scope.shownGroup = null;
-    } else {
+    else 
       $scope.shownGroup = categoryFilter;
-    }
   };
   $scope.isCategoriesShown = function(categoryFilter) {
     return $scope.shownGroup === categoryFilter;
   };
-  
+  // watch category selection
+  $scope.$watchCollection('categoryFilter.categories', 
+    function(newValues, oldValues) { 
+      angular.forEach(oldValues, function(item, key){
+        // 'key' is the item's identifier in the array (0..N-1). the identifiers of categories starts with 1 (1..n)
+        if(newValues[key] != null && oldValues[key] !== newValues[key]){
+          if(newValues[key] == true) $scope.selectCategory(key-1, true);
+          else $scope.selectCategory(key-1, false);
+        }
+      });
+    }, 
+    true
+  );
+
+
+  // 'id': category identifier (1..n)
+  $scope.selectCategory = function(id, value){
+    if(value == true){
+      console.log("SELECTED '" + $scope.translatedCategories[id].label + "'");
+      $scope.callDatasetCategories(id);
+    } else{
+      console.log("UNSELECTED '" + $scope.translatedCategories[id].label + "'");
+    }
+  }
+
+  $scope.loadMarkers = function(categoryItemsFromDataset){
+    console.log(categoryItemsFromDataset.count, categoryItemsFromDataset);
+    angular.forEach(categoryItemsFromDataset.rows, function(item, key){
+      /*var coordinatesLatLng =  item.latitudelongitude.split(",");
+      console.log(coordinatesLatLng[0], coordinatesLatLng[1], typeof coordinatesLatLng[0]);
+      var latitude = Number(coordinatesLatLng[0]);
+      var longitude = Number(coordinatesLatLng[1]);
+      console.log(typeof coordinatesLatLng[0]);*/
+      /*var marker = new google.maps.Marker({
+            position: new google.maps.LatLng(Number(coordinatesLatLng[0]), Number(coordinatesLatLng[1])),// place[i],
+            map: map,
+            title: item.documentName,
+            icon: 'img/pin.png',
+            animation : google.maps.Animation.DROP
+      });*/
+      //console.log('aqui');
+      //google.maps.event.addListener(marker, 'click', function(){
+
+          // load marker's infoWindow's content
+          /*var infoWindowContent = getInfoWindowContent(zone.id, this.title, proposalsCountByZones, 
+              $scope.proposalLabel_sing, $scope.proposalLabel_plu);
+          infoWindow.setContent(infoWindowContent);
+          infoWindow.open(map, this);
+
+          infoWindowArray[zone.id] = infoWindow; // add marker's infoWindow to the array
+          // set current marker's infoWindow's data to use in MapCtrl if language changes
+          $scope.currentMarkerZoneId = zone.id; 
+          $scope.currentMarkerTitle = this.title;*/
+
+      //});
+    });
+  }
+
+  $scope.callDatasetCategories = function(id){
+    var response = null;
+      $http({
+      method: 'POST',
+      url: 'https://dev.welive.eu/dev/api/dataset/' +
+        'restaurantes-sidrerias-y-bodegas-de-euskadi/resource/08560d52-c8ca-484b-9797-13309f056564/query',
+      //headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      data: 'SELECT * FROM rootTable WHERE municipalityCode = 480020;',
+      timeout: 10000
+    }).then(function successCallback(successCallback) {
+          // this callback will be called asynchronously when the successCallback is available
+          //console.log(successCallback.data);
+          response = successCallback.data;
+          console.log('ok');
+        }, function errorCallback(errorCallback) {
+          $ionicPopup.alert({
+              title: 'Error',
+              template: 'Error al obtener POIs de una categoría.',
+              okText: 'OK',
+              okType: 'button-assertive' 
+          });
+        }
+
+    ).finally(
+        function finallyCallback(callback, notifyCallback){
+          //console.log('ERROR ' + callback);
+          $scope.loadMarkers(response);
+          // initialize the map (with or without data about proposals' count)
+          //infoWindowArray = initialize($scope.proposalsCountByZones, $scope);
+        }
+    );
+  }
+
+
+
 
   // Configure language changing (UI's switch and $translate's language)
   $scope.selectedLang = false; // false: es_ES | true: eu_ES
   $scope.changeLang = function() {
-
-    /*$timeout(function() {
-       
-      if ($scope.selectedLang == false) {
-          $scope.translatedCategories = $scope.basqueCategoriesArray; // change language of menu's items of categories
-      } else{
-          $scope.translatedCategories = $scope.spanishCategoriesArray;  
-      } 
-    }, 500)
-    .then(function(){
-          
-        if ($scope.selectedLang == false) {
-            $scope.selectedLang = true;
-            $scope.switchLanguage('eu_ES');
-            
-        } else{
-            $scope.selectedLang = false;
-            $scope.switchLanguage('es_ES');
-        }
-      }
-    );*/
-
     if ($scope.selectedLang == false) {
         $scope.selectedLang = true;
-        //$scope.translatedCategories = $scope.basqueCategoriesArray; // change language of menu's items of categories
         $scope.switchLanguage('eu_ES');
         
     } else{
         $scope.selectedLang = false;
-        //$scope.translatedCategories = $scope.spanishCategoriesArray;
         $scope.switchLanguage('es_ES');
-        
     }
   };
   $scope.switchLanguage = function (key) {
-      $translate.use(key).then(
-          function() {
-            //$scope.translatedCategories = [];
-            //cambiarCategorias();
-            //console.log("hecho then");
-          }
-        ).then(
-          function() {
-            //cambiarCategorias();
-          }
-        );
+      $translate.use(key);
   }; 
-
-  $rootScope.$on('$translateChangeEnd', function() { //translateChangeEnd | $translateLoadingEnd
-    cambiarCategorias();
-    //console.log("ya");
+  $rootScope.$on('$translateChangeEnd', function() { 
+    if ($translate.use() == 'eu_ES')
+      $scope.translatedCategories = $scope.basqueCategoriesArray; // change language of menu's items of categories
+    else
+      $scope.translatedCategories = $scope.spanishCategoriesArray;
   });
-
-  function cambiarCategorias() {
-    if ($translate.use() == 'eu_ES') {
-        $scope.translatedCategories = $scope.basqueCategoriesArray; // change language of menu's items of categories
-    } else{
-        $scope.translatedCategories = $scope.spanishCategoriesArray;
-    }
-  }
-
   
   $scope.loginData = {}; // initialize form data for the login modal
   //LoginService.removeUserData(); 

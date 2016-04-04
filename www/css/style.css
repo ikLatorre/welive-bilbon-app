@@ -519,11 +519,14 @@ input[type="checkbox"] + .track .handle .handle-text-false {
 
 
 /* Bilbon */
+
+/* Menu. Categories' list */
 .list .item.item-accordion {
   line-height: 38px;
   padding-top: 0;
   padding-bottom: 0;
-  transition: 0.09s all linear;
+  /*transition: 0.09s all linear;*/
+  transition: none; /* Avoid to load all items in ng-repeat before showing the selected ones */
 }
 .list .item.item-accordion.ng-hide {
   line-height: 0px;
@@ -532,26 +535,7 @@ input[type="checkbox"] + .track .handle .handle-text-false {
 .list .item.item-accordion.ng-hide-remove {
   display: block !important;
 }
-
-
-
-#container {
-  width: 100px;
-  height: 100px;
-  position: relative;
-}
-#navi,
-#infoi {
-  /*width: 100%;
-  height: 100%;*/
-  position: absolute;
-  top: 9%;
-  right: 1%;
-}
-#infoi {
-  z-index: 10;
-}
-
+/* /Menu. Categories' list */
 
 /* New POI button */
 /*$assertive :#ef473a;*/
@@ -578,3 +562,19 @@ input[type="checkbox"] + .track .handle .handle-text-false {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4) !important;
     background: darken(#ef473a, 10%) !important;
 }
+/*#container {
+  width: 100px;
+  height: 100px;
+  position: relative;
+}*/
+#mapa-new-button {
+  /*width: 100%;
+  height: 100%;*/
+  position: absolute;
+  top: 9%;
+  right: 1%;
+}
+#mapa-new-button {
+  z-index: 10;
+}
+/* /New POI button */
