@@ -13,6 +13,7 @@ function initialize($scope){
     };
     
     var map = new google.maps.Map(document.getElementById('mapa'), options);
+    $scope.map = map;
     //var limits = new google.maps.LatLngBounds();
 
     var infoWindowArray = new Array();
@@ -56,7 +57,7 @@ function initialize($scope){
         map.setCenter(center);
     });
     
-    return infoWindowArray;
+    return map;// infoWindowArray;
 };
 
 

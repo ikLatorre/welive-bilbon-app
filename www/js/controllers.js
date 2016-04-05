@@ -35,7 +35,7 @@ myApp.factory('ionicReady', function($ionicPlatform) {
 
 
 myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $translate, $ionicHistory, $ionicPopup, 
-  $filter, LoginService, $http, $cordovaGeolocation, $ionicPlatform, $ionicPopup, ionicReady) {
+  $filter, LoginService, $http, $cordovaGeolocation, $ionicPlatform, $ionicPopup, ionicReady, $ionicLoading) {
 
   $scope.prueba = 'es null';
 
@@ -322,10 +322,19 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
         console.log('Error con geolocation');
       });
   });*/
-    $timeout(function() {
+    //$timeout(function() {
+    /*ionic.Platform.ready(function(){
       $scope.prueba = 'Buscando coord. GPS...';
-      var posOptions = {timeout: 10000, enableHighAccuracy: false};
+
+      //var posOptions = {timeout: 10000, enableHighAccuracy: false};
+      var posOptions = {
+            enableHighAccuracy: false,
+            timeout: 20000,
+            maximumAge: 0
+        };
+
       $cordovaGeolocation
+      //navigator.geolocation
         .getCurrentPosition(posOptions)
         .then(function (position) {
           var lat  = position.coords.latitude
@@ -349,7 +358,57 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
         .finally(function() {
           $scope.prueba = 'Fin de acceso a GPS.';
         });
-    }, 8000);
+    //}, 6000);
+    });*/
+    $ionicPlatform.ready(function() {    
+        $scope.prueba = 'Buscando coord. GPS...';
+        $ionicLoading.show({
+            template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Analizando GPS...'
+        });
+         
+        var posOptions = {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
+        };
+ 
+        $cordovaGeolocation.getCurrentPosition(posOptions).then(function (position) {
+            var lat  = position.coords.latitude;
+            var lng = position.coords.longitude;
+             
+            var myLatlng = new google.maps.LatLng(lat, lng);
+            var myPopup = $ionicPopup.show({
+              template: '<center>Coordenadas GPS: ' + lat + ', ' + lng + '</center>',
+              cssClass: 'custom-class custom-class-popup'
+            });
+            $timeout(function() { myPopup.close(); }, 1800);
+            /*var mapOptions = {
+                center: myLatlng,
+                zoom: 16,
+                icon: 'img/pin.png',
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };   */   
+            //$scope.map.setCenter(myLatlng);    
+
+             
+            //var map = new google.maps.Map(document.getElementById("mapa"), mapOptions);          
+             
+            //$scope.map = map;   
+            $ionicLoading.hide();           
+             
+        }, function(err) {
+            $ionicLoading.hide();
+            var myPopup = $ionicPopup.show({
+              template: '<center>Error:' + err.message + '</center>',
+              cssClass: 'custom-class custom-class-popup'
+            });
+            $timeout(function() { myPopup.close(); }, 1800);
+            console.log('Error con geolocation', err);
+        })
+        .finally(function() {
+          $scope.prueba = 'Fin de acceso a GPS.';
+        });;
+    } );
  
   
 });
@@ -433,7 +492,7 @@ myApp.controller('MapCtrl', function($scope, $state, $ionicPopup, $window, $filt
         infoWindowArray = initialize($scope.proposalsCountByZones, $scope);
       }
   );*/
-  infoWindowArray = initialize($scope);
+  initialize($scope);
 
 });
 
