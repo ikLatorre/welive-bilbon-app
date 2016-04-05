@@ -20,10 +20,24 @@ myApp.factory('LoginService', function(localStorageService){
 });
 
 
+myApp.factory('ionicReady', function($ionicPlatform) {
+  var readyPromise;
+
+  return function () {
+    if (!readyPromise) {
+      readyPromise = $ionicPlatform.ready();
+    }
+    return readyPromise;
+  };
+});
+
+
 
 
 myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $translate, $ionicHistory, $ionicPopup, 
-  $filter, LoginService, $http) {
+  $filter, LoginService, $http, $cordovaGeolocation, $ionicPlatform, $ionicPopup, ionicReady) {
+
+  $scope.prueba = 'es null';
 
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
@@ -270,6 +284,73 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
         $ionicHistory.clearCache().then(function(){ $state.go('app.map')});
     }
   };
+
+
+  $scope.prueba = 'Esperando carga de dispositivo...';
+  //$ionicPlatform.ready(function() {
+  /* ionicReady().then(function() {
+    // Stuff to do when the platform is finally ready.
+    $scope.prueba = 'despues de ionicReady';
+    //$cordovaPlugin.someFunction().then(success, error);
+    var myPopup = $ionicPopup.show({
+        template: '<center>$ionicPlatform.ready finished</center>',
+        cssClass: 'custom-class custom-class-popup'
+      });
+    $timeout(function() { myPopup.close(); }, 1800);
+
+   
+    var posOptions = {timeout: 10000, enableHighAccuracy: false};
+    $cordovaGeolocation
+      .getCurrentPosition(posOptions)
+      .then(function (position) {
+        var lat  = position.coords.latitude
+        var lng = position.coords.longitude
+
+         var myPopup = $ionicPopup.show({
+            template: '<center>Coordenadas GPS: ' + lat + ', ' + lng + '</center>',
+            cssClass: 'custom-class custom-class-popup'
+          });
+        $timeout(function() { myPopup.close(); }, 1800);
+        //console.log('Coordenadas encontradas: ', lat, lng);
+      }, function(err) {
+        // error
+        var myPopup = $ionicPopup.show({
+            template: '<center>Error al obtener coordenadas GPS</center>',
+            cssClass: 'custom-class custom-class-popup'
+          });
+        $timeout(function() { myPopup.close(); }, 1800);
+        console.log('Error con geolocation');
+      });
+  });*/
+    $timeout(function() {
+      $scope.prueba = 'Buscando coord. GPS...';
+      var posOptions = {timeout: 10000, enableHighAccuracy: false};
+      $cordovaGeolocation
+        .getCurrentPosition(posOptions)
+        .then(function (position) {
+          var lat  = position.coords.latitude
+          var lng = position.coords.longitude
+
+           var myPopup = $ionicPopup.show({
+              template: '<center>Coordenadas GPS: ' + lat + ', ' + lng + '</center>',
+              cssClass: 'custom-class custom-class-popup'
+            });
+          $timeout(function() { myPopup.close(); }, 1800);
+          //console.log('Coordenadas encontradas: ', lat, lng);
+        }, function(err) {
+          // error
+          var myPopup = $ionicPopup.show({
+              template: '<center>Error:' + err.message + '</center>',
+              cssClass: 'custom-class custom-class-popup'
+            });
+          $timeout(function() { myPopup.close(); }, 1800);
+          console.log('Error con geolocation', err);
+        })
+        .finally(function() {
+          $scope.prueba = 'Fin de acceso a GPS.';
+        });
+    }, 8000);
+ 
   
 });
 
@@ -912,7 +993,7 @@ myApp.controller('POICtrl', function($scope, $state, $stateParams, $filter, $htt
 
 
 
-myApp.directive('ionToggleText', function () {
+myApp.directive('ionToggleText', function (ionicReady, $ionicPopup, $timeout) {
   var $ = angular.element;
   return {
     restrict: 'A',
