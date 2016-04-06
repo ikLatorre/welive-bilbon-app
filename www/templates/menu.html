@@ -18,6 +18,7 @@
     </ion-header-bar>
     <ion-content>
       <ion-list>
+        <!--
         <ion-item class="item-text-wrap" ng-show="getCurrentUserId() == null" menu-close ui-sref="app.login">
           <i class="icon ion-log-in"></i>
           {{ 'menu.login-item' | translate }}
@@ -26,10 +27,11 @@
           <i class="icon ion-log-out"></i>
           {{ 'menu.logout-item' | translate }}
         </ion-item>
-        <ion-item class="item-text-wrap" menu-close ng-click="reloadMap()"> <!--ui-sref="app.map">-->
+        <ion-item class="item-text-wrap" menu-close ng-click="reloadMap()"> <!--ui-sref="app.map">- ->
           <i class="icon ion-ios-location"></i>
           {{ 'menu.map-item' | translate }} 
         </ion-item>
+        -->
 
         <ion-item ng-click="toggleCategories(categoryFilter)" ng-class="{active: isCategoriesShown(categoryFilter)}">
           {{ 'menu.categories-item' | translate }} &nbsp;

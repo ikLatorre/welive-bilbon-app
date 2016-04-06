@@ -20,7 +20,9 @@ myApp.factory('LoginService', function(localStorageService){
 });
 
 
-myApp.factory('ionicReady', function($ionicPlatform) {
+
+
+/*myApp.factory('ionicReady', function($ionicPlatform) {
   var readyPromise;
 
   return function () {
@@ -29,15 +31,13 @@ myApp.factory('ionicReady', function($ionicPlatform) {
     }
     return readyPromise;
   };
-});
+});*/
 
 
 
 
 myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $translate, $ionicHistory, $ionicPopup, 
-  $filter, LoginService, $http, $cordovaGeolocation, $ionicPlatform, $ionicPopup, ionicReady, $ionicLoading) {
-
-  $scope.prueba = 'es null';
+  $filter, LoginService, $http, $cordovaGeolocation, $ionicPopup, $ionicPlatform, $ionicLoading) {
 
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
@@ -45,14 +45,14 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
   // listen for the $ionicView.enter event:
   //$scope.$on('$ionicView.enter', function(e) {
   //});
- 
-  // Configure language of categories' array to use in the corresponding combobox/lists
-  $scope.translatedCategories = []; // this variable will contain categories' list in the current language (used in ng-options)
-  $scope.spanishCategoriesArray = [];
-  $scope.basqueCategoriesArray = [];
 
   $scope.categoryFilter = {}; // store model's categories' filter
   $scope.categoryFilter.categories = []; // store categories' selection's value (false | true)
+ 
+  // Configure language of categories' array to use in the corresponding combobox/lists
+  $scope.translatedCategories = []; // this variable will contain categories' list in the current language (used in ng-repeat)
+  $scope.spanishCategoriesArray = [];
+  $scope.basqueCategoriesArray = [];
 
   // Build spanish categories' array
   angular.forEach(categories, function(item){
@@ -92,8 +92,9 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
 
 
   // 'id': category identifier (1..n)
-  $scope.selectCategory = function(id, value){
-    if(value == true){
+  $scope.selectCategory = function(id, checked){
+    console.log('id', id);
+    if(checked){
       console.log("SELECTED '" + $scope.translatedCategories[id].label + "'");
       $scope.callDatasetCategories(id);
     } else{
@@ -279,52 +280,15 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
   };
   */
   // Reload map when clicking 'Map' menu item
-  $scope.reloadMap = function(){
+  /*$scope.reloadMap = function(){
     if($state.current.name != 'app.map'){
         $ionicHistory.clearCache().then(function(){ $state.go('app.map')});
     }
-  };
+  };*/
 
 
-  $scope.prueba = 'Esperando carga de dispositivo...';
-  //$ionicPlatform.ready(function() {
-  /* ionicReady().then(function() {
-    // Stuff to do when the platform is finally ready.
-    $scope.prueba = 'despues de ionicReady';
-    //$cordovaPlugin.someFunction().then(success, error);
-    var myPopup = $ionicPopup.show({
-        template: '<center>$ionicPlatform.ready finished</center>',
-        cssClass: 'custom-class custom-class-popup'
-      });
-    $timeout(function() { myPopup.close(); }, 1800);
-
-   
-    var posOptions = {timeout: 10000, enableHighAccuracy: false};
-    $cordovaGeolocation
-      .getCurrentPosition(posOptions)
-      .then(function (position) {
-        var lat  = position.coords.latitude
-        var lng = position.coords.longitude
-
-         var myPopup = $ionicPopup.show({
-            template: '<center>Coordenadas GPS: ' + lat + ', ' + lng + '</center>',
-            cssClass: 'custom-class custom-class-popup'
-          });
-        $timeout(function() { myPopup.close(); }, 1800);
-        //console.log('Coordenadas encontradas: ', lat, lng);
-      }, function(err) {
-        // error
-        var myPopup = $ionicPopup.show({
-            template: '<center>Error al obtener coordenadas GPS</center>',
-            cssClass: 'custom-class custom-class-popup'
-          });
-        $timeout(function() { myPopup.close(); }, 1800);
-        console.log('Error con geolocation');
-      });
-  });*/
     //$timeout(function() {
     /*ionic.Platform.ready(function(){
-      $scope.prueba = 'Buscando coord. GPS...';
 
       //var posOptions = {timeout: 10000, enableHighAccuracy: false};
       var posOptions = {
@@ -356,12 +320,13 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
           console.log('Error con geolocation', err);
         })
         .finally(function() {
-          $scope.prueba = 'Fin de acceso a GPS.';
         });
     //}, 6000);
     });*/
-    $ionicPlatform.ready(function() {    
-        $scope.prueba = 'Buscando coord. GPS...';
+    
+
+    /*ionic.Platform.ready(function(){
+    //$ionicPlatform.ready(function() {    
         $ionicLoading.show({
             template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Analizando GPS...'
         });
@@ -377,25 +342,13 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
             var lng = position.coords.longitude;
              
             var myLatlng = new google.maps.LatLng(lat, lng);
+
+            $ionicLoading.hide();  
             var myPopup = $ionicPopup.show({
               template: '<center>Coordenadas GPS: ' + lat + ', ' + lng + '</center>',
               cssClass: 'custom-class custom-class-popup'
             });
             $timeout(function() { myPopup.close(); }, 1800);
-            /*var mapOptions = {
-                center: myLatlng,
-                zoom: 16,
-                icon: 'img/pin.png',
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-            };   */   
-            //$scope.map.setCenter(myLatlng);    
-
-             
-            //var map = new google.maps.Map(document.getElementById("mapa"), mapOptions);          
-             
-            //$scope.map = map;   
-            $ionicLoading.hide();           
-             
         }, function(err) {
             $ionicLoading.hide();
             var myPopup = $ionicPopup.show({
@@ -406,9 +359,27 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
             console.log('Error con geolocation', err);
         })
         .finally(function() {
-          $scope.prueba = 'Fin de acceso a GPS.';
-        });;
-    } );
+          //$scope.prueba = 'Fin de acceso a GPS.';
+        });
+    } );*/
+
+
+    /*$timeout(function() {
+      console.log($ionicPlatform.ready());
+      $ionicPlatform.ready().then(function(){
+        alert('ionic.Platform.ready');
+      });
+    }, 2000);*/
+    $scope.prueba = ' no ok';
+    ionic.Platform.ready(function(){
+      $scope.prueba = ' ok';
+      // will execute when device is ready, or immediately if the device is already ready.
+    });
+
+   /* ionic.Platform.ready(function(){
+      alert('ionic.Platform.ready');
+    } );*/
+    //alert('despues');
  
   
 });
@@ -1052,7 +1023,7 @@ myApp.controller('POICtrl', function($scope, $state, $stateParams, $filter, $htt
 
 
 
-myApp.directive('ionToggleText', function (ionicReady, $ionicPopup, $timeout) {
+myApp.directive('ionToggleText', function () {
   var $ = angular.element;
   return {
     restrict: 'A',
