@@ -33,12 +33,12 @@
         </ion-item>
         -->
 
-        <ion-item ng-click="toggleCategories(categoryFilter)" ng-class="{active: isCategoriesShown(categoryFilter)}">
+        <ion-item ng-click="toggleCategories(filter)" ng-class="{active: isCategoriesShown(filter,filter.showCategories)}">
           {{ 'menu.categories-item' | translate }} &nbsp;
-          <i class="icon" ng-class="isCategoriesShown(categoryFilter) ? 'ion-arrow-up-b' : 'ion-arrow-down-b'"></i>
+          <i class="icon" ng-class="isCategoriesShown(filter) ? 'ion-arrow-up-b' : 'ion-arrow-down-b'"></i>
         </ion-item>
-          <ion-item class="item-accordion" ng-repeat="category in translatedCategories" ng-show="isCategoriesShown(categoryFilter)">
-            <ion-checkbox class="checkbox-assertive item-text-wrap" ng-model="categoryFilter.categories[category.id]">{{category.label}}</ion-checkbox>
+          <ion-item class="item-accordion" ng-repeat="category in translatedCategories" ng-show="isCategoriesShown(filter)">
+            <ion-checkbox class="checkbox-assertive item-text-wrap" ng-model="filter.categories[category.id]">{{category.label}}</ion-checkbox>
           </ion-item>
 
         <ion-item class="item-text-wrap" menu-close ui-sref="app.about">

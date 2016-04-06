@@ -46,8 +46,10 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
   //$scope.$on('$ionicView.enter', function(e) {
   //});
 
-  $scope.categoryFilter = {}; // store model's categories' filter
-  $scope.categoryFilter.categories = []; // store categories' selection's value (false | true)
+  // filter's model
+  $scope.filter = {}; 
+  $scope.filter.categories = []; // store categories' selection's value (false | true)
+  $scope.filter.showCategories = false;
  
   // Configure language of categories' array to use in the corresponding combobox/lists
   $scope.translatedCategories = []; // this variable will contain categories' list in the current language (used in ng-repeat)
@@ -58,7 +60,7 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
   angular.forEach(categories, function(item){
       $scope.spanishCategoriesArray.push({id:item.id, datasetId:item.datasetId, jsonId:item.jsonId, 
         label:item.es_ES, img_src:item.img_src}); 
-      $scope.categoryFilter.categories[item.id] = false; // initialize model's categories to false (checkbox selection)
+      $scope.filter.categories[item.id] = false; // initialize model's categories to false (checkbox selection)
   });
   $scope.translatedCategories = $scope.spanishCategoriesArray; // initialize categories' language to spanish
   // Build basque categories' array
@@ -66,6 +68,7 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
       $scope.basqueCategoriesArray.push({id:item.id, datasetId:item.datasetId, jsonId:item.jsonId, 
         label:item.eu_ES, img_src:item.img_src});  
   });
+
   // Define functionality for menu's categories' item (toggle element)
   $scope.toggleCategories = function(categoryFilter) {
     if ($scope.isCategoriesShown(categoryFilter)) 
@@ -73,11 +76,14 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
     else 
       $scope.shownGroup = categoryFilter;
   };
-  $scope.isCategoriesShown = function(categoryFilter) {
+  $scope.isCategoriesShown = function(categoryFilter, show) {
+    console.log('toggleCategories. show: ', show);
+    $scope.filter.showCategories = true;
+
     return $scope.shownGroup === categoryFilter;
   };
   // watch category selection
-  $scope.$watchCollection('categoryFilter.categories', 
+  $scope.$watchCollection('filter.categories', 
     function(newValues, oldValues) { 
       angular.forEach(oldValues, function(item, key){
         // 'key' is the item's identifier in the array (0..N-1). the identifiers of categories starts with 1 (1..n)
@@ -89,18 +95,17 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
     }, 
     true
   );
-
-
   // 'id': category identifier (1..n)
   $scope.selectCategory = function(id, checked){
     console.log('id', id);
     if(checked){
       console.log("SELECTED '" + $scope.translatedCategories[id].label + "'");
-      $scope.callDatasetCategories(id);
+      //$scope.callDatasetCategories(id);
     } else{
       console.log("UNSELECTED '" + $scope.translatedCategories[id].label + "'");
     }
   }
+
 
   $scope.loadMarkers = function(categoryItemsFromDataset){
     console.log(categoryItemsFromDataset.count, categoryItemsFromDataset);
@@ -139,9 +144,10 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
     var response = null;
       $http({
       method: 'POST',
-      url: 'https://dev.welive.eu/dev/api/dataset/' +
+      url: 'https://dev.welive.eu/dev/api/ods/' +
         'restaurantes-sidrerias-y-bodegas-de-euskadi/resource/08560d52-c8ca-484b-9797-13309f056564/query',
       //headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      headers: {'Authorization': 'Bearer <token>'},
       data: 'SELECT * FROM rootTable WHERE municipalityCode = 480020;',
       timeout: 10000
     }).then(function successCallback(successCallback) {
@@ -150,6 +156,7 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
           response = successCallback.data;
           console.log('ok');
         }, function errorCallback(errorCallback) {
+          console.log('ERROR ' + errorCallback);
           $ionicPopup.alert({
               title: 'Error',
               template: 'Error al obtener POIs de una categoría.',
@@ -160,7 +167,6 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
 
     ).finally(
         function finallyCallback(callback, notifyCallback){
-          //console.log('ERROR ' + callback);
           $scope.loadMarkers(response);
           // initialize the map (with or without data about proposals' count)
           //infoWindowArray = initialize($scope.proposalsCountByZones, $scope);
@@ -370,11 +376,12 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
         alert('ionic.Platform.ready');
       });
     }, 2000);*/
-    $scope.prueba = ' no ok';
+
+    /*$scope.prueba = ' no ok';
     ionic.Platform.ready(function(){
       $scope.prueba = ' ok';
       // will execute when device is ready, or immediately if the device is already ready.
-    });
+    });*/
 
    /* ionic.Platform.ready(function(){
       alert('ionic.Platform.ready');
