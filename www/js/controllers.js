@@ -22,6 +22,22 @@ myApp.factory('LoginService', function(localStorageService){
 
 
 
+myApp.factory('Map', function() {
+  var map;
+
+  return {
+      getMap: function(){
+        return map;
+      },
+      setMap: function(mapObj){
+        map = mapObj;
+      }
+  }
+});
+
+
+
+
 /*myApp.factory('ionicReady', function($ionicPlatform) {
   var readyPromise;
 
@@ -37,7 +53,7 @@ myApp.factory('LoginService', function(localStorageService){
 
 
 myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $translate, $ionicHistory, $ionicPopup, 
-  $filter, LoginService, $http, $cordovaGeolocation, $ionicPopup, $ionicPlatform, $ionicLoading) {
+  $filter, LoginService, Map, $http, $cordovaGeolocation, $ionicPopup, $ionicPlatform, $ionicLoading) {
 
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
@@ -77,7 +93,7 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
       $scope.shownGroup = categoryFilter;
   };
   $scope.isCategoriesShown = function(categoryFilter, show) {
-    console.log('toggleCategories. show: ', show);
+    //console.log('toggleCategories. show: ', show);
     $scope.filter.showCategories = true;
 
     return $scope.shownGroup === categoryFilter;
@@ -100,43 +116,52 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
     console.log('id', id);
     if(checked){
       console.log("SELECTED '" + $scope.translatedCategories[id].label + "'");
-      //$scope.callDatasetCategories(id);
+      $scope.callDatasetCategories(id);
     } else{
       console.log("UNSELECTED '" + $scope.translatedCategories[id].label + "'");
     }
   }
 
 
+  /**** Al iniciar la app, hacer que se hagan las llamadas a dataset despues de terminar inicialización del mapa (promise?) ****/
   $scope.loadMarkers = function(categoryItemsFromDataset){
     console.log(categoryItemsFromDataset.count, categoryItemsFromDataset);
     angular.forEach(categoryItemsFromDataset.rows, function(item, key){
-      /*var coordinatesLatLng =  item.latitudelongitude.split(",");
-      console.log(coordinatesLatLng[0], coordinatesLatLng[1], typeof coordinatesLatLng[0]);
+      var coordinatesLatLng =  item.latitudelongitude.split(",");
+      //console.log(coordinatesLatLng[0], coordinatesLatLng[1], typeof coordinatesLatLng[0]);
       var latitude = Number(coordinatesLatLng[0]);
       var longitude = Number(coordinatesLatLng[1]);
-      console.log(typeof coordinatesLatLng[0]);*/
-      /*var marker = new google.maps.Marker({
-            position: new google.maps.LatLng(Number(coordinatesLatLng[0]), Number(coordinatesLatLng[1])),// place[i],
-            map: map,
+      //console.log(typeof coordinatesLatLng[0], typeof latitude, latitude);
+
+      //console.log('aqui, $scope.map: ', $scope.map);
+      var marker = new google.maps.Marker({
+            position: new google.maps.LatLng(latitude, longitude),// place[i],
+            map: Map.getMap(),
             title: item.documentName,
             icon: 'img/pin.png',
             animation : google.maps.Animation.DROP
-      });*/
-      //console.log('aqui');
-      //google.maps.event.addListener(marker, 'click', function(){
-
+      });
+      
+      var infoWindow = new google.maps.InfoWindow();
+      google.maps.event.addListener(marker, 'click', function(){
           // load marker's infoWindow's content
-          /*var infoWindowContent = getInfoWindowContent(zone.id, this.title, proposalsCountByZones, 
-              $scope.proposalLabel_sing, $scope.proposalLabel_plu);
-          infoWindow.setContent(infoWindowContent);
-          infoWindow.open(map, this);
+          //var infoWindowContent = getInfoWindowContent(zone.id, this.title, proposalsCountByZones, 
+          //    $scope.proposalLabel_sing, $scope.proposalLabel_plu);
+          infoWindow.setContent(item.documentName);
+          infoWindow.open(Map.getMap(), this);
 
-          infoWindowArray[zone.id] = infoWindow; // add marker's infoWindow to the array
+          //infoWindowArray[zone.id] = infoWindow; // add marker's infoWindow to the array
           // set current marker's infoWindow's data to use in MapCtrl if language changes
-          $scope.currentMarkerZoneId = zone.id; 
-          $scope.currentMarkerTitle = this.title;*/
+          //$scope.currentMarkerZoneId = zone.id; 
+          //$scope.currentMarkerTitle = this.title;
 
-      //});
+      });
+      /*google.maps.event.addListener(infoWindow, 'closeclick', function(){
+          // 'closeclick' listener runs for every infoWindow created, so initialize 
+          // $scope.currentMarkerZoneId only once
+          if($scope.currentMarkerZoneId == zone.id) $scope.currentMarkerZoneId = null;
+      });*/
+
     });
   }
 
@@ -147,14 +172,14 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
       url: 'https://dev.welive.eu/dev/api/ods/' +
         'restaurantes-sidrerias-y-bodegas-de-euskadi/resource/08560d52-c8ca-484b-9797-13309f056564/query',
       //headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      headers: {'Authorization': 'Bearer <token>'},
+      headers: { "Content-Type": "text/plain" },
       data: 'SELECT * FROM rootTable WHERE municipalityCode = 480020;',
       timeout: 10000
     }).then(function successCallback(successCallback) {
           // this callback will be called asynchronously when the successCallback is available
           //console.log(successCallback.data);
           response = successCallback.data;
-          console.log('ok');
+          //console.log(response);
         }, function errorCallback(errorCallback) {
           console.log('ERROR ' + errorCallback);
           $ionicPopup.alert({
@@ -377,6 +402,56 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
       });
     }, 2000);*/
 
+    $timeout(function() {
+        var options = {
+          enableHighAccuracy: true,
+          timeout: 50000,
+          maximumAge: 0
+        };
+
+        function success(position) {
+          console.log('position: ', position);
+          var lat  = position.coords.latitude;
+          var lng = position.coords.longitude;
+           
+          var myLatlng = new google.maps.LatLng(lat, lng);
+
+          $ionicLoading.hide();  
+          var myPopup = $ionicPopup.show({
+            template: '<center>Coordenadas GPS: ' + lat + ', ' + lng + '</center>',
+            cssClass: 'custom-class custom-class-popup'
+          });
+          $timeout(function() { myPopup.close(); }, 1800);
+        };
+
+        function error(err) {
+          $ionicLoading.hide(); 
+          var myPopup = $ionicPopup.show({
+            template: '<center>Error ' +  err.code + ': ' + err.message + '</center>',
+            cssClass: 'custom-class custom-class-popup'
+          });
+          $timeout(function() { myPopup.close(); }, 1800);
+          //console.warn('ERROR(' + err.code + '): ' + err.message);
+        };
+
+        //if ("geolocation" in navigator) {
+        if(!navigator.geolocation){
+          var myPopup = $ionicPopup.show({
+            template: '<center>Geolocalización no disponible</center>',
+            cssClass: 'custom-class custom-class-popup'
+          }); 
+          $timeout(function() { myPopup.close(); }, 1800);
+          console.log('geolocaiton IS NOT available');
+        }else{
+          /* geolocation is available */
+          $ionicLoading.show({
+            template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Analizando GPS...'
+          });
+          navigator.geolocation.getCurrentPosition(success, error, options);
+        }
+        
+    }, 8000);
+
     /*$scope.prueba = ' no ok';
     ionic.Platform.ready(function(){
       $scope.prueba = ' ok';
@@ -405,7 +480,7 @@ myApp.controller('RegistryCtrl', function($scope, $state) {
 
 
 
-myApp.controller('MapCtrl', function($scope, $state, $ionicPopup, $window, $filter, $http) {
+myApp.controller('MapCtrl', function($scope, $state, $ionicPopup, Map, $window, $filter, $http) {
 
   // recalculate map's height based on screen's height
   var screenHeight = $window.innerHeight - 105;
@@ -470,8 +545,9 @@ myApp.controller('MapCtrl', function($scope, $state, $ionicPopup, $window, $filt
         infoWindowArray = initialize($scope.proposalsCountByZones, $scope);
       }
   );*/
-  initialize($scope);
-
+  //$scope.map = initialize($scope);
+  Map.setMap(initialize($scope));
+  //console.log('despues initializacion, map: ', $scope.map);
 });
 
 
