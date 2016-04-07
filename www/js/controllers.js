@@ -320,7 +320,7 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
 
 
 
-    $scope.exitApp = function(){
+    /*$scope.exitApp = function(){
       // confirm if user wants to exit the app
       $ionicPopup.confirm({
           title: $filter('translate')('info-confirm-popup-title'),
@@ -338,11 +338,12 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
           $timeout(function() { 
             console.log('App closed');
             $ionicLoading.hide(); 
-            ionic.Platform.exitApp(); //('navigator.app.exitApp();')
+            //ionic.Platform.exitApp(); //('navigator.app.exitApp();')
+            navigator.app.exitApp();
           }, 1800);
         } 
       });
-    }
+    }*/
 
 
     
@@ -359,7 +360,7 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
         //console.log('Inicio de función GPS.');
         var options = {
           enableHighAccuracy: false,
-          timeout: 30000,
+          timeout: 6000,
           maximumAge: 0
         };
 
@@ -380,6 +381,20 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
 
         function error(err) {
           $ionicLoading.hide(); 
+          /*switch(error.code) {
+              case error.PERMISSION_DENIED:
+                  x.innerHTML = "User denied the request for Geolocation."
+                  break;
+              case error.POSITION_UNAVAILABLE:
+                  x.innerHTML = "Location information is unavailable."
+                  break;
+              case error.TIMEOUT:
+                  x.innerHTML = "The request to get user location timed out."
+                  break;
+              case error.UNKNOWN_ERROR:
+                  x.innerHTML = "An unknown error occurred."
+                  break;
+          }*/
           var myPopup = $ionicPopup.show({
             template: '<center>Error ' +  err.code + ': ' + err.message + '</center>',
             cssClass: 'custom-class custom-class-popup'
@@ -388,22 +403,39 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
           //console.warn('ERROR(' + err.code + '): ' + err.message);
         };
 
-        if (!("geolocation" in navigator)) {
-       // if(!navigator.geolocation){
+        // Not supported plugin in Ionic View (http://docs.ionic.io/v1.0/docs/view-usage)
+        /*cordova.plugins.diagnostic.isLocationEnabled(function(enabled){
+          //console.log("Location is " + (enabled ? "enabled" : "disabled"));
+          var myPopup = $ionicPopup.show({
+            template: "Location is " + (enabled ? "enabled" : "disabled"),
+            cssClass: 'custom-class custom-class-popup'
+          }); 
+          $timeout(function() { myPopup.close(); }, 1800);
+        }, function(error){
+          console.error("The following error occurred: "+error);
+          var myPopup = $ionicPopup.show({
+            template: "<center>Error getting location status:</br>"
+              + "'" + error + "'</center>",
+            cssClass: 'custom-class custom-class-popup'
+          }); 
+          $timeout(function() { myPopup.close(); }, 1800);
+        });*/
+
+        // Try HTML5 geolocation.
+        if ("geolocation" in navigator) { // Check if Geolocation is supported (also with 'navigator.geolocation')
+          // geolocation is available
+          $ionicLoading.show({
+            template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Analizando GPS...'
+          });
+         
+          navigator.geolocation.getCurrentPosition(success, error, options);
+        }else{
           var myPopup = $ionicPopup.show({
             template: '<center>Geolocalización no disponible</center>',
             cssClass: 'custom-class custom-class-popup'
           }); 
           $timeout(function() { myPopup.close(); }, 1800);
           console.log('geolocaiton IS NOT available');
-        }else{
-          // geolocation is available
-          $ionicLoading.show({
-            template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Analizando GPS...'
-              //+ '</br>enableHighAccuracy: ' + options.enableHighAccuracy
-          });
-         
-          navigator.geolocation.getCurrentPosition(success, error, options);
         }
     });
   
