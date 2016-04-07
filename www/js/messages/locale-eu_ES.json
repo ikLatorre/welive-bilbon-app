@@ -8,10 +8,13 @@
  "menu.categories-item": "Kategoriak",
  "menu.about-item": "Informazio eta erabilera-baldintzak",
  "menu.language-item": "Hizkuntza",
+ "menu.exit-item": "Irten",
+ "menu.exit-item-text": "Aplikazioa ixten...",
 
-
-
-
+ "info-confirm-popup-title": "Bilbon",
+ "info-confirm-popup-text": "Ziur zaude atera nahi duzula?",
+ "info-confirm-popup-exit-accept-button-label": "Bai",
+ "info-confirm-popup-exit-cancel-button-label": "Ez",
 
 
 
@@ -31,8 +34,7 @@
  "error-alert-popup-title": "Errorea",
  "error-alert-popup-ok-button-label": "Itxi",
  "info-confirm-popup-login-button-label": "Saioa hasi",
- "info-confirm-popup-cancel-button-label": "Itxi",
- "info-alert-popup-logout-label": "Saioa itxi duzu.",
+ "info-alert-popup-logout-label": "Itxi",
  "info-alert-popup-login-label-left": "",
  "info-alert-popup-login-label-right": " bezala saioa ireki duzu.",
 

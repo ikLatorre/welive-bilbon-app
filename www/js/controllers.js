@@ -318,92 +318,45 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
   };*/
 
 
-    //$timeout(function() {
-    /*ionic.Platform.ready(function(){
-
-      //var posOptions = {timeout: 10000, enableHighAccuracy: false};
-      var posOptions = {
-            enableHighAccuracy: false,
-            timeout: 20000,
-            maximumAge: 0
-        };
-
-      $cordovaGeolocation
-      //navigator.geolocation
-        .getCurrentPosition(posOptions)
-        .then(function (position) {
-          var lat  = position.coords.latitude
-          var lng = position.coords.longitude
-
-           var myPopup = $ionicPopup.show({
-              template: '<center>Coordenadas GPS: ' + lat + ', ' + lng + '</center>',
-              cssClass: 'custom-class custom-class-popup'
-            });
-          $timeout(function() { myPopup.close(); }, 1800);
-          //console.log('Coordenadas encontradas: ', lat, lng);
-        }, function(err) {
-          // error
-          var myPopup = $ionicPopup.show({
-              template: '<center>Error:' + err.message + '</center>',
-              cssClass: 'custom-class custom-class-popup'
-            });
-          $timeout(function() { myPopup.close(); }, 1800);
-          console.log('Error con geolocation', err);
-        })
-        .finally(function() {
-        });
-    //}, 6000);
-    });*/
-    
-
-    /*ionic.Platform.ready(function(){
-    //$ionicPlatform.ready(function() {    
-        $ionicLoading.show({
-            template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Analizando GPS...'
-        });
-         
-        var posOptions = {
-            enableHighAccuracy: true,
-            timeout: 10000,
-            maximumAge: 0
-        };
- 
-        $cordovaGeolocation.getCurrentPosition(posOptions).then(function (position) {
-            var lat  = position.coords.latitude;
-            var lng = position.coords.longitude;
-             
-            var myLatlng = new google.maps.LatLng(lat, lng);
-
-            $ionicLoading.hide();  
-            var myPopup = $ionicPopup.show({
-              template: '<center>Coordenadas GPS: ' + lat + ', ' + lng + '</center>',
-              cssClass: 'custom-class custom-class-popup'
-            });
-            $timeout(function() { myPopup.close(); }, 1800);
-        }, function(err) {
-            $ionicLoading.hide();
-            var myPopup = $ionicPopup.show({
-              template: '<center>Error:' + err.message + '</center>',
-              cssClass: 'custom-class custom-class-popup'
-            });
-            $timeout(function() { myPopup.close(); }, 1800);
-            console.log('Error con geolocation', err);
-        })
-        .finally(function() {
-          //$scope.prueba = 'Fin de acceso a GPS.';
-        });
-    } );*/
 
 
-    /*$timeout(function() {
-      console.log($ionicPlatform.ready());
-      $ionicPlatform.ready().then(function(){
-        alert('ionic.Platform.ready');
+    $scope.exitApp = function(){
+      // confirm if user wants to exit the app
+      $ionicPopup.confirm({
+          title: $filter('translate')('info-confirm-popup-title'),
+          template: $filter('translate')('info-confirm-popup-text'),
+          cancelText: $filter('translate')('info-confirm-popup-exit-cancel-button-label'),
+          cancelType: 'button-default',
+          okText: $filter('translate')('info-confirm-popup-exit-accept-button-label'),
+          okType: 'button-assertive'
+      }).then(function(res) { 
+        if(res) {  
+          $ionicLoading.show({
+            template: '<ion-spinner icon="bubbles"></ion-spinner><br/>'
+              + $filter('translate')('menu.exit-item-text')
+          });
+          $timeout(function() { 
+            console.log('App closed');
+            $ionicLoading.hide(); 
+            ionic.Platform.exitApp(); //('navigator.app.exitApp();')
+          }, 1800);
+        } 
       });
-    }, 2000);*/
+    }
 
-    $timeout(function() {
-        console.log('Inicio de función GPS.');
+
+    
+    ionic.Platform.ready(function(){
+        /*var deviceInformation = ionic.Platform.device();
+        var isWebView = ionic.Platform.isWebView();
+        var isIPad = ionic.Platform.isIPad();
+        var isIOS = ionic.Platform.isIOS();
+        var isAndroid = ionic.Platform.isAndroid();
+        var isWindowsPhone = ionic.Platform.isWindowsPhone();
+        var currentPlatform = ionic.Platform.platform();
+        var currentPlatformVersion = ionic.Platform.version();*/
+
+        //console.log('Inicio de función GPS.');
         var options = {
           enableHighAccuracy: false,
           timeout: 30000,
@@ -444,28 +397,15 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
           $timeout(function() { myPopup.close(); }, 1800);
           console.log('geolocaiton IS NOT available');
         }else{
-          /* geolocation is available */
+          // geolocation is available
           $ionicLoading.show({
-            template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Analizando GPS...' +
-              '</br>enableHighAccuracy: ' + options.enableHighAccuracy
+            template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Analizando GPS...'
+              //+ '</br>enableHighAccuracy: ' + options.enableHighAccuracy
           });
          
           navigator.geolocation.getCurrentPosition(success, error, options);
         }
-        
-    }, 8000);
-
-    /*$scope.prueba = ' no ok';
-    ionic.Platform.ready(function(){
-      $scope.prueba = ' ok';
-      // will execute when device is ready, or immediately if the device is already ready.
-    });*/
-
-   /* ionic.Platform.ready(function(){
-      alert('ionic.Platform.ready');
-    } );*/
-    //alert('despues');
- 
+    });
   
 });
 

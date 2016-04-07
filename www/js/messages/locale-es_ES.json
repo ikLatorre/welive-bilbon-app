@@ -8,10 +8,13 @@
  "menu.categories-item": "Categorías",
  "menu.about-item": "Información y términos de uso",
  "menu.language-item": "Idioma",
+ "menu.exit-item": "Salir",
+ "menu.exit-item-text": "Cerrando aplicación...",
 
-
-
-
+ "info-confirm-popup-title": "Bilbon",
+ "info-confirm-popup-text": "¿Está seguro de que desea salir?",
+ "info-confirm-popup-exit-accept-button-label": "Sí",
+ "info-confirm-popup-exit-cancel-button-label": "No",
 
 
 
@@ -31,7 +34,6 @@
  "error-alert-popup-title": "Error",
  "error-alert-popup-ok-button-label": "Cerrar",
  "info-confirm-popup-login-button-label": "Iniciar sesión",
- "info-confirm-popup-cancel-button-label": "Cancelar",
  "info-alert-popup-logout-label": "Ha cerrado la sesión.",
  "info-alert-popup-login-label-left": "Ha iniciado sesión como ",
  "info-alert-popup-login-label-right": ".",

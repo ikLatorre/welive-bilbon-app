@@ -49,6 +49,11 @@
             ng-model="textByValue" ng-model="selectedLang" ng-change="changeLang()">
             {{ 'menu.language-item' | translate }}
           </ion-toggle>
+
+        <ion-item class="item-text-wrap" menu-close ng-click="exitApp()">
+          <i class="icon ion-android-exit"></i>
+          {{ 'menu.exit-item' | translate }} 
+        </ion-item>
       </ion-list>
     </ion-content>
   </ion-side-menu>
