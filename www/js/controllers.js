@@ -403,9 +403,10 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
     }, 2000);*/
 
     $timeout(function() {
+        console.log('Inicio de función GPS.');
         var options = {
-          enableHighAccuracy: true,
-          timeout: 50000,
+          enableHighAccuracy: false,
+          timeout: 30000,
           maximumAge: 0
         };
 
@@ -434,8 +435,8 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
           //console.warn('ERROR(' + err.code + '): ' + err.message);
         };
 
-        //if ("geolocation" in navigator) {
-        if(!navigator.geolocation){
+        if (!("geolocation" in navigator)) {
+       // if(!navigator.geolocation){
           var myPopup = $ionicPopup.show({
             template: '<center>Geolocalización no disponible</center>',
             cssClass: 'custom-class custom-class-popup'
@@ -445,8 +446,10 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
         }else{
           /* geolocation is available */
           $ionicLoading.show({
-            template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Analizando GPS...'
+            template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Analizando GPS...' +
+              '</br>enableHighAccuracy: ' + options.enableHighAccuracy
           });
+         
           navigator.geolocation.getCurrentPosition(success, error, options);
         }
         
