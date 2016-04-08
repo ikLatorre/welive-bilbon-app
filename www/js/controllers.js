@@ -64,8 +64,10 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
 
   // filter's model
   $scope.filter = {}; 
-  $scope.filter.categories = []; // store categories' selection's value (false | true)
-  $scope.filter.showCategories = false;
+  $scope.filter.selectedCategories = []; // store categories' selection's value (false | true)
+  $scope.filter.areCategoriesShown = false; // control sublist of categories
+  $scope.filter.isLocationSelected = false;
+  $scope.filter.isLocationShown = false; // control sublist of location
  
   // Configure language of categories' array to use in the corresponding combobox/lists
   $scope.translatedCategories = []; // this variable will contain categories' list in the current language (used in ng-repeat)
@@ -76,7 +78,7 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
   angular.forEach(categories, function(item){
       $scope.spanishCategoriesArray.push({id:item.id, datasetId:item.datasetId, jsonId:item.jsonId, 
         label:item.es_ES, img_src:item.img_src}); 
-      $scope.filter.categories[item.id] = false; // initialize model's categories to false (checkbox selection)
+      $scope.filter.selectedCategories[item.id] = false; // initialize model's categories to false (checkbox selection)
   });
   $scope.translatedCategories = $scope.spanishCategoriesArray; // initialize categories' language to spanish
   // Build basque categories' array
@@ -86,20 +88,20 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
   });
 
   // Define functionality for menu's categories' item (toggle element)
-  $scope.toggleCategories = function(categoryFilter) {
-    if ($scope.isCategoriesShown(categoryFilter)) 
-      $scope.shownGroup = null;
-    else 
-      $scope.shownGroup = categoryFilter;
+  $scope.toggleCategories = function() {
+    if ($scope.areCategoriesShown()){
+     $scope.filter.areCategoriesShown = false;
+    }
+    else{ 
+      $scope.filter.isLocationShown = false;
+      $scope.filter.areCategoriesShown = true;
+    }
   };
-  $scope.isCategoriesShown = function(categoryFilter, show) {
-    //console.log('toggleCategories. show: ', show);
-    $scope.filter.showCategories = true;
-
-    return $scope.shownGroup === categoryFilter;
+  $scope.areCategoriesShown = function() {
+    return $scope.filter.areCategoriesShown;
   };
   // watch category selection
-  $scope.$watchCollection('filter.categories', 
+  $scope.$watchCollection('filter.selectedCategories', 
     function(newValues, oldValues) { 
       angular.forEach(oldValues, function(item, key){
         // 'key' is the item's identifier in the array (0..N-1). the identifiers of categories starts with 1 (1..n)
@@ -121,6 +123,28 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
       console.log("UNSELECTED '" + $scope.translatedCategories[id].label + "'");
     }
   }
+
+  // Define functionality for menu's location item (toggle element)
+  $scope.toggleLocation = function() {
+    if ($scope.isLocationShown()) {
+      $scope.filter.isLocationShown = false;
+    }
+    else {
+      $scope.filter.areCategoriesShown = false;
+      $scope.filter.isLocationShown = true;
+    }
+  };
+  $scope.isLocationShown = function() {
+    return $scope.filter.isLocationShown;
+  };
+  // watch location filter selection
+  $scope.$watchCollection('filter.isLocationSelected', 
+    function(newValue, oldValue) { 
+      //if(newValue) 
+      //else
+    }, 
+    true
+  );
 
 
   /**** Al iniciar la app, hacer que se hagan las llamadas a dataset despues de terminar inicialización del mapa (promise?) ****/
@@ -320,34 +344,37 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
 
 
 
-    /*$scope.exitApp = function(){
-      // confirm if user wants to exit the app
-      $ionicPopup.confirm({
-          title: $filter('translate')('info-confirm-popup-title'),
-          template: $filter('translate')('info-confirm-popup-text'),
-          cancelText: $filter('translate')('info-confirm-popup-exit-cancel-button-label'),
-          cancelType: 'button-default',
-          okText: $filter('translate')('info-confirm-popup-exit-accept-button-label'),
-          okType: 'button-assertive'
-      }).then(function(res) { 
-        if(res) {  
-          $ionicLoading.show({
-            template: '<ion-spinner icon="bubbles"></ion-spinner><br/>'
-              + $filter('translate')('menu.exit-item-text')
-          });
-          $timeout(function() { 
-            console.log('App closed');
-            $ionicLoading.hide(); 
-            //ionic.Platform.exitApp(); //('navigator.app.exitApp();')
-            navigator.app.exitApp();
-          }, 1800);
-        } 
-      });
-    }*/
+  /*$scope.exitApp = function(){
+    // confirm if user wants to exit the app
+    $ionicPopup.confirm({
+        title: $filter('translate')('info-confirm-popup-title'),
+        template: $filter('translate')('info-confirm-popup-text'),
+        cancelText: $filter('translate')('info-confirm-popup-exit-cancel-button-label'),
+        cancelType: 'button-default',
+        okText: $filter('translate')('info-confirm-popup-exit-accept-button-label'),
+        okType: 'button-assertive'
+    }).then(function(res) { 
+      if(res) {  
+        $ionicLoading.show({
+          template: '<ion-spinner icon="bubbles"></ion-spinner><br/>'
+            + $filter('translate')('menu.exit-item-text')
+        });
+        $timeout(function() { 
+          console.log('App closed');
+          $ionicLoading.hide(); 
+          //ionic.Platform.exitApp(); //('navigator.app.exitApp();')
+          navigator.app.exitApp();
+        }, 1800);
+      } 
+    });
+  }*/
 
 
     
-    ionic.Platform.ready(function(){
+  $scope.searchDeviceLocation = function(){
+      ionic.Platform.ready(function(){
+        // will execute when device is ready, or immediately if the device is already ready.
+
         /*var deviceInformation = ionic.Platform.device();
         var isWebView = ionic.Platform.isWebView();
         var isIPad = ionic.Platform.isIPad();
@@ -437,7 +464,9 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
           $timeout(function() { myPopup.close(); }, 1800);
           console.log('geolocaiton IS NOT available');
         }
-    });
+      });
+  }
+    
   
 });
 

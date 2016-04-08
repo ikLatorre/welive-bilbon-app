@@ -33,12 +33,57 @@
         </ion-item>
         -->
 
-        <ion-item ng-click="toggleCategories(filter)" ng-class="{active: isCategoriesShown(filter,filter.showCategories)}">
+        <ion-item ng-click="toggleCategories()" ng-class="{active: areCategoriesShown()}">
           {{ 'menu.categories-item' | translate }} &nbsp;
-          <i class="icon" ng-class="isCategoriesShown(filter) ? 'ion-arrow-up-b' : 'ion-arrow-down-b'"></i>
+          <i class="icon" ng-class="areCategoriesShown() ? 'ion-arrow-up-b' : 'ion-arrow-down-b'"></i>
         </ion-item>
-          <ion-item class="item-accordion" ng-repeat="category in translatedCategories" ng-show="isCategoriesShown(filter)">
-            <ion-checkbox class="checkbox-assertive item-text-wrap" ng-model="filter.categories[category.id]">{{category.label}}</ion-checkbox>
+          <ion-item class="item-accordion" ng-repeat="category in translatedCategories" ng-show="areCategoriesShown()">
+            <ion-checkbox class="checkbox-assertive item-text-wrap" ng-model="filter.selectedCategories[category.id]">{{category.label}}</ion-checkbox>
+          </ion-item>
+
+        <ion-item ng-click="toggleLocation()" ng-class="{active: isLocationShown()}">
+          {{ 'menu.location-item' | translate }} &nbsp;
+          <i class="icon" ng-class="isLocationShown() ? 'ion-arrow-up-b' : 'ion-arrow-down-b'"></i>
+        </ion-item>
+
+          <ion-item class="item-accordion" ng-show="isLocationShown()">
+            <ion-checkbox class="checkbox-assertive" ng-model="filter.isLocationSelected">Filtrar</ion-checkbox>
+          </ion-item>
+
+          <ion-item class="item-accordion">
+            
+              <!--<div style="display: inline-block;">
+                <ion-checkbox style="padding-right: 0px;" class="checkbox-assertive" ng-model="filter.isLocationSelected"></ion-checkbox>
+              </div>
+              <div style="display: inline-block; padding-right: 23%;">
+                <label class="item item-input" style="padding: 0px;">
+                  <i class="icon ion-search placeholder-icon"></i>
+                  <input type="text" placeholder="Buscar ubicación">
+                </label>
+              </div>-->
+                <!--<label class="checkbox">
+                   <input type="checkbox">
+
+                </label>-->
+                <label class="item item-input" style="padding: 0px; z-index: 1000;">
+                <ion-checkbox class="checkbox-assertive" style="z-index: -1;" ng-model="filter.isLocationSelected">
+                  <label class="item item-input" style="padding: 0px; z-index: 1000;">
+                    <i class="icon ion-search placeholder-icon"></i>
+                    <input type="text" placeholder="Buscar ubicación">
+                 
+
+                </ion-checkbox>
+                 </label>
+         
+            
+          </ion-item>
+
+          <ion-item class="item-accordion" ng-show="isLocationShown()">
+              <ion-checkbox class="checkbox-assertive" ng-model="filter.isLocationSelected"></ion-checkbox>
+               <a href="#" class="item item-input">
+                <i class="icon ion-android-locate"></i>&nbsp; 
+                Tu ubicación
+              </a>
           </ion-item>
 
         <ion-item class="item-text-wrap" menu-close ui-sref="app.about">

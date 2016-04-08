@@ -526,7 +526,7 @@ input[type="checkbox"] + .track .handle .handle-text-false {
   padding-top: 0;
   padding-bottom: 0;
   /*transition: 0.09s all linear;*/
-  transition: none; /* Avoid to load all items in ng-repeat before showing the selected ones */
+  transition: none; /* Avoid to load all items in ng-repeat before showing the selected ones when language is changed*/
 }
 .list .item.item-accordion.ng-hide {
   line-height: 0px;

@@ -6,6 +6,10 @@
  "menu.logout-item": "Cerrar sesión",
  "menu.map-item": "Mapa",
  "menu.categories-item": "Categorías",
+ 
+ "menu.location-item": "Ubicación",
+ "menu.location-placeholder-devicegps-text": "por tu ubicación",
+
  "menu.about-item": "Información y términos de uso",
  "menu.language-item": "Idioma",
  "menu.exit-item": "Salir",
