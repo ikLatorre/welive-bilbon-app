@@ -578,3 +578,21 @@ input[type="checkbox"] + .track .handle .handle-text-false {
   z-index: 10;
 }
 /* /New POI button */
+
+
+/*Solution for the 'stopEven' Directive (enable clicking inside checkbox element)*/
+.item-content.disable-pointer-events{
+  pointer-events: initial !important
+}
+
+/*Solution for html*/
+.item-checkbox .checkbox{
+  z-index: -1 !important;
+}
+
+/* Google Places' autocomplete container (list of suggestions) */
+.pac-container{
+    width: 90% !important;
+    left: 3% !important;
+    font-family: Roboto;
+}

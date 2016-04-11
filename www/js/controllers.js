@@ -52,6 +52,21 @@ myApp.factory('Map', function() {
 
 
 
+// Directive for enabling 'click' event inside a checkbox (used in menu's 'location' element)
+myApp.directive('stopEvent', function () {
+  return {
+    restrict: 'A',
+    link: function (scope, element, attr) {
+      element.bind('click', function (e) {
+        e.stopPropagation();
+      });
+    }
+  };
+});
+
+
+
+
 myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $translate, $ionicHistory, $ionicPopup, 
   $filter, LoginService, Map, $http, $cordovaGeolocation, $ionicPopup, $ionicPlatform, $ionicLoading) {
 
@@ -145,6 +160,58 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
     }, 
     true
   );
+
+
+  $scope.pruebafuncion = function(){
+    console.log('click');
+  }
+  $scope.loadGooglePlacesAutocompleteFeature = function(domInputElement){
+    //var domInputElement = document.getElementById('location-searcher');
+    //$scope.autocompleteObject = {};
+
+    /*if(showMarker){
+        var gipuzkoaBounds = new google.maps.LatLngBounds(  //Constructs a rectangle from the points at its south-west and north-east corners
+            new google.maps.LatLng(42.905017, -2.620573),   //south-west corner
+            new google.maps.LatLng(43.413902, -1.722441));  //north-east corner
+        // (Google Places) Create the autocomplete object, restricting the search to geographical location types.
+        $scope.autocompleteObject = new google.maps.places.Autocomplete(
+            /** @type {HTMLInputElement} * /
+            (DomInputElement), {
+              types : [ 'geocode' ],
+              componentRestrictions : { country : 'es'},
+              bounds: gipuzkoaBounds
+            });
+      }else{ // Load autocomplete objecto to use in the searcher (without limit it).
+        autocompleteObject = new google.maps.places.Autocomplete(
+            (DomInputElement), { types : [ 'geocode' ]
+            });
+      }*/
+      $scope.autocompleteObject = new google.maps.places.Autocomplete(
+            (domInputElement), { types : [ 'geocode' ]
+            });
+
+      // When the user selects an address from the dropdown:
+      google.maps.event.addListener($scope.autocompleteObject, 'place_changed',
+          function() {
+        //if(showMarker){ // If the user press 'enter' with the sidebar's searcher, but without selecting an item from the list
+          if(DomInputElement.value == $scope.autocompleteObject.getPlace().name){
+            alert('Seleccione una ubicación de la lista de sugerencias');
+            return;
+          }
+          /*}else{
+            loadMap();
+            hideMenu();
+            $('#srch-text').val("");
+            $('#srch-text2').val("");
+          }
+        }*/
+        //getLocalityFromAutocomplete(autocompleteObject, showMarker);
+    });
+
+
+
+  }
+  $scope.loadGooglePlacesAutocompleteFeature(document.getElementById('location-searcher'));
 
 
   /**** Al iniciar la app, hacer que se hagan las llamadas a dataset despues de terminar inicialización del mapa (promise?) ****/
