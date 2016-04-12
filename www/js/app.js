@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic','ionic.service.core', 'starter.controllers', 'bilbonApp.config',
-  'LocalStorageModule', 'pascalprecht.translate', 'ngCordova'])
+  'LocalStorageModule', 'pascalprecht.translate'])
 
 .run(function($ionicPlatform, $ionicPopup, $timeout) {
   $ionicPlatform.ready(function() {

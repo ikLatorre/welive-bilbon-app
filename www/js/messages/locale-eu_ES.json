@@ -6,7 +6,11 @@
  "menu.logout-item": "Saioa itxi",
  "menu.map-item": "Mapa",
  "menu.categories-item": "Kategoriak",
+
  "menu.location-item": "Kokalekua",
+ "menu.location-autocomplete-search-placeholder": "Kokalekua bilatu...",
+ "menu.location-gps-button-text": "Zure kokalekua",
+
  "menu.about-item": "Informazio eta erabilera-baldintzak",
  "menu.language-item": "Hizkuntza",
  "menu.exit-item": "Irten",
@@ -17,11 +21,10 @@
  "info-confirm-popup-exit-accept-button-label": "Bai",
  "info-confirm-popup-exit-cancel-button-label": "Ez",
 
-
-
-
-
-
+ "menu.filter.category-search.loading-text": "Kategoria filtratzen, itxaron mesedez...",
+ "menu.filter.category-search.error-popup-title": "Errorea",
+ "menu.filter.category-search.error-popup-text": "Kategoria filtratzen errore bat gertatu da. Geroago berriz saiatu mesedez.",
+ "menu.filter.category-search.error-ok-button-label": "Cerrar",
 
 
 

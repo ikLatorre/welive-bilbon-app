@@ -34,7 +34,7 @@
         -->
 
         <ion-item ng-click="toggleCategories()" ng-class="{active: areCategoriesShown()}">
-          {{ 'menu.categories-item' | translate }} &nbsp;
+          {{ 'menu.categories-item' | translate }}&nbsp;
           <i class="icon" ng-class="areCategoriesShown() ? 'ion-arrow-up-b' : 'ion-arrow-down-b'"></i>
         </ion-item>
           <ion-item class="item-accordion" ng-repeat="category in translatedCategories" ng-show="areCategoriesShown()">
@@ -45,34 +45,41 @@
           {{ 'menu.location-item' | translate }} &nbsp;
           <i class="icon" ng-class="isLocationShown() ? 'ion-arrow-up-b' : 'ion-arrow-down-b'"></i>
         </ion-item>
-
           <ion-item class="item-accordion" ng-show="isLocationShown()">
             <li class="item item-checkbox">
               <div class="checkbox checkbox-assertive">
-                <input type="checkbox">
+                <input type="checkbox" ng-model="filter.selectedLocation['google-places']" ng-change="locationSelectionChanged('google-places', 'device-gps')">
               </div>
               <div>
-                <div style="display:inline-block;" ng-click="pruebafuncion()">
-                  <i class="icon ion-search" stop-event ng-click="pruebafuncion()"></i>
+                <div style="display:inline-block; padding-right:2px;" ng-click="searchGooglePlaces()">
+                  <i class="icon ion-search" ng-click="searchGooglePlaces()"></i>
                 </div>
                 <div style="display:inline-block;">
-                  <input id="location-searcher" type="text" stop-event placeholder="Buscar ubicación...">
+                  <input id="location-input" type="text" value=""
+                  placeholder="{{ 'menu.location-autocomplete-search-placeholder' | translate }}">
                 </div>
               </div>
             </li>
           </ion-item>
-
+<!-- (La altura de este elemento de la lista es algo menor que la del elemento anterior de Autocomplete con div's)-->
+          <ion-item class="item-accordion" ng-show="isLocationShown()">
+            <ion-checkbox class="checkbox-assertive item-text-wrap" ng-model="filter.selectedLocation['device-gps']"
+              ng-change="locationSelectionChanged('device-gps', 'google-places')">
+              {{ 'menu.location-gps-button-text' | translate }}
+            </ion-checkbox>
+          </ion-item>
+<!--
           <ion-item class="item-accordion" ng-show="isLocationShown()">
             <li class="item item-checkbox">
               <div class="checkbox checkbox-assertive">
-                <input type="checkbox">
+                <input type="checkbox" ng-model="filter.selectedLocation['device-gps']" ng-change="locationSelectionChanged('device-gps', 'google-places')">
               </div>
-              <a href="#" stop-event class="item" style="padding: 0px; border:0px;" ng-click="pruebafuncion()">
-                <i class="icon ion-android-locate"></i>&nbsp;Tu ubicación
+              <a href="#" class="item" style="padding: 0px; border:0px;" ng-click="searchGooglePlaces()">
+                <i class="icon ion-android-locate"></i>&nbsp;{{ 'menu.location-gps-button-text' | translate }}
               </a>
             </li>
           </ion-item>
-
+-->
         <ion-item class="item-text-wrap" menu-close ui-sref="app.about">
           <i class="icon ion-ios-information-outline"></i>
           {{ 'menu.about-item' | translate }}

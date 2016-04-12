@@ -580,12 +580,7 @@ input[type="checkbox"] + .track .handle .handle-text-false {
 /* /New POI button */
 
 
-/*Solution for the 'stopEven' Directive (enable clicking inside checkbox element)*/
-.item-content.disable-pointer-events{
-  pointer-events: initial !important
-}
-
-/*Solution for html*/
+/* Menu's location items (enable clicking inside checkbox element)**/
 .item-checkbox .checkbox{
   z-index: -1 !important;
 }

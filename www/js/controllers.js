@@ -24,6 +24,7 @@ myApp.factory('LoginService', function(localStorageService){
 
 myApp.factory('Map', function() {
   var map;
+  var googlePlacesAutocomplete;
 
   return {
       getMap: function(){
@@ -31,6 +32,12 @@ myApp.factory('Map', function() {
       },
       setMap: function(mapObj){
         map = mapObj;
+      },
+      getAutocomplete: function(){
+        return googlePlacesAutocomplete;
+      },
+      setAutocomplete: function(googlePlacesAutocompleteObj){
+        googlePlacesAutocomplete = googlePlacesAutocompleteObj;
       }
   }
 });
@@ -38,37 +45,9 @@ myApp.factory('Map', function() {
 
 
 
-/*myApp.factory('ionicReady', function($ionicPlatform) {
-  var readyPromise;
-
-  return function () {
-    if (!readyPromise) {
-      readyPromise = $ionicPlatform.ready();
-    }
-    return readyPromise;
-  };
-});*/
-
-
-
-
-// Directive for enabling 'click' event inside a checkbox (used in menu's 'location' element)
-myApp.directive('stopEvent', function () {
-  return {
-    restrict: 'A',
-    link: function (scope, element, attr) {
-      element.bind('click', function (e) {
-        e.stopPropagation();
-      });
-    }
-  };
-});
-
-
-
 
 myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $translate, $ionicHistory, $ionicPopup, 
-  $filter, LoginService, Map, $http, $cordovaGeolocation, $ionicPopup, $ionicPlatform, $ionicLoading) {
+  $filter, LoginService, Map, $http, $ionicPopup, $ionicPlatform, $ionicLoading) {
 
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
@@ -77,19 +56,24 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
   //$scope.$on('$ionicView.enter', function(e) {
   //});
 
-  // filter's model
+  // filter's model (for angularJS)
   $scope.filter = {}; 
-  $scope.filter.selectedCategories = []; // store categories' selection's value (false | true)
-  $scope.filter.areCategoriesShown = false; // control sublist of categories
-  $scope.filter.isLocationSelected = false;
-  $scope.filter.isLocationShown = false; // control sublist of location
+  // store selection's values of categories (true|false), identified by 'id' attribute of categories.js:
+  $scope.filter.selectedCategories = []; 
+  $scope.filter.areCategoriesShown = false; // control whether the sublist of categories is displayed or not
+  // store selection's values of location modes (true|false), identified by google-places' and 'device-gps':
+  $scope.filter.selectedLocation = []; 
+  $scope.filter.isLocationShown = false; // control whether the sublist of location modes is displayed or not
+  $scope.filter.googlePlacesAutocompleteObject = {};
+
+
  
   // Configure language of categories' array to use in the corresponding combobox/lists
   $scope.translatedCategories = []; // this variable will contain categories' list in the current language (used in ng-repeat)
   $scope.spanishCategoriesArray = [];
   $scope.basqueCategoriesArray = [];
 
-  // Build spanish categories' array
+  // Build spanish categories' array and initialize $scope.filter.selectedCategories array
   angular.forEach(categories, function(item){
       $scope.spanishCategoriesArray.push({id:item.id, datasetId:item.datasetId, jsonId:item.jsonId, 
         label:item.es_ES, img_src:item.img_src}); 
@@ -119,25 +103,21 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
   $scope.$watchCollection('filter.selectedCategories', 
     function(newValues, oldValues) { 
       angular.forEach(oldValues, function(item, key){
-        // 'key' is the item's identifier in the array (0..N-1). the identifiers of categories starts with 1 (1..n)
+        // 'key' is the category identifier (1..N) of categories.js
         if(newValues[key] != null && oldValues[key] !== newValues[key]){
-          if(newValues[key] == true) $scope.selectCategory(key-1, true);
-          else $scope.selectCategory(key-1, false);
+          if(newValues[key]) $scope.callDatasetCategoriesFilter(key); // do the search because of the activation of this filter
+          else $scope.disableCategoryFilter(key); // disable filter
         }
+            
       });
     }, 
     true
   );
-  // 'id': category identifier (1..n)
-  $scope.selectCategory = function(id, checked){
-    console.log('id', id);
-    if(checked){
-      console.log("SELECTED '" + $scope.translatedCategories[id].label + "'");
-      $scope.callDatasetCategories(id);
-    } else{
-      console.log("UNSELECTED '" + $scope.translatedCategories[id].label + "'");
-    }
-  }
+ 
+
+  // initialize $scope.filter.selectedLocation array
+  $scope.filter.selectedLocation['google-places'] = false;
+  $scope.filter.selectedLocation['device-gps'] = false;
 
   // Define functionality for menu's location item (toggle element)
   $scope.toggleLocation = function() {
@@ -152,66 +132,23 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
   $scope.isLocationShown = function() {
     return $scope.filter.isLocationShown;
   };
-  // watch location filter selection
-  $scope.$watchCollection('filter.isLocationSelected', 
-    function(newValue, oldValue) { 
-      //if(newValue) 
-      //else
-    }, 
-    true
-  );
+  // detect location selection changing ($watchCollection does not work in this case)
+  // used in 'ng-change' attribute. Only one location filter can be activated at the same time.
+  $scope.locationSelectionChanged = function(locationMode, otherLocationMode){
+    // switch between location modes if neccesary ('google-places' | 'device-gps')
+    if($scope.filter.selectedLocation[locationMode]){
+      // activate location mode, check if the other mode is already activated to disable it if is neccesary
+      if($scope.filter.selectedLocation[otherLocationMode]){ 
+        $scope.filter.selectedLocation[otherLocationMode] = false;
+        $scope.disableLocationFilter(otherLocationMode); // disable filter
+      }
+      $scope.callLocationFilter(locationMode); // do the search because of the activation of this filter
+    }else{
+      $scope.disableLocationFilter(locationMode); // disable filter
+    }
+  };
+ 
 
-
-  $scope.pruebafuncion = function(){
-    console.log('click');
-  }
-  $scope.loadGooglePlacesAutocompleteFeature = function(domInputElement){
-    //var domInputElement = document.getElementById('location-searcher');
-    //$scope.autocompleteObject = {};
-
-    /*if(showMarker){
-        var gipuzkoaBounds = new google.maps.LatLngBounds(  //Constructs a rectangle from the points at its south-west and north-east corners
-            new google.maps.LatLng(42.905017, -2.620573),   //south-west corner
-            new google.maps.LatLng(43.413902, -1.722441));  //north-east corner
-        // (Google Places) Create the autocomplete object, restricting the search to geographical location types.
-        $scope.autocompleteObject = new google.maps.places.Autocomplete(
-            /** @type {HTMLInputElement} * /
-            (DomInputElement), {
-              types : [ 'geocode' ],
-              componentRestrictions : { country : 'es'},
-              bounds: gipuzkoaBounds
-            });
-      }else{ // Load autocomplete objecto to use in the searcher (without limit it).
-        autocompleteObject = new google.maps.places.Autocomplete(
-            (DomInputElement), { types : [ 'geocode' ]
-            });
-      }*/
-      $scope.autocompleteObject = new google.maps.places.Autocomplete(
-            (domInputElement), { types : [ 'geocode' ]
-            });
-
-      // When the user selects an address from the dropdown:
-      google.maps.event.addListener($scope.autocompleteObject, 'place_changed',
-          function() {
-        //if(showMarker){ // If the user press 'enter' with the sidebar's searcher, but without selecting an item from the list
-          if(DomInputElement.value == $scope.autocompleteObject.getPlace().name){
-            alert('Seleccione una ubicación de la lista de sugerencias');
-            return;
-          }
-          /*}else{
-            loadMap();
-            hideMenu();
-            $('#srch-text').val("");
-            $('#srch-text2').val("");
-          }
-        }*/
-        //getLocalityFromAutocomplete(autocompleteObject, showMarker);
-    });
-
-
-
-  }
-  $scope.loadGooglePlacesAutocompleteFeature(document.getElementById('location-searcher'));
 
 
   /**** Al iniciar la app, hacer que se hagan las llamadas a dataset despues de terminar inicialización del mapa (promise?) ****/
@@ -256,9 +193,21 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
     });
   }
 
-  $scope.callDatasetCategories = function(id){
+
+
+
+  // Filter's search by category (using categories specified in config/categories.js).
+  // 'categoryJsonId': category's identifier (1..N) of config/categories.js file
+  //             (note that $scope.translatedCategories' array's range is 0..N-1)
+  $scope.callDatasetCategoriesFilter = function(categoryJsonId){
+    console.log('Applying category filter... ("' + $scope.translatedCategories[categoryJsonId-1].label + '")');
+    $ionicLoading.show({
+      template: '<ion-spinner icon="bubbles"></ion-spinner><br/>'
+        + $filter('translate')('menu.filter.category-search.loading-text')
+    });
+
     var response = null;
-      $http({
+    $http({
       method: 'POST',
       url: 'https://dev.welive.eu/dev/api/ods/' +
         'restaurantes-sidrerias-y-bodegas-de-euskadi/resource/08560d52-c8ca-484b-9797-13309f056564/query',
@@ -272,28 +221,51 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
           response = successCallback.data;
           //console.log(response);
         }, function errorCallback(errorCallback) {
+          $scope.filter.selectedCategories[categoryJsonId] = false; // set category's checkbox to false
           console.log('ERROR ' + errorCallback);
           $ionicPopup.alert({
-              title: 'Error',
-              template: 'Error al obtener POIs de una categoría.',
-              okText: 'OK',
+              title: $filter('translate')('menu.filter.category-search.error-popup-title'),
+              template: $filter('translate')('menu.filter.category-search.error-popup-text'),
+              okText: $filter('translate')('menu.filter.category-search.error-ok-button-label'),
               okType: 'button-assertive' 
           });
         }
 
     ).finally(
         function finallyCallback(callback, notifyCallback){
+          $ionicLoading.hide(); 
           $scope.loadMarkers(response);
           // initialize the map (with or without data about proposals' count)
           //infoWindowArray = initialize($scope.proposalsCountByZones, $scope);
         }
     );
   }
+  // Remove category's filter.
+  // 'categoryJsonId': category's identifier (1..N) of config/categories.js file
+  //             (note that $scope.translatedCategories' array's range is 0..N-1)
+  $scope.disableCategoryFilter = function(categoryJsonId){
+    console.log('Removing category filter... ("' + $scope.translatedCategories[categoryJsonId-1].label + '")');
+  };
 
 
 
+  // Filter's search by location (with the radius specified in config/config.js).
+  // 'locationMode': location searching mode ('google-places' | 'device-gps')
+  $scope.callLocationFilter = function(locationMode){
+    console.log("Applying location filter... (mode: " + locationMode + ")");
 
-  // Configure language changing (UI's switch and $translate's language)
+  }
+  // Remove location's filter.
+  // Filter's search by location (with the radius specified in config/config.js).
+  // 'locationMode': location searching mode ('google-places' | 'device-gps')
+  $scope.disableLocationFilter = function(locationMode){
+    console.log('Removing location filter... (mode: ' + locationMode + ')');
+  };
+
+  
+
+
+  // Configure language changing (UI's switch and $translate's language).
   $scope.selectedLang = false; // false: es_ES | true: eu_ES
   $scope.changeLang = function() {
     if ($scope.selectedLang == false) {
@@ -435,7 +407,6 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
       } 
     });
   }*/
-
 
     
   $scope.searchDeviceLocation = function(){
@@ -616,9 +587,22 @@ myApp.controller('MapCtrl', function($scope, $state, $ionicPopup, Map, $window, 
         infoWindowArray = initialize($scope.proposalsCountByZones, $scope);
       }
   );*/
+
+
   //$scope.map = initialize($scope);
-  Map.setMap(initialize($scope));
+  //Map.setMap(initialize($scope));
+  initialize(Map, $scope); // initialize map and autocomplete objects
+
+
+  /*************************** IGUAL NO ACCEDE, Y SÍ DESDE AppCtrl ***************************/
+  // search writed location with Google Places 
+  // (Autocomplete object's input, without selecting a suggestion from the list)
+  $scope.searchGooglePlaces = function(){
+    console.log('Searching location with Google Places...'); 
+  }
+  
   //console.log('despues initializacion, map: ', $scope.map);
+
 });
 
 
