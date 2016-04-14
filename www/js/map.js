@@ -3,7 +3,7 @@
     Returns an array of markers identified by zone (id) 
 */
 //function initialize(proposalsCountByZones, $scope){
-function initialize(MapFactory, $scope){
+function initializeMap(domMapContainer){
     
     var infoWindow = new google.maps.InfoWindow();
     var options = {
@@ -12,7 +12,7 @@ function initialize(MapFactory, $scope){
         mapTypeId: google.maps.MapTypeId.MAP
     };
     
-    var map = new google.maps.Map(document.getElementById('mapa'), options);
+    var map = new google.maps.Map(domMapContainer, options);
     //var limits = new google.maps.LatLngBounds();
 
     var infoWindowArray = new Array();
@@ -56,52 +56,44 @@ function initialize(MapFactory, $scope){
         map.setCenter(center);
     });
 
+    return map;
 
-
-
-
-
-
-    MapFactory.setMap(map);
-    //return map;// infoWindowArray;
-    MapFactory.setAutocomplete(loadGooglePlacesAutocompleteFeature());
     //$scope.loadGooglePlacesAutocompleteFeature(document.getElementById('location-input'));
 };
 
 // load and associate Google Places' Autocomplete object with the input element
-function loadGooglePlacesAutocompleteFeature(){
-      //var domInputElement = document.getElementById('location-searcher');
-      //$scope.autocompleteObject = {};
+function loadGooglePlacesAutocompleteFeature(domInputElement){
+    //var domInputElement = document.getElementById('location-searcher');
+    //$scope.autocompleteObject = {};
 
-      /*if(showMarker){
-          var gipuzkoaBounds = new google.maps.LatLngBounds(  //Constructs a rectangle from the points at its south-west and north-east corners
-              new google.maps.LatLng(42.905017, -2.620573),   //south-west corner
-              new google.maps.LatLng(43.413902, -1.722441));  //north-east corner
-          // (Google Places) Create the autocomplete object, restricting the search to geographical location types.
-          $scope.autocompleteObject = new google.maps.places.Autocomplete(
-              /** @type {HTMLInputElement} * /
-              (domInputElement), {
+    /*if(showMarker){
+        var gipuzkoaBounds = new google.maps.LatLngBounds(  //Constructs a rectangle from the points at its south-west and north-east corners
+            new google.maps.LatLng(42.905017, -2.620573),   //south-west corner
+            new google.maps.LatLng(43.413902, -1.722441));  //north-east corner
+        // (Google Places) Create the autocomplete object, restricting the search to geographical location types.
+        $scope.autocompleteObject = new google.maps.places.Autocomplete(
+            /** @type {HTMLInputElement} * /
+            (domInputElement), {
                 types : [ 'geocode' ],
                 componentRestrictions : { country : 'es'},
                 bounds: gipuzkoaBounds
-              });
-        }else{ // Load autocomplete objecto to use in the searcher (without limit it).
-          autocompleteObject = new google.maps.places.Autocomplete(
-              (domInputElement), { types : [ 'geocode' ]
-              });
-        }*/
-        // $scope.filter.googlePlacesAutocompleteObject
-        var input = document.getElementById('location-input');
-        var autocomplete = new google.maps.places.Autocomplete(input);
-        /*var autocomplete = new google.maps.places.Autocomplete(
-            (input), { types : [ 'geocode' ]
-        });*/
+            });
+    }else{ // Load autocomplete objecto to use in the searcher (without limit it).
+        autocompleteObject = new google.maps.places.Autocomplete(
+            (domInputElement), { types : [ 'geocode' ]
+        });
+    }*/
+    // $scope.filter.googlePlacesAutocompleteObject
+     //var autocomplete = new google.maps.places.Autocomplete(input);
+    var autocomplete = new google.maps.places.Autocomplete(
+        (domInputElement), { types : [ 'geocode' ]
+    });
 
-        // When the user selects an address from the dropdown:
-        google.maps.event.addListener(autocomplete, 'place_changed',
-            function() {
-              console.log('place_changed');
-              if($scope.filter.selectedLocation['google-places']){
+    // When the user selects an address from the dropdown:
+    google.maps.event.addListener(autocomplete, 'place_changed',
+        function() {
+            console.log('place_changed');
+            //if($scope.filter.selectedLocation['google-places']){
                 // the Google Places' autocomplete object has been changed. Apply filter only if
                 // this filter is activated
                 
@@ -109,22 +101,23 @@ function loadGooglePlacesAutocompleteFeature(){
                 /*if(input.value == autocomplete.getPlace().name){
                   alert('Seleccione una ubicación de la lista de sugerencias');
                   return;
-                }*/
-                /*}else{
-                  loadMap();
-                  hideMenu();
-                  $('#srch-text').val("");
-                  $('#srch-text2').val("");
-                }
-              }*/
-              //getLocalityFromAutocomplete(autocompleteObject, showMarker);
+            }*/
+            /*}else{
+                loadMap();
+                hideMenu();
+                $('#srch-text').val("");
+                $('#srch-text2').val("");
+            }
+          }*/
+          //getLocalityFromAutocomplete(autocompleteObject, showMarker);
 
 
-              }
+          //}
 
-      });
+        }
+    );
+
     return autocomplete;
-
 }
 
 

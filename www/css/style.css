@@ -580,10 +580,27 @@ input[type="checkbox"] + .track .handle .handle-text-false {
 /* /New POI button */
 
 
-/* Menu's location items (enable clicking inside checkbox element)**/
-.item-checkbox .checkbox{
+/* Menu's location items */
+/* Enable clicking inside checkbox element */
+.item-checkbox .checkbox {
   z-index: -1 !important;
 }
+.location-inline-item {
+  display: inline-block;
+}
+.location-autocomplete-div {
+  padding: 0px; 
+  border: 0px;
+}
+.location-autocomplete-search-img {
+  padding-right: 2px;
+}
+.location-gpslocation-div {
+  padding: 0px; 
+  border:0px; 
+  background-color: transparent !important; /* avoid 'activated' class when clicking "My location" text */
+}
+/* /Menu's location items */
 
 /* Google Places' autocomplete container (list of suggestions) */
 .pac-container{

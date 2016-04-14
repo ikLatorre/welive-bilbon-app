@@ -31,7 +31,8 @@ angular.module('starter', ['ionic','ionic.service.core', 'starter.controllers', 
   });
 })
 
-.config(function($stateProvider, $urlRouterProvider, $translateProvider, localStorageServiceProvider, WELIVE_SERVICE_ID) {
+.config(function($stateProvider, $urlRouterProvider, $translateProvider, $ionicConfigProvider,
+                 localStorageServiceProvider, WELIVE_SERVICE_ID) {
 
   $translateProvider.useStaticFilesLoader({
     prefix: 'js/messages/locale-', 

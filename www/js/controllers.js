@@ -64,7 +64,7 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
   // store selection's values of location modes (true|false), identified by google-places' and 'device-gps':
   $scope.filter.selectedLocation = []; 
   $scope.filter.isLocationShown = false; // control whether the sublist of location modes is displayed or not
-  $scope.filter.googlePlacesAutocompleteObject = {};
+  $scope.filter.autocompleteLocation = null; // 
 
 
  
@@ -150,7 +150,6 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
  
 
 
-
   /**** Al iniciar la app, hacer que se hagan las llamadas a dataset despues de terminar inicialización del mapa (promise?) ****/
   $scope.loadMarkers = function(categoryItemsFromDataset){
     console.log(categoryItemsFromDataset.count, categoryItemsFromDataset);
@@ -192,7 +191,6 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
 
     });
   }
-
 
 
 
@@ -263,6 +261,35 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
   };
 
   
+
+  // Avoid the necessity to long press the autocomplete option to actually get it selected. 
+  // The issue is that Gmap dynamically adds elements that need the data-tap-disabled property, 
+  // so you'll have to manually add the property after google has added these elements to the dom.
+  // It is called on 'ng-change' of the autocomplete input text (note that this requires ng-model too).
+  $scope.disableTap = function() {
+      var container = document.getElementsByClassName('pac-container');
+      angular.element(container).attr('data-tap-disabled', 'true');
+      var backdrop = document.getElementsByClassName('backdrop');
+      angular.element(backdrop).attr('data-tap-disabled', 'true');
+      angular.element(container).on("click", function() {
+          document.getElementById('pac-input').blur();
+      });
+  };
+  /*************************** IGUAL NO ACCEDE, Y SÍ DESDE AppCtrl ***************************/
+  // search writed location with Google Places 
+  // (Autocomplete object's input, without selecting a suggestion from the list)
+  $scope.searchGooglePlaces = function(){
+    console.log('Searching location with Google Places...'); 
+  }
+  /*************************** /IGUAL NO ACCEDE, Y SÍ DESDE AppCtrl ***************************/
+  // Called by filter's 'gps/My location' item, this function do the same as <label for="device_gps_checkbox">.
+  // It is used because the 'label' tag changes the item's height, being different than the previous
+  // 'autocomplete' item's height implemented with div's. 
+  // To mantain the same height in both sublist's elements, they're implemented with div's with a similar structure.
+  $scope.gpsFilterClicked = function(){
+    $scope.filter.selectedLocation['device-gps'] = $scope.filter.selectedLocation['device-gps']? false: true;
+    $scope.locationSelectionChanged('device-gps', 'google-places');
+  }
 
 
   // Configure language changing (UI's switch and $translate's language).
@@ -589,18 +616,15 @@ myApp.controller('MapCtrl', function($scope, $state, $ionicPopup, Map, $window, 
   );*/
 
 
-  //$scope.map = initialize($scope);
-  //Map.setMap(initialize($scope));
-  initialize(Map, $scope); // initialize map and autocomplete objects
+
+  var map = initializeMap(document.getElementById('mapa')); 
+  Map.setMap(map);
+
+  var autocomplete = loadGooglePlacesAutocompleteFeature(document.getElementById('location-input'));
+  Map.setAutocomplete(autocomplete);
 
 
-  /*************************** IGUAL NO ACCEDE, Y SÍ DESDE AppCtrl ***************************/
-  // search writed location with Google Places 
-  // (Autocomplete object's input, without selecting a suggestion from the list)
-  $scope.searchGooglePlaces = function(){
-    console.log('Searching location with Google Places...'); 
-  }
-  
+
   //console.log('despues initializacion, map: ', $scope.map);
 
 });
