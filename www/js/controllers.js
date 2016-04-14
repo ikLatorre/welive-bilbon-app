@@ -275,13 +275,6 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
           document.getElementById('pac-input').blur();
       });
   };
-  /*************************** IGUAL NO ACCEDE, Y SÍ DESDE AppCtrl ***************************/
-  // search writed location with Google Places 
-  // (Autocomplete object's input, without selecting a suggestion from the list)
-  $scope.searchGooglePlaces = function(){
-    console.log('Searching location with Google Places...'); 
-  }
-  /*************************** /IGUAL NO ACCEDE, Y SÍ DESDE AppCtrl ***************************/
   // Called by filter's 'gps/My location' item, this function do the same as <label for="device_gps_checkbox">.
   // It is used because the 'label' tag changes the item's height, being different than the previous
   // 'autocomplete' item's height implemented with div's. 

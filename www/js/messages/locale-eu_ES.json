@@ -16,17 +16,19 @@
  "menu.exit-item": "Irten",
  "menu.exit-item-text": "Aplikazioa ixten...",
 
- "info-confirm-popup-title": "Bilbon",
- "info-confirm-popup-text": "Ziur zaude atera nahi duzula?",
- "info-confirm-popup-exit-accept-button-label": "Bai",
- "info-confirm-popup-exit-cancel-button-label": "Ez",
-
  "menu.filter.category-search.loading-text": "Kategoria filtratzen, itxaron mesedez...",
  "menu.filter.category-search.error-popup-title": "Errorea",
  "menu.filter.category-search.error-popup-text": "Kategoria filtratzen errore bat gertatu da. Geroago berriz saiatu mesedez.",
  "menu.filter.category-search.error-ok-button-label": "Cerrar",
 
+ "info-confirm-popup-title": "Bilbon",
+ "info-confirm-popup-text": "Ziur zaude atera nahi duzula?",
+ "info-confirm-popup-exit-accept-button-label": "Bai",
+ "info-confirm-popup-exit-cancel-button-label": "Ez",
 
+
+ "map-page.title": "Mapa",
+ "map-page.text": "Aztertu itzazu interes puntuak:",
 
 
 
@@ -153,9 +155,6 @@
  "register-page.terms-conditions-label": "'Erregistratu' botoia sakatuz onartu egiten dituzu",
  "register-page.terms-conditions-link-label": "baldintzak",
  "register-page.register-submit-button-label": "Erregistratu",
- 
- "map-page.title": "Eskaeren mapa",
- "map-page.text": "Aztertu itzazu eskaera aktiboak:",
 
  "about-page.title": "About",
  "about-page.subtitle": "Informazio eta erabilera-baldintzak",

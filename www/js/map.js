@@ -89,6 +89,9 @@ function loadGooglePlacesAutocompleteFeature(domInputElement){
         (domInputElement), { types : [ 'geocode' ]
     });
 
+   // 43.199927, -3.017116
+   // 43.310109, -2.827070
+
     // When the user selects an address from the dropdown:
     google.maps.event.addListener(autocomplete, 'place_changed',
         function() {

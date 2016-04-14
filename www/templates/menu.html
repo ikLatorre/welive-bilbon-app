@@ -50,14 +50,18 @@
               <div class="checkbox checkbox-square  checkbox-assertive">
                 <input type="checkbox" ng-model="filter.selectedLocation['google-places']" ng-change="locationSelectionChanged('google-places', 'device-gps')">
               </div>
-              <div class="item location-autocomplete-div">
-                <div class="location-inline-item location-autocomplete-search-img" ng-click="searchGooglePlaces()">
-                  <i class="icon ion-search" ng-click="searchGooglePlaces()"></i>
+              <div class="item location-autocomplete-div" style="">
+                <div class="location-inline-item location-autocomplete-search-img">
+                  <i class="icon ion-search"></i>
                 </div>
-                <div class="location-inline-item">
-                  <input type="text" id="location-input" data-tap-disabled="true"
-                  ng-change="disableTap()" ng-model="filter.autocompleteLocation"
-                  placeholder="{{ 'menu.location-autocomplete-search-placeholder' | translate }}">
+                <div class="location-inline-item" 
+                style="border: 1px solid #cccccc; border-radius:3px; overflow: hidden;">
+                  <span style0"display: block; overflow: hidden; padding-right:10px;">
+                    <input type="text" id="location-input" data-tap-disabled="true"
+                    ng-change="disableTap()" ng-model="filter.autocompleteLocation"
+                    placeholder="{{ 'menu.location-autocomplete-search-placeholder' | translate }}"
+                    style="width: 100%;">
+                  </span> <!-- width: 140px !important; -->
                 </div>
               </div>
             </li>

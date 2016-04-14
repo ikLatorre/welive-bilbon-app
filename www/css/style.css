@@ -608,3 +608,8 @@ input[type="checkbox"] + .track .handle .handle-text-false {
     left: 3% !important;
     font-family: Roboto;
 }
+
+.map-div {
+  border-radius:5px;
+  box-shadow:0 0 9px rgba(0,0,0,0.8);
+}
