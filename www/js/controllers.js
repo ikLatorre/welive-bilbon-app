@@ -23,22 +23,32 @@ myApp.factory('LoginService', function(localStorageService){
 
 
 myApp.factory('Map', function() {
-  var map;
-  var googlePlacesAutocomplete;
+  var map = {};
+  map.mapObj = null;
+  map.googlePlacesAutocompleteObj = null;
+  map.selectedLocationInput = '';
 
   return {
       getMap: function(){
-        return map;
+        return map.mapObj;
       },
       setMap: function(mapObj){
-        map = mapObj;
+        map.mapObj = mapObj;
       },
       getAutocomplete: function(){
-        return googlePlacesAutocomplete;
+        return map.googlePlacesAutocompleteObj;
       },
       setAutocomplete: function(googlePlacesAutocompleteObj){
-        googlePlacesAutocomplete = googlePlacesAutocompleteObj;
-      }
+        map.googlePlacesAutocompleteObj = googlePlacesAutocompleteObj;
+      },
+      // manage location selection when the checkbox is checked:
+      getLocation: function(){
+        return map.selectedLocationInput;
+      },
+      setLocation: function(locationInputText){
+        map.selectedLocationInput = locationInputText;
+      },
+
   }
 });
 
@@ -132,9 +142,47 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
   $scope.isLocationShown = function() {
     return $scope.filter.isLocationShown;
   };
+
+  // detect when 'place_changed' fires successfully (when 'Map.getLocation()' changes)
+  $scope.$watch(function() { return Map.getLocation(); }, 
+    function(newValue, oldValue) { 
+      console.log('cambiado Map.getLocation(), rellenar input');
+      $scope.filter.autocompleteLocation = newValue;
+    }
+  );
+  // if the user empty the input, remove previously selected location and force the user to select 
+  // another location 
+  $scope.$watch('filter.autocompleteLocation', 
+    function(newValue, oldValue) { 
+      if(newValue == ''){
+       Map.setLocation('');
+       // Remove Google Places' location filter
+       $scope.filter.selectedLocation['google-places'] = false;
+       $scope.locationSelectionChanged('google-places', 'device-gps');
+      }
+    }
+  );
+  // show in the input field the previously selected location text (useful if the user has changed
+  // the input but without selecting a location from the suggestions list, and the input focus is lost)
+  $scope.gPlacesInputFocusLost = function(){
+    $scope.filter.autocompleteLocation = Map.getLocation();
+  }
   // detect location selection changing ($watchCollection does not work in this case)
   // used in 'ng-change' attribute. Only one location filter can be activated at the same time.
   $scope.locationSelectionChanged = function(locationMode, otherLocationMode){
+    if(locationMode == 'google-places' && $scope.filter.selectedLocation[locationMode]){
+      // the Google Places' checkbox has been activated, check if a location has been previously selected
+      if(Map.getLocation() == ''){
+        console.log('elija una ubicación de la lista de sugerencias antes de activar este filtro');
+        return;
+      }
+      //console.log('$scope.filter.autocompleteLocation input -->', $scope.filter.autocompleteLocation);
+      // scope.filter.autocompleteLocation is 'casc', domInputElement is 'Caso Vieoj,...'
+
+      return;
+
+    }
+
     // switch between location modes if neccesary ('google-places' | 'device-gps')
     if($scope.filter.selectedLocation[locationMode]){
       // activate location mode, check if the other mode is already activated to disable it if is neccesary
@@ -542,7 +590,7 @@ myApp.controller('RegistryCtrl', function($scope, $state) {
 
 
 
-myApp.controller('MapCtrl', function($scope, $state, $ionicPopup, Map, $window, $filter, $http) {
+myApp.controller('MapCtrl', function($scope, $state, $ionicPopup, Map, $window, $filter, $http, Map) {
 
   // recalculate map's height based on screen's height
   var screenHeight = $window.innerHeight - 105;
@@ -613,7 +661,7 @@ myApp.controller('MapCtrl', function($scope, $state, $ionicPopup, Map, $window, 
   var map = initializeMap(document.getElementById('mapa')); 
   Map.setMap(map);
 
-  var autocomplete = loadGooglePlacesAutocompleteFeature(document.getElementById('location-input'));
+  var autocomplete = loadGooglePlacesAutocompleteFeature(document.getElementById('location-input'), Map);
   Map.setAutocomplete(autocomplete);
 
 

@@ -34,7 +34,7 @@
         -->
 
         <ion-item ng-click="toggleCategories()" ng-class="{active: areCategoriesShown()}">
-          {{ 'menu.categories-item' | translate }}&nbsp;
+          {{ 'menu.categories-item' | translate }}&nbsp;{{Map.getLocation()}}
           <i class="icon" ng-class="areCategoriesShown() ? 'ion-arrow-up-b' : 'ion-arrow-down-b'"></i>
         </ion-item>
           <ion-item class="item-accordion" ng-repeat="category in translatedCategories" ng-show="areCategoriesShown()">
@@ -42,7 +42,7 @@
           </ion-item>
 
         <ion-item ng-click="toggleLocation()" ng-class="{active: isLocationShown()}">
-          {{ 'menu.location-item' | translate }} &nbsp;
+          {{ 'menu.location-item' | translate }} &nbsp;{{filter.autocompleteLocation}}
           <i class="icon" ng-class="isLocationShown() ? 'ion-arrow-up-b' : 'ion-arrow-down-b'"></i>
         </ion-item>
           <ion-item class="item-accordion" ng-show="isLocationShown()">
@@ -50,18 +50,15 @@
               <div class="checkbox checkbox-square  checkbox-assertive">
                 <input type="checkbox" ng-model="filter.selectedLocation['google-places']" ng-change="locationSelectionChanged('google-places', 'device-gps')">
               </div>
-              <div class="item location-autocomplete-div" style="">
+              <div class="item location-autocomplete-div">
                 <div class="location-inline-item location-autocomplete-search-img">
                   <i class="icon ion-search"></i>
                 </div>
-                <div class="location-inline-item" 
-                style="border: 1px solid #cccccc; border-radius:3px; overflow: hidden;">
-                  <span style0"display: block; overflow: hidden; padding-right:10px;">
+                <div class="location-inline-item location-autocomplete-input-div">
                     <input type="text" id="location-input" data-tap-disabled="true"
-                    ng-change="disableTap()" ng-model="filter.autocompleteLocation"
+                    ng-change="disableTap()" ng-model="filter.autocompleteLocation" ng-blur="gPlacesInputFocusLost()"
                     placeholder="{{ 'menu.location-autocomplete-search-placeholder' | translate }}"
-                    style="width: 100%;">
-                  </span> <!-- width: 140px !important; -->
+                    class="location-autocomplete-input">
                 </div>
               </div>
             </li>

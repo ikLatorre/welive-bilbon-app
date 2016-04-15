@@ -62,65 +62,47 @@ function initializeMap(domMapContainer){
 };
 
 // load and associate Google Places' Autocomplete object with the input element
-function loadGooglePlacesAutocompleteFeature(domInputElement){
-    //var domInputElement = document.getElementById('location-searcher');
-    //$scope.autocompleteObject = {};
-
-    /*if(showMarker){
-        var gipuzkoaBounds = new google.maps.LatLngBounds(  //Constructs a rectangle from the points at its south-west and north-east corners
-            new google.maps.LatLng(42.905017, -2.620573),   //south-west corner
-            new google.maps.LatLng(43.413902, -1.722441));  //north-east corner
-        // (Google Places) Create the autocomplete object, restricting the search to geographical location types.
-        $scope.autocompleteObject = new google.maps.places.Autocomplete(
-            /** @type {HTMLInputElement} * /
-            (domInputElement), {
-                types : [ 'geocode' ],
-                componentRestrictions : { country : 'es'},
-                bounds: gipuzkoaBounds
-            });
-    }else{ // Load autocomplete objecto to use in the searcher (without limit it).
-        autocompleteObject = new google.maps.places.Autocomplete(
-            (domInputElement), { types : [ 'geocode' ]
+function loadGooglePlacesAutocompleteFeature(domInputElement, MapFactory){
+    
+    var bilbaoBounds = new google.maps.LatLngBounds(  //Constructs a rectangle from the points at its south-west and north-east corners
+        new google.maps.LatLng(43.199927, -3.017116),   //south-west corner
+        new google.maps.LatLng(43.310109, -2.827070));  //north-east corner
+    // (Google Places) Create the autocomplete object, restricting the search to geographical location types.
+    var autocompleteObj = new google.maps.places.Autocomplete(
+        /** @type {HTMLInputElement} */
+        (domInputElement), {
+            types : [ 'geocode' ],
+            /*componentRestrictions : { country : 'es'},*/
+            bounds: bilbaoBounds
         });
-    }*/
-    // $scope.filter.googlePlacesAutocompleteObject
-     //var autocomplete = new google.maps.places.Autocomplete(input);
-    var autocomplete = new google.maps.places.Autocomplete(
-        (domInputElement), { types : [ 'geocode' ]
-    });
-
-   // 43.199927, -3.017116
-   // 43.310109, -2.827070
 
     // When the user selects an address from the dropdown:
-    google.maps.event.addListener(autocomplete, 'place_changed',
+    /*If the user enters the name of a Place that was not suggested by the control and presses the 
+    Enter key, or if a Place detail request fails, a place_changed event will be fired that contains 
+    the user input in the name property, with no other properties defined.*/
+    // This listener is triggered when the user selects a location from the list, and also when the checkbox is activated
+    google.maps.event.addListener(autocompleteObj, 'place_changed',
         function() {
             console.log('place_changed');
-            //if($scope.filter.selectedLocation['google-places']){
-                // the Google Places' autocomplete object has been changed. Apply filter only if
-                // this filter is activated
-                
-                //if(showMarker){ // If the user press 'enter' with the sidebar's searcher, but without selecting an item from the list
-                /*if(input.value == autocomplete.getPlace().name){
-                  alert('Seleccione una ubicación de la lista de sugerencias');
-                  return;
-            }*/
-            /*}else{
-                loadMap();
-                hideMenu();
-                $('#srch-text').val("");
-                $('#srch-text2').val("");
+            
+            // If the user press 'enter' with the sidebar's searcher, but without selecting an item from the list
+            if(//MapFactory.getLocation() == '' //domInputElement.value == '' 
+                // first time the place is not defined:
+                autocompleteObj.getPlace() == null 
+                // enter pressed without selecting or error getting the place:
+                || (autocompleteObj.getPlace() != null && domInputElement.value == autocompleteObj.getPlace().name)){ 
+                console.log('Seleccione una ubicación de la lista de sugerencias');
+                MapFactory.setLocation('');
+                return;
+            }else{
+                MapFactory.setLocation(domInputElement.value);
             }
-          }*/
-          //getLocalityFromAutocomplete(autocompleteObject, showMarker);
 
-
-          //}
-
+            return;
         }
     );
 
-    return autocomplete;
+    return autocompleteObj;
 }
 
 
