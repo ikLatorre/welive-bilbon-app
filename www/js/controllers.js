@@ -142,45 +142,18 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
   $scope.isLocationShown = function() {
     return $scope.filter.isLocationShown;
   };
-
-  // detect when 'place_changed' fires successfully (when 'Map.getLocation()' changes)
-  $scope.$watch(function() { return Map.getLocation(); }, 
-    function(newValue, oldValue) { 
-      console.log('cambiado Map.getLocation(), rellenar input');
-      $scope.filter.autocompleteLocation = newValue;
-    }
-  );
-  // if the user empty the input, remove previously selected location and force the user to select 
-  // another location 
-  $scope.$watch('filter.autocompleteLocation', 
-    function(newValue, oldValue) { 
-      if(newValue == ''){
-       Map.setLocation('');
-       // Remove Google Places' location filter
-       $scope.filter.selectedLocation['google-places'] = false;
-       $scope.locationSelectionChanged('google-places', 'device-gps');
-      }
-    }
-  );
-  // show in the input field the previously selected location text (useful if the user has changed
-  // the input but without selecting a location from the suggestions list, and the input focus is lost)
-  $scope.gPlacesInputFocusLost = function(){
-    $scope.filter.autocompleteLocation = Map.getLocation();
-  }
   // detect location selection changing ($watchCollection does not work in this case)
   // used in 'ng-change' attribute. Only one location filter can be activated at the same time.
   $scope.locationSelectionChanged = function(locationMode, otherLocationMode){
-    if(locationMode == 'google-places' && $scope.filter.selectedLocation[locationMode]){
+    if(locationMode == 'google-places' && $scope.filter.selectedLocation['google-places']){
       // the Google Places' checkbox has been activated, check if a location has been previously selected
       if(Map.getLocation() == ''){
-        console.log('elija una ubicación de la lista de sugerencias antes de activar este filtro');
-        return;
+        // (the user has not selected a location from the suggestin list or there was an error in
+        // 'place_changed' event getting it)
+        console.log("Select a location from the suggestion list before activate the Google Places' filter");
+        $scope.filter.selectedLocation[locationMode] = false; // don't activate the checkbox
+        return;  
       }
-      //console.log('$scope.filter.autocompleteLocation input -->', $scope.filter.autocompleteLocation);
-      // scope.filter.autocompleteLocation is 'casc', domInputElement is 'Caso Vieoj,...'
-
-      return;
-
     }
 
     // switch between location modes if neccesary ('google-places' | 'device-gps')
@@ -195,6 +168,22 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
       $scope.disableLocationFilter(locationMode); // disable filter
     }
   };
+  // if the user empty the input, remove previously selected location and force the user to select another one 
+  // if the Google Places' filter is not checked (otherwise the place will be stored and displayed when
+  // the input's focus is lost)
+  $scope.$watch('filter.autocompleteLocation', 
+    function(newValue, oldValue) { 
+      if(newValue == ''){ if(!$scope.filter.selectedLocation['google-places']) Map.setLocation(''); 
+      }
+    }
+  );
+
+  // update the Google Places' input field's value with the previously selected location text 
+  // (useful if the user has changed the input but without selecting a location from the suggestions list, 
+  //  and the input focus is lost (called in 'ng-blur' event of the input element))
+  $scope.updateGPlacesInput = function(){
+    $scope.filter.autocompleteLocation = Map.getLocation();
+  }
  
 
 

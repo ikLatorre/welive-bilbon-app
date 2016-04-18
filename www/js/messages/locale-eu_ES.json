@@ -19,7 +19,11 @@
  "menu.filter.category-search.loading-text": "Kategoria filtratzen, itxaron mesedez...",
  "menu.filter.category-search.error-popup-title": "Errorea",
  "menu.filter.category-search.error-popup-text": "Kategoria filtratzen errore bat gertatu da. Geroago berriz saiatu mesedez.",
- "menu.filter.category-search.error-ok-button-label": "Cerrar",
+ "menu.filter.category-search.error-ok-button-label": "Itxi",
+
+ "menu.filter.location-search.error-popup-title": "Errorea",
+ "menu.filter.location-search.error-popup-text": "Kokalekua lortzen errore bat gertatu da. Geroago berriz saiatu mesedez.",
+ "menu.filter.location-search.error-ok-button-label": "Itxi",
 
  "info-confirm-popup-title": "Bilbon",
  "info-confirm-popup-text": "Ziur zaude atera nahi duzula?",
@@ -29,7 +33,6 @@
 
  "map-page.title": "Mapa",
  "map-page.text": "Aztertu itzazu interes puntuak:",
-
 
 
 

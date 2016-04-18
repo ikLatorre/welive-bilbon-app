@@ -72,8 +72,9 @@ function loadGooglePlacesAutocompleteFeature(domInputElement, MapFactory){
         /** @type {HTMLInputElement} */
         (domInputElement), {
             types : [ 'geocode' ],
-            /*componentRestrictions : { country : 'es'},*/
-            bounds: bilbaoBounds
+            componentRestrictions: { country: 'es' },
+            bounds: bilbaoBounds //The area in which to search for places. 
+                                 // Results are biased towards, but not restricted to, places contained within these bounds.
         });
 
     // When the user selects an address from the dropdown:
@@ -83,7 +84,7 @@ function loadGooglePlacesAutocompleteFeature(domInputElement, MapFactory){
     // This listener is triggered when the user selects a location from the list, and also when the checkbox is activated
     google.maps.event.addListener(autocompleteObj, 'place_changed',
         function() {
-            console.log('place_changed');
+            console.log('"place_changed" event fired.');
             
             // If the user press 'enter' with the sidebar's searcher, but without selecting an item from the list
             if(//MapFactory.getLocation() == '' //domInputElement.value == '' 
@@ -91,10 +92,19 @@ function loadGooglePlacesAutocompleteFeature(domInputElement, MapFactory){
                 autocompleteObj.getPlace() == null 
                 // enter pressed without selecting or error getting the place:
                 || (autocompleteObj.getPlace() != null && domInputElement.value == autocompleteObj.getPlace().name)){ 
-                console.log('Seleccione una ubicación de la lista de sugerencias');
+                console.log("Select a location from the suggestion list before activate the Google Places' filter");
+
+                $ionicPopup.alert({
+                    title: $filter('translate')('menu.filter.location-search.error-popup-title'),
+                    template: $filter('translate')('menu.filter.location-search.error-popup-text'),
+                    okText: $filter('translate')('menu.filter.location-search.error-ok-button-label'),
+                    okType: 'button-assertive' 
+                });
+
                 MapFactory.setLocation('');
-                return;
             }else{
+                // store 'domInputElement' value, because the user written text ($scope.filter.autocompleteLocation)
+                // is not the entire location (e.g. use 'Caso Viejo,...' instead of 'casc')
                 MapFactory.setLocation(domInputElement.value);
             }
 
