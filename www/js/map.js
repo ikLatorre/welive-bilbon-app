@@ -87,7 +87,7 @@ function loadGooglePlacesAutocompleteFeature(domInputElement, MapFactory){
             console.log('"place_changed" event fired.');
             
             // If the user press 'enter' with the sidebar's searcher, but without selecting an item from the list
-            if(//MapFactory.getLocation() == '' //domInputElement.value == '' 
+            if(//MapFactory.getGPlacesLocation() == '' //domInputElement.value == '' 
                 // first time the place is not defined:
                 autocompleteObj.getPlace() == null 
                 // enter pressed without selecting or error getting the place:
@@ -101,11 +101,11 @@ function loadGooglePlacesAutocompleteFeature(domInputElement, MapFactory){
                     okType: 'button-assertive' 
                 });
 
-                MapFactory.setLocation('');
+                MapFactory.setGPlacesLocation('');
             }else{
                 // store 'domInputElement' value, because the user written text ($scope.filter.autocompleteLocation)
                 // is not the entire location (e.g. use 'Caso Viejo,...' instead of 'casc')
-                MapFactory.setLocation(domInputElement.value);
+                MapFactory.setGPlacesLocation(domInputElement.value);
             }
 
             return;

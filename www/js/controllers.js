@@ -42,10 +42,10 @@ myApp.factory('Map', function() {
         map.googlePlacesAutocompleteObj = googlePlacesAutocompleteObj;
       },
       // manage location selection when the checkbox is checked:
-      getLocation: function(){
+      getGPlacesLocation: function(){
         return map.selectedLocationInput;
       },
-      setLocation: function(locationInputText){
+      setGPlacesLocation: function(locationInputText){
         map.selectedLocationInput = locationInputText;
       },
 
@@ -85,15 +85,19 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
 
   // Build spanish categories' array and initialize $scope.filter.selectedCategories array
   angular.forEach(categories, function(item){
+    if(item.id != 0){ // avoid dataset of citizens (it includes all categories)
       $scope.spanishCategoriesArray.push({id:item.id, datasetId:item.datasetId, jsonId:item.jsonId, 
         label:item.es_ES, img_src:item.img_src}); 
       $scope.filter.selectedCategories[item.id] = false; // initialize model's categories to false (checkbox selection)
+    } 
   });
   $scope.translatedCategories = $scope.spanishCategoriesArray; // initialize categories' language to spanish
   // Build basque categories' array
   angular.forEach(categories, function(item){
+    if(item.id != 0){
       $scope.basqueCategoriesArray.push({id:item.id, datasetId:item.datasetId, jsonId:item.jsonId, 
         label:item.eu_ES, img_src:item.img_src});  
+    }
   });
 
   // Define functionality for menu's categories' item (toggle element)
@@ -147,7 +151,7 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
   $scope.locationSelectionChanged = function(locationMode, otherLocationMode){
     if(locationMode == 'google-places' && $scope.filter.selectedLocation['google-places']){
       // the Google Places' checkbox has been activated, check if a location has been previously selected
-      if(Map.getLocation() == ''){
+      if(Map.getGPlacesLocation() == ''){
         // (the user has not selected a location from the suggestin list or there was an error in
         // 'place_changed' event getting it)
         console.log("Select a location from the suggestion list before activate the Google Places' filter");
@@ -173,16 +177,15 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
   // the input's focus is lost)
   $scope.$watch('filter.autocompleteLocation', 
     function(newValue, oldValue) { 
-      if(newValue == ''){ if(!$scope.filter.selectedLocation['google-places']) Map.setLocation(''); 
+      if(newValue == ''){ if(!$scope.filter.selectedLocation['google-places']) Map.setGPlacesLocation(''); 
       }
     }
   );
-
   // update the Google Places' input field's value with the previously selected location text 
   // (useful if the user has changed the input but without selecting a location from the suggestions list, 
   //  and the input focus is lost (called in 'ng-blur' event of the input element))
   $scope.updateGPlacesInput = function(){
-    $scope.filter.autocompleteLocation = Map.getLocation();
+    $scope.filter.autocompleteLocation = Map.setGPlacesLocation();
   }
  
 
@@ -249,7 +252,7 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
       //headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       headers: { "Content-Type": "text/plain" },
       data: 'SELECT * FROM rootTable WHERE municipalityCode = 480020;',
-      timeout: 10000
+      timeout: 13000
     }).then(function successCallback(successCallback) {
           // this callback will be called asynchronously when the successCallback is available
           //console.log(successCallback.data);
