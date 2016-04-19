@@ -2,6 +2,15 @@
   <ion-nav-title>
     {{ 'map-page.title' | translate }}
   </ion-nav-title>
+  <ion-nav-buttons side="right">
+      <button class="button button-icon button-clear ion-log-in" 
+        ng-show="getCurrentUserId() == null" ng-click="openLoginModal()"></button>
+      <button class="button button-icon button-clear ion-log-out" 
+        ng-hide="getCurrentUserId() == null" ng-click="doLogout()"></button>
+
+      <button class="button button-icon button-clear ion-ios-information-outline" ui-sref="app.about"></button>
+  </ion-nav-buttons>
+
   <ion-content class="cuerposearch">
     <h2 class="colortitulomapa titulo">{{ 'map-page.text' | translate }}</h2>
 	  <div id="mapa-new-button">

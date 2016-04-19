@@ -1,9 +1,7 @@
 {
 
  "all-menu.back-button-label": "Atrás", 
- "menu.title": "Menú",
- "menu.login-item": "Iniciar sesión",
- "menu.logout-item": "Cerrar sesión",
+ "menu.title": "Menú | Filtrar",
  "menu.map-item": "Mapa",
  "menu.categories-item": "Categorías",
  
@@ -11,7 +9,9 @@
  "menu.location-autocomplete-search-placeholder": "Buscar ubicación...",
  "menu.location-gps-button-text": "Mi ubicación",
 
- "menu.about-item": "Información y términos de uso",
+ "menu.text-item": "Texto libre",
+ "menu.text-search-placeholder": "Buscar por texto...",
+
  "menu.language-item": "Idioma",
  "menu.exit-item": "Salir",
  "menu.exit-item-text": "Cerrando aplicación...",
@@ -38,7 +38,7 @@
 
 
 
- "info-alert-popup-title": "Bilbozkatu",
+ "info-alert-popup-title": "Bilbon",
  "info-alert-popup-ok-button-label": "Aceptar",
  "error-alert-popup-title": "Error",
  "error-alert-popup-ok-button-label": "Cerrar",

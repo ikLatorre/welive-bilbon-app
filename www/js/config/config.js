@@ -5,9 +5,10 @@ var config_module = angular.module('bilbonApp.config', [])
 
 	.constant('WELIVE_SERVICE_ID', 'bilbon') 
 
-	.constant('WELIVE_DATASET_URL','https://dev.welive.eu/dev/api/ods/') 
+	.constant('WELIVE_DATASET_API_URL','https://dev.welive.eu/dev/api/ods/') 
 
-
+	// radio filtro localizacion
+	// timeout for gps-location
 
 	//.constant('BILBOZKATU_BB_URL','http://donosti.eurohelp.es:8087/BilbozkatuBB/') 
 	//.constant('BILBOZKATU_BB_URL','http://172.16.250.3:8087/BilbozkatuBB/') 
