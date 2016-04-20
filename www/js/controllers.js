@@ -27,6 +27,7 @@ myApp.factory('Map', function() {
   map.mapObj = null;
   map.googlePlacesAutocompleteObj = null;
   map.selectedLocationInput = ''; // used for Google Places' input element
+  map.searchedTextInput = ''; // used for text's filter
 
   return {
       getMap: function(){
@@ -41,14 +42,20 @@ myApp.factory('Map', function() {
       setAutocomplete: function(googlePlacesAutocompleteObj){
         map.googlePlacesAutocompleteObj = googlePlacesAutocompleteObj;
       },
-      // manage location selection when the checkbox is checked:
-      getGPlacesLocation: function(){
+      // manage selected location:
+      getGPlacesLocationToSearch: function(){
         return map.selectedLocationInput;
       },
-      setGPlacesLocation: function(locationInputText){
+      setGPlacesLocationToSearch: function(locationInputText){
         map.selectedLocationInput = locationInputText;
       },
-
+      // manage searched text:
+      getTextToSearch: function(){
+        return map.searchedTextInput;
+      },
+      setTextToSearch: function(searchedTextInput){
+        map.searchedTextInput = searchedTextInput;
+      }
   }
 });
 
@@ -179,7 +186,7 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
   $scope.locationSelectionChanged = function(locationMode, otherLocationMode) {
     if(locationMode == 'google-places' && $scope.filter.selectedLocation['google-places']){
       // the Google Places' checkbox has been activated, check if a location has been previously selected
-      if(Map.getGPlacesLocation() == ''){
+      if(Map.getGPlacesLocationToSearch() == ''){
         // (the user has not selected a location from the suggestin list or there was an error in
         // 'place_changed' event getting it)
         console.log("Select a location from the suggestion list before activate the Google Places' filter");
@@ -205,16 +212,15 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
   // the input's focus is lost)
   $scope.$watch('filter.autocompleteLocation', 
     function(newValue, oldValue) { 
-      if(newValue == ''){ if(!$scope.filter.selectedLocation['google-places']) Map.setGPlacesLocation(''); 
-      }
+      if(newValue == ''){ if(!$scope.filter.selectedLocation['google-places']) Map.setGPlacesLocationToSearch(''); }
     }
   );
   // update the Google Places' input field's value with the previously selected location text 
   // (useful if the user has changed the input but without selecting a location from the suggestions list, 
   //  and the input focus is lost (called in 'ng-blur' event of the input element))
   $scope.updateGPlacesInput = function(){
-    $scope.filter.autocompleteLocationFilterInput = Map.getGPlacesLocation();
-  }
+    $scope.filter.autocompleteLocationFilterInput = Map.getGPlacesLocationToSearch();
+  };
   // Called by filter's 'gps/My location' item, this function do the same as <label for="device_gps_checkbox">.
   // It is used because the 'label' tag changes the item's height, being different than the previous
   // 'autocomplete' item's height implemented with div's. 
@@ -222,14 +228,15 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
   $scope.gpsFilterClicked = function(){
     $scope.filter.selectedLocation['device-gps'] = $scope.filter.selectedLocation['device-gps']? false: true;
     $scope.locationSelectionChanged('device-gps', 'google-places');
-  }
+  };
 
 
 
-  // ** Configure location for the filter **
+  // ** Configure 'text' for the filter **
+
   // Define functionality for menu's location item (toggle element)
   $scope.toggleText = function() {
-    if ($scope.isLocationShown()) {
+    if ($scope.isTextShown()) {
       $scope.filter.isTextShown = false;
     }
     else {
@@ -242,21 +249,38 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
     return $scope.filter.isTextShown;
   };
   // detect text's filter selection changing ($watchCollection does not work in this case)
-  // used in 'ng-change' attribute and aldo when the search icon is clicked.
-  $scope.textSelectionChanged = function(calledFromIcon) {
-    if(calledFromIcon && !$scope.filter.selectedText) return;
+  // used in 'ng-change' attribute and also when the search icon is clicked.
+  $scope.textSelectionChanged = function() {
     if($scope.filter.selectedText){
-        if($scope.filter.textFilterInput == null || $scope.filter.textFilterInput == ''){
-          $scope.filter.selectedText = false;
-          console.log('Introduce a text to search, please.')
-        }else{
-          $scope.callTextFilter($scope.filter.textFilterInput);
-        }
+      $scope.searchByText();
     }else{
       $scope.disableTextFilter(); // disable filter
     }
   };
-
+  // if the user has introduced text, execute the text's filter.
+  // called when text's filter is activated or texts search button is clicked.
+  $scope.searchByText = function() {
+    if($scope.filter.textFilterInput == null || $scope.filter.textFilterInput == ''){
+      $scope.filter.selectedText = false;
+      console.log('Introduce a text to search, please.');
+    }else{
+      $scope.filter.selectedText = true;
+      Map.setTextToSearch($scope.filter.textFilterInput);
+      $scope.callTextFilter($scope.filter.textFilterInput);
+    }
+  };
+  // remove searched text if the checkbox is not activated and the user removes the input value
+  $scope.$watch('filter.textFilterInput', 
+    function(newValue, oldValue) { 
+      if(newValue == ''){ if(!$scope.filter.selectedText) Map.setTextToSearch(''); }
+    }
+  );
+  // update the text's input field's value with the previously searched text 
+  // (useful if the user has changed the input but without executing another search, 
+  //  and the input focus is lost (called in 'ng-blur' event of the input element))
+  $scope.updateTextInput = function(){
+    $scope.filter.textFilterInput = Map.getTextToSearch();
+  };
 
 
 
@@ -372,7 +396,7 @@ myApp.controller('AppCtrl', function($scope, $rootScope, $state, $timeout, $tran
   };
   // Add text's filter
   $scope.callTextFilter = function(textToSearch){
-    console.log('Applying text filter...');
+    console.log('Applying text filter... (searching "' + textToSearch + '")');
 
   };
   // Remove text's filter.

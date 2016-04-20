@@ -86,17 +86,17 @@
           <ion-item class="item-accordion" ng-show="isTextShown()">
             <li class="item item-checkbox">
               <div class="checkbox checkbox-square checkbox-assertive">
-                <input type="checkbox" ng-model="filter.selectedText" ng-change="textSelectionChanged(false)">
+                <input type="checkbox" ng-model="filter.selectedText" ng-change="textSelectionChanged()">
               </div>
               <div class="item location-autocomplete-div">
                 <div class="location-inline-item location-autocomplete-search-img">
-                  <i class="icon ion-search" ng-click="textSelectionChanged(true)"></i>
+                  <button class="icon ion-search" ng-click="searchByText()"></button>
                 </div>
                 <div class="location-inline-item location-autocomplete-input-div">
                     <input type="text" id="location-input" data-tap-disabled="true"
-                    ng-model="filter.textFilterInput" 
+                    ng-model="filter.textFilterInput" ng-blur="updateTextInput()"
                     placeholder="{{ 'menu.text-search-placeholder' | translate }}"
-                    class="location-autocomplete-input">
+                    class="text-search-input">
                 </div>
               </div>
             </li>

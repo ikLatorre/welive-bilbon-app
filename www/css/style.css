@@ -603,6 +603,9 @@ input[type="checkbox"] + .track .handle .handle-text-false {
 .location-autocomplete-input {
   max-width: 93%;
 }
+.text-search-input {
+  max-width: 80%;
+}
 .location-gpslocation-div {
   padding: 0px; 
   border:0px; 
