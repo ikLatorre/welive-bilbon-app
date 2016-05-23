@@ -17,7 +17,7 @@ function appCtrl(
   $ionicHistory, 
   $ionicPopup, 
   $filter, 
-  LoginService, 
+  UserLocalStorage, 
   Map, 
   $http, 
   $ionicPopup, 
@@ -414,34 +414,25 @@ function appCtrl(
 
   // ** Configure user login **
 
-  $scope.loginData = {}; // initialize form data for the login modal
-  //LoginService.removeUserData(); 
+  //$scope.loginData = {}; // initialize form data for the login modal
+  UserLocalStorage.removeUserData(); 
+
+  // Define function to show menu's login/logout items
+  $scope.getCurrentUserId = function (){
+      return UserLocalStorage.getUserId();
+  }
 
   // Create the login modal that we will use later
-  $ionicModal.fromTemplateUrl('templates/login.html', {
+  /*$ionicModal.fromTemplateUrl('templates/login.html', {
       scope: $scope,
       animation: 'slide-in-up'
   }).then(function(modal) {
       $scope.modal = modal;
-  });
+  });*/
 
-  // Define function to show menu's login/logout items
-  $scope.getCurrentUserId = function (){
-      return LoginService.getUserId();
-  }
-
-  // Open the login modal
-  $scope.openLoginModal = function() {
-    $scope.modal.show();
-  };
-
-  // Triggered in doLogin() to close it
-  $scope.closeLoginModal = function() {
-    $scope.modal.hide();
-  };
 
   // Perform the login action when the user submits the login form
-  $scope.doLogin = function() {
+  /*$scope.doLogin = function() {
     console.log('Doing login', $scope.loginData.userId);
     // Simulate a login delay. Remove this and replace with your login
     // code if using a login system
@@ -454,26 +445,26 @@ function appCtrl(
               userId: $scope.loginData.userId
             }
         };
-        LoginService.setUserData(currentUserSession)
+        UserLocalStorage.setUserData(currentUserSession)
         $scope.closeLoginModal();
     }, 500)
     .then(function(){
           var myPopup = $ionicPopup.show({
             template: "<center>" + $filter('translate')('info-alert-popup-login-label-left') + "'" 
-              + LoginService.getUserId() + "'" + $filter('translate')('info-alert-popup-login-label-right') + "</center>",
+              + UserLocalStorage.getUserId() + "'" + $filter('translate')('info-alert-popup-login-label-right') + "</center>",
             cssClass: 'custom-class custom-class-popup'
           });
           $timeout(function() { myPopup.close(); }, 1800); //close the popup after 1.8 seconds for some reason
       }//, function(error) { }
     );
 
-  };
+  };*/
 
-  $scope.doLogout = function() {
+  /*$scope.doLogout = function() {
     // Simulate a login delay
     $timeout(function() {
         console.log('Doing logout');
-        LoginService.removeUserData(); 
+        UserLocalStorage.removeUserData(); 
         $scope.loginData = {};
     }, 200)
     .then(function(){
@@ -484,7 +475,7 @@ function appCtrl(
           $timeout(function() { myPopup.close(); }, 1800);
       }//, function(error) { }
     );
-  }
+  }*/
 
   $scope.$on('$destroy', function() {
     $scope.modal.remove();

@@ -36,9 +36,14 @@
  "map-page.title": "Mapa",
  "map-page.text": "Consulte los puntos de interés:",
 
+ "login.title": "Inicio de sesión",
+ "login.text": "Comparte puntos de interés con los ciudadanos.",
+ "login.credentials-button": "Iniciar sesión",
 
+ "info-alert-popup-login-label-left": "Ha iniciado sesión como ",
+ "info-alert-popup-login-label-right": ".",
 
-
+ 
 
  "info-alert-popup-title": "Bilbon",
  "info-alert-popup-ok-button-label": "Aceptar",
@@ -46,8 +51,17 @@
  "error-alert-popup-ok-button-label": "Cerrar",
  "info-confirm-popup-login-button-label": "Iniciar sesión",
  "info-alert-popup-logout-label": "Ha cerrado la sesión.",
- "info-alert-popup-login-label-left": "Ha iniciado sesión como ",
- "info-alert-popup-login-label-right": ".",
+
+ "login-page.back-button": "Atrás",
+ "login-page.title": "Inicio de sesión",
+ "login-page.text": "Acceda con sus credenciales de usuario",
+ "login-page.user-label": "Usuario",
+ "login-page.user-placeholder": "Introduzca usuario",
+ "login-page.pass-label": "Contraseña",
+ "login-page.pass-placeholder": "Introduzca contraseña",
+ "login-page.submit-button-label": "Iniciar sesión",
+ "login-page.register-text": "¿No tiene una cuenta?",
+ "login-page.register-link-label": "Regístrese",
 
  "proposal-map-page.proposals-count-error-label": "No se ha podido obtener el número de propuestas por zona.",
  "proposal-map-page.proposals-label-sing": "petición",
@@ -135,17 +149,6 @@
  "proposal-statistics-page.others.status-item": "Estado:",
  "proposal-statistics-page.others.user-item": "Usuario:",
  "proposal-statistics-page.others.date-item": "Fecha de creación:",
-
- "login-page.back-button": "Atrás",
- "login-page.title": "Inicio de sesión",
- "login-page.text": "Acceda con sus credenciales de usuario",
- "login-page.user-label": "Usuario",
- "login-page.user-placeholder": "Introduzca usuario",
- "login-page.pass-label": "Contraseña",
- "login-page.pass-placeholder": "Introduzca contraseña",
- "login-page.submit-button-label": "Iniciar sesión",
- "login-page.register-text": "¿No tiene una cuenta?",
- "login-page.register-link-label": "Regístrese",
 
  "register-page.title": "Registro",
  "register-page.text": "Por favor, rellene el siguiente formulario para registrarse:",

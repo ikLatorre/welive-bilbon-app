@@ -36,7 +36,12 @@
  "map-page.title": "Mapa",
  "map-page.text": "Aztertu itzazu interes puntuak:",
 
+ "login.title": "Saio hasiera",
+ "login.text": "Interes puntuak eskaini herritarrei.",
+ "login.credentials-button": "Saioa hasi",
 
+ "info-alert-popup-login-label-left": "",
+ "info-alert-popup-login-label-right": " bezala saioa ireki duzu.",
 
 
 
@@ -46,8 +51,17 @@
  "error-alert-popup-ok-button-label": "Itxi",
  "info-confirm-popup-login-button-label": "Saioa hasi",
  "info-alert-popup-logout-label": "Itxi",
- "info-alert-popup-login-label-left": "",
- "info-alert-popup-login-label-right": " bezala saioa ireki duzu.",
+
+ "login-page.back-button": "Atzera",
+ "login-page.title": "Saio hasiera",
+ "login-page.text": "Zure erabiltzaile datuekin sartu",
+ "login-page.user-label": "Erabiltzailea",
+ "login-page.user-placeholder": "Erabiltzailea sartu",
+ "login-page.pass-label": "Pasahitza",
+ "login-page.pass-placeholder": "Pasahitza sartu",
+ "login-page.submit-button-label": "Saioa hasi",
+ "login-page.register-text": "Ez duzu konturik?",
+ "login-page.register-link-label": "Erregistratu",
 
  "proposal-map-page.proposals-count-error-label": "Ez da leku bakoitzetik eskaera kopurua lortzerik izan.",
  "proposal-map-page.proposals-label-sing": "eskaera",
@@ -135,17 +149,6 @@
  "proposal-statistics-page.others.status-item": "Egoera:",
  "proposal-statistics-page.others.user-item": "Erabiltzailea:",
  "proposal-statistics-page.others.date-item": "Sortze data:",
-
- "login-page.back-button": "Atzera",
- "login-page.title": "Saio hasiera",
- "login-page.text": "Zure erabiltzaile datuekin sartu",
- "login-page.user-label": "Erabiltzailea",
- "login-page.user-placeholder": "Erabiltzailea sartu",
- "login-page.pass-label": "Pasahitza",
- "login-page.pass-placeholder": "Pasahitza sartu",
- "login-page.submit-button-label": "Saioa hasi",
- "login-page.register-text": "Ez duzu konturik?",
- "login-page.register-link-label": "Erregistratu",
 
  "register-page.title": "Erregistroa",
  "register-page.text": "Formularioa bete ezazu erregistratzeko, mesedez:",

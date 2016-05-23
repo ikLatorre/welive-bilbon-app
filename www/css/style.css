@@ -655,3 +655,13 @@ input[type="checkbox"] + .track .handle .handle-text-false {
   border-radius:6px;
   box-shadow:0 0 9px rgba(0,0,0,0.8);
 }
+
+
+/* Login page */
+.div-login {
+    text-align: center;
+}
+.div-login-text {
+    margin: 20px;
+    font-size: large;
+}

@@ -1,7 +1,8 @@
 
-angular.module('starter.services', [])
-    .factory('Map', map)
-    .factory('LoginService', loginService);
+var bilbonAppServices = angular.module('starter.services', []);
+
+bilbonAppServices
+    .factory('Map', map);
 
 
 /**
@@ -43,24 +44,3 @@ function map(){
 	  }
 	}
 }
-
-
-
-/**
-* @desc get and set user's data
-*/
-function loginService(localStorageService){
-    return {
-        getUserId: function() {
-          var userData = localStorageService.get('userData');
-          if(userData != null) return JSON.parse(userData).currentUser.userId;
-          else userData;
-        },
-        setUserData: function(userData) {
-          return localStorageService.set('userData', JSON.stringify(userData));
-        },
-        removeUserData: function() {
-          return localStorageService.remove('userData');
-        }
-    };
-};

@@ -4,8 +4,8 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic','ionic.service.core', 'starter.controllers', //'starter.loginControllers',
-  'starter.services', 'bilbonApp.config', 'pascalprecht.translate', 'LocalStorageModule', ])
+angular.module('starter', ['ionic','ionic.service.core', 'starter.controllers', 'starter.services', 
+  'bilbonApp.config', 'pascalprecht.translate', 'LocalStorageModule'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -72,6 +72,16 @@ angular.module('starter', ['ionic','ionic.service.core', 'starter.controllers', 
         }
       },
       resolve: termsCtrl.resolve
+    })
+    
+    .state('app.login', {
+      url: '/login',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/login.html',
+          controller: 'LoginCtrl'
+        }
+      }
     })
 
     .state('app.map', {

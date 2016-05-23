@@ -3,7 +3,7 @@ var config_module = angular.module('bilbonApp.config', [])
 	//.constant('APP_NAME','WELIVE - Bilbozkatu')
 	//.constant('APP_VERSION','0.1')
 
-	.constant('WELIVE_SERVICE_ID', 'bilbon') 
+	.constant('WELIVE_SERVICE_ID', 'es.eurohelp.welive.bilbon') 
 
 	.constant('WELIVE_DATASET_API_URL','https://dev.welive.eu/dev/api/ods/') 
 

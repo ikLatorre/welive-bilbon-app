@@ -1,0 +1,30 @@
+<ion-view view-title="{{ 'login.title' | translate }}">
+    <!--<ion-nav-bar class="bar-estable"></ion-nav-bar>-->
+    <ion-content class="fondo">
+
+        <div class="movement slideInUp animated">
+
+            <img src="http://www.bilbaoactual.com/wp-content/uploads/2015/10/dp_bilbao_dg_im_01.jpg_369272544.jpg" class="imagen_peticion"/>
+
+            <div class="div-login titulo slideInLeft animated2">
+                <!--<div class="div-login-panel">
+                    <p class="div-login-image-text">
+                        <img class="div-login-image" src="img/auzonet.png">
+                        Auzonet
+                    </p>
+                </div>-->
+
+                <p class="div-login-text">
+                    {{'login.text' | translate}}
+                </p>
+
+                <button ng-click="credentialsLogin()" class="button button-assertive">
+                    {{'login.credentials-button' | translate}}
+                </button>
+            </div>
+
+        </div>
+
+    </ion-content>
+</ion-view>
+
