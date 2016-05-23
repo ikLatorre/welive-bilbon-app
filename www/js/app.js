@@ -4,10 +4,10 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic','ionic.service.core', 'starter.controllers', 'bilbonApp.config',
-  'LocalStorageModule', 'pascalprecht.translate'])
+angular.module('starter', ['ionic','ionic.service.core', 'starter.controllers', //'starter.loginControllers',
+  'starter.services', 'bilbonApp.config', 'pascalprecht.translate', 'LocalStorageModule', ])
 
-.run(function($ionicPlatform, $ionicPopup, $timeout) {
+.run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -20,7 +20,6 @@ angular.module('starter', ['ionic','ionic.service.core', 'starter.controllers', 
       // from snapping when text inputs are focused. Ionic handles this internally for
       // a much nicer keyboard experience.
       cordova.plugins.Keyboard.disableScroll(true);
-
     }
     if (window.StatusBar) {
       // org.apache.cordova.statusbar required
@@ -31,15 +30,14 @@ angular.module('starter', ['ionic','ionic.service.core', 'starter.controllers', 
   });
 })
 
-.config(function($stateProvider, $urlRouterProvider, $translateProvider, $ionicConfigProvider,
-                 localStorageServiceProvider, WELIVE_SERVICE_ID) {
-
+.config(function($stateProvider, $urlRouterProvider, $translateProvider, localStorageServiceProvider, WELIVE_SERVICE_ID) {
+                  // $ionicConfigProvider
   $translateProvider.useStaticFilesLoader({
     prefix: 'js/messages/locale-', 
     suffix: '.json'
   });
   $translateProvider.preferredLanguage('es_ES'); // eu-ES | es-ES
-  $translateProvider.useSanitizeValueStrategy('escape'); // to avoid Cross-site Scripting (XSS) attacks
+  $translateProvider.useSanitizeValueStrategy('escape'); // avoid Cross-site Scripting (XSS) attacks
 
   localStorageServiceProvider
       .setPrefix(WELIVE_SERVICE_ID)
@@ -65,23 +63,15 @@ angular.module('starter', ['ionic','ionic.service.core', 'starter.controllers', 
       controller: 'AppCtrl'
     })
 
-    .state('app.login', {
-      url: '/login',
+    .state('app.terms', {
+      url: '/terms',
       views: {
         'menuContent': {
-          templateUrl: 'templates/login.html',
+          templateUrl: 'templates/terms.html',
+          controller: 'TermsCtrl'
         }
-      }
-    })
-
-    .state('app.registry', {
-      url: '/registry',
-      views: {
-        'menuContent': {
-          templateUrl: 'templates/registry.html',
-          controller: 'RegistryCtrl'
-        }
-      }
+      },
+      resolve: termsCtrl.resolve
     })
 
     .state('app.map', {
@@ -94,22 +84,22 @@ angular.module('starter', ['ionic','ionic.service.core', 'starter.controllers', 
       }
     })
 
-    .state('app.create', {
-      url: '/create',
+    .state('app.poi', {
+      url: '/poi/:poiId',
       views: {
         'menuContent': {
-          templateUrl: 'templates/create.html',
-          controller: 'CreateCtrl'
+          templateUrl: 'templates/poi-details.html',
+          controller: 'POIDetailsCtrl'
         }
       }
     })
 
-    .state('app.proposal', {
-      url: '/poi/:poiId',
+    .state('app.create', {
+      url: '/create',
       views: {
         'menuContent': {
-          templateUrl: 'templates/poi.html',
-          controller: 'POICtrl'
+          templateUrl: 'templates/create-poi.html',
+          controller: 'CreatePOICtrl'
         }
       }
     })
@@ -118,12 +108,13 @@ angular.module('starter', ['ionic','ionic.service.core', 'starter.controllers', 
       url: '/about',
       views: {
         'menuContent': {
-          templateUrl: 'templates/about.html'
+          templateUrl: 'templates/about.html',
+          controller: 'AboutCtrl'
         }
       }
     });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/map');
+  $urlRouterProvider.otherwise('/app/terms');
 
 });

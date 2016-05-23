@@ -3,13 +3,33 @@
     {{ 'about-page.title' | translate }}
   </ion-nav-title>
   <ion-content>
+
+    <img src="http://www.bilbaoactual.com/wp-content/uploads/2015/10/dp_bilbao_dg_im_01.jpg_369272544.jpg" class="imagen_peticion"/> 
+    <a class="card app-version">
+      <div class="item header_peticion app-version-div">
+        <p>BilbOn 1.0</p>
+      </div>
+    </a>
+
     <div class="movement slideInUp animated">
-      <img src="http://www.bilbaoactual.com/wp-content/uploads/2015/10/dp_bilbao_dg_im_01.jpg_369272544.jpg" class="imagen_peticion"/> 
-      <div class="datos_detalle_peticion titulo slideInLeft animated2"><h2>{{ 'about-page.subtitle' | translate }}</h2>  	
-          <p>{{ 'about-page.text' | translate }}</p>
-		  <div class="about_logos"></div>
+      <div class="datos_detalle_peticion titulo slideInLeft animated2 app-description">
+          <h2>{{ 'about-page.subtitle' | translate }}</h2>    
+          <p>{{ 'about-page.text-1' | translate }}</p>
+          <p>{{ 'about-page.text-2' | translate }}</p>
+          <p>{{ 'about-page.text-3' | translate }}</p>
+          <p>{{ 'about-page.text-4' | translate }}</p>
       </div>
 
-  	</div>
+      <div class="datos_detalle_peticion div-questionnaire" ng-hide="!showSurvey">
+          <p>{{'about.survey.text' | translate}}</p>
+          <button class="button button-full button-assertive" ng-click="launchSurvey()">
+            <i class="icon ion-clipboard"></i>
+            {{ 'about.survey.button' | translate }}
+          </button>
+      </div>
+
+      <div class="about_logos"></div>
+    </div>
+
   </ion-content>
 </ion-view>

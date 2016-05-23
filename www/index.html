@@ -9,9 +9,11 @@
     <!--<meta http-equiv="Content-Security-Policy" content="default-src *; script-src &apos;self&apos; &apos;unsafe-inline&apos; &apos;unsafe-eval&apos; *; style-src  &apos;self&apos; &apos;unsafe-inline&apos; *">-->
 
     <title></title>
-    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-	<link href="css/splash.css" rel="stylesheet">
+    <link rel="stylesheet" href="lib/ionic/css/ionic.css">
+    <link rel="stylesheet" href="css/splash.css">
+    <link rel="stylesheet" href="css/terms.css">
+    <link rel="stylesheet" href="css/style.css">
+	
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?language=es&amp;libraries=places"></script> 
 
     <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
@@ -22,7 +24,7 @@
     <script src="lib/ionic/js/ionic.bundle.js"></script>
     
     <script src="lib/ionic-platform-web-client/dist/ionic.io.bundle.min.js"></script>
-    <script src="lib/ngCordova/dist/ng-cordova.min.js"></script> <!-- Quitar? se puso para cordova-plugin-geolocation que no se ha usado-->
+    <script src="lib/ngCordova/dist/ng-cordova.min.js"></script> <!-- Quitar? es para cordova-plugin-geolocation y no se ha usado-->
     <script src="lib/angular-local-storage/dist/angular-local-storage.min.js"></script>
     <script src="lib/angular-translate/angular-translate.min.js"></script>
     <script src="lib/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js"></script>
@@ -30,9 +32,19 @@
     <!-- your app's js -->
     <script type="text/javascript" src="js/config/config.js"></script>
     <script type="text/javascript" src="js/config/categories.js"></script>
-    <script type="text/javascript" src="js/map.js"></script>
+
     <script src="js/app.js"></script>
-    <script src="js/controllers.js"></script>
+    <script src="js/controllers/controllers.js"></script>
+    <script src="js/controllers/termsCtrl.js"></script>
+    <!--<script src="js/controllers/loginCtrl.js"></script>-->
+    <script src="js/controllers/mapCtrl.js"></script>
+    <script src="js/controllers/poiDetailsCtrl.js"></script>
+    <script src="js/controllers/createPOICtrl.js"></script>
+    <script src="js/controllers/aboutCtrl.js"></script>
+
+    <script src="js/services.js"></script>
+    <script src="js/lang-toggle.directive.js"></script>
+    <script type="text/javascript" src="js/map.js"></script>
     
     <!-- cordova script (this will be a 404 during development) -->
     <!-- Cordova is bootstrapped by ionic-platform-web-client, uncomment this if you remove ionic-platform-web-client... -->
@@ -40,8 +52,8 @@
   </head>
 
   <body ng-app="starter">
+
     <!-- Uncomment below to enable splash screen -->
-    <!-- Splash screen of Bilbozkatu * -->
     <div id="splash" class="animated fadeOutUp">
        <div id="splash_logo" class="animated bounceInDown"></div>
        <div id="splash_text" class="animated_fast fadeInUp"></div>

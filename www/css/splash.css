@@ -45,20 +45,20 @@ height:20%;
  background-size:contain;
  position:absolute;
  left:17%;
- bottom:17%;
+ bottom:12%;
  animation-delay:7.8s;
   -webkit-animation-delay:7.8s;
  }
  
 #splash_sub_text {
-    width: 70%;
+    width: 60%;
     height: 10%;
     background-image: url(../img/splash_assets/logo_sub_text.svg);
     background-repeat: no-repeat;
     background-size: contain;
     position: absolute;
     left: 19.5%;
-    bottom: 11%;
+    bottom: 7%;
 	animation-delay: 8.2s;
      -webkit-animation-delay: 8.2s;
 }

@@ -1,5 +1,7 @@
 {
-
+ "terms.title": "Erabilera-baldintzak",
+ "terms.refused-alert-text": "Bilbozkatu aplikazioan sartzeko erabilera-baldintzak onartu itzazu",
+ 
  "all-menu.back-button-label": "Atzera", 
  "menu.title": "Menua | Filtratu ",
  "menu.map-item": "Mapa",
@@ -161,6 +163,13 @@
 
  "about-page.title": "About",
  "about-page.subtitle": "Informazio eta erabilera-baldintzak",
- "about-page.text": "This project has received funding from the European Union’s H2020 Programme for research, technological development and demonstration under grant agreement No. 645845."
+ "about-page.text-1": "BilbOn aplikazioak Bilboko hiriak eskaintzen dituen zerbitzu publiko desberdinen kokalekua ezagutzea ahalbidetzen du, adibidez autobus, metro edota taxi geltokiak, farmaziak, eraikin publikoak, zerbitzuak, postontziak, zabor kontainerrak,... BilbOn interes puntuen katalogo publiko handi bat eskaintzen dizu bai turista eta herritarrei zuzenduta.",
+ "about-page.text-2": "Gainera, BilbOn edukien sortzaile izatea ahalbidetzen dizu interes puntu berriak proposatuz. Interes puntu horiek onartuak eta argitaratuak izango dira dagokion arduradunaz.",
+ "about-page.text-3": "BilbOn Europako WeLive proiektuaren hiri zerbitzuen eremuan sortu da. WeLive proiektua Europako Batzordearen ikerketarako, garapen teknologikorako eta berrikuntzarako H2020 programaren barruan finantziatu da, 645845 zenbakidun hitzarmenekoa.",
+ "about-page.text-4": "Proiektuari buruzko informazio gehiago http://www.welive.eu-n aurki dezakezu.",
+ "about.questionnaire.succesfully-submitted-label": "Galdeketa ondo bidali da.",
+ "about.questionnaire.submitted-error-label": "Errore bat gertatu da galdeketa bidaltzen. Geroago berriz saiatu, mesedez.",
+ "about.survey.text": "Zure iritzia eskertuko genuke",
+ "about.survey.button": "Formularioa bete"
  
 }

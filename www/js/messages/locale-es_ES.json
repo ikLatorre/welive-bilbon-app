@@ -1,4 +1,6 @@
 {
+ "terms.title": "Términos de uso",
+ "terms.refused-alert-text": "Acepte los términos de uso para acceder a Bilbozkatu",
 
  "all-menu.back-button-label": "Atrás", 
  "menu.title": "Menú | Filtrar",
@@ -161,6 +163,13 @@
 
  "about-page.title": "About",
  "about-page.subtitle": "Información y términos de uso",
- "about-page.text": "This project has received funding from the European Union’s H2020 Programme for research, technological development and demonstration under grant agreement No. 645845."
-
+ "about-page.text-1": "BilbOn te permite conocer la ubicación de los diferentes servicios públicos que ofrece la ciudad de Bilbao, tales como paradas de bus, metro, taxi, farmacias, edificios públicos, servicios, buzones, contenedores de basura,... BilbOn te ofrece un amplio catálogo público de puntos de interés orientado tanto a turistas como a ciudadanos.",
+ "about-page.text-2": "Además, BilbOn permite que te conviertas en creador de contenidos, pudiendo proponer nuevos puntos de interés. Dichos puntos de interés serán aprobados y publicados por el responsable correspondiente.",
+ "about-page.text-3": "BilbOn ha sido creado en el marco conjunto de servicios urbanos del proyecto Europeo WeLive. El proyecto WeLive ha sido financiado dentro del programa H2020 de la Comisión Europea para la investigación, desarrollo tecnológico e innovación bajo el acuerdo Nº 645845.",
+ "about-page.text-4": "Más información sobre el proyecto en http://www.welive.eu.",
+ "about.questionnaire.succesfully-submitted-label": "El cuestionario se ha enviado correctamente.",
+ "about.questionnaire.submitted-error-label": "Se ha producido algún error al enviar el cuestionario. Por favor, inténtelo de nuevo más tarde.",
+ "about.survey.text": "Agradeceríamos su opinión",
+ "about.survey.button": "Rellenar el formulario"
+ 
 }

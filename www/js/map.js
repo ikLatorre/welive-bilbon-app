@@ -8,6 +8,9 @@ function initializeMap(domMapContainer){
     var infoWindow = new google.maps.InfoWindow();
     var options = {
         zoom: 14, 
+        zoomControl: false,
+        streetViewControl: false,
+        mapTypeControl: false,
         center: new google.maps.LatLng(43.263606, -2.935214), // Plaza de Don Federico Moyúa, Bilbao
         mapTypeId: google.maps.MapTypeId.MAP
     };

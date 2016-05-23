@@ -1,0 +1,147 @@
+
+<ion-view hide-back-button="true"> 
+	<ion-nav-title> <!-- set title this way to correct use of angular-translate -->
+	    {{ 'terms.title' | translate }}
+	</ion-nav-title>
+
+	<ion-nav-buttons></ion-nav-buttons> <!-- remove navbar's buttons -->
+	  
+	<ion-content></ion-content>
+	<!-- if we put the privacy policy's 'div' inside 'ion-content', ionic creates the
+	  'transform' style in the 'ion-content' element's first child, which causes the policy
+	  not to be displayed. Is neccesary to remove this style but is difficult because it is 
+	  created dinamically. 
+	  Instead we put the 'div' element outside the 'ion-content', so is neccesary to change 
+	  'margin-top' property of .help-title class (see privacy.css) to prevent the title is hidden -->
+
+
+	<div> <!-- ng-controller="privacyCtrl">-->
+		<div id="policy_screen"> <!-- ng-show="privacyVisible">-->
+			<div class="help_title">Política de privacidad</div>
+
+			<div class="policy_box">
+
+			<div class="policy_text">
+
+			<p class="tool_tit">1.Introducción: Términos y condiciones – aplicables en todo el mundo salvo en aquellos sitios que se hayan publicado términos y condiciones específicas para dicho territorio.</p>
+
+			<p class="tool_desc">Estos términos y condiciones (“Términos”) contienen información importante acerca de los derechos, obligaciones y restricciones que se le pueden aplicar a usted como usuario (“Usuario”) cuando accede a http://www.iescities.eu/server (“Sitio Web”) o cuando accede, descarga y usa el IES Cities Player  (“Aplicación”) y cualquiera de los servicios que se proporcionan a través de ella. La Aplicación actúa como una “tienda” para aquellas aplicaciones desarrolladas dentro del marco de IES Cities y haciendo uso del entorno de desarrollo de IES Cities, permitiendo a los Usuarios encontrar qué aplicaciones están disponibles a su alrededor y hacen uso de información pública. Además, es posible que desde la aplicación o desde el Sitio Web pueda acceder a otras aplicaciones o sitios Web. El Sitio Web y la aplicación, salvo que se indique lo contrario, son proporcionados por todos los socios que conforman el consorcio IES Cities. El proyecto IES Cities (http://www.iescities.eu) ha sido financiado por el programa marco para la competitividad e innovación de la Unión europea dentro del acuerdo nº 325097.</p>
+
+			<p class="tool_desc">Estos Términos de uso pueden ser accedidos a través de la Aplicación instalada en su dispositivo móvil o en el Sitio Web. </p>
+
+			<p class="tool_desc">La versión definitiva de este texto es en castellano cualquier traducción del mismo es ofrecido como mera cortesía. En caso de contradicciones entre las versiones, prevalecerán las cláusulas de la versión en castellano.</p>
+
+			<p class="tool_desc">El uso de la Aplicación y los Servicios asociados, el Sitio Web y de la plataforma IES Cities requiere la aceptación de los términos expuestos a continuación, así como el de cualquier ley que pueda estar relacionada con el uso de IES Cities.</p>
+
+			<p class="tool_desc">Por favor, si no está de acuerdo con estos Términos o considera que futuros cambios en los mismos pueden hacer que no sean aceptables para usted, no use IES Cities. El uso continuado de IES Cities incluyendo, pero no limitándose, el Sitio Web, las aplicaciones, la información actualizaciones y servicios se considerará una aceptación de los estos términos y cualquier cambio que se realice en los mismos. Además, usted acepta usar IES Cities con propósitos únicamente legales, apropiados, acordes a estos Términos y a las políticas locales.</p>
+
+			<p class="tool_desc">Se considerará aceptación de los Términos, la aceptación expresa de los mismos a la hora de instalar Aplicación, cuando se descarga ésta o una actualización y cuando se usa la misma en un dispositivo.</p>
+
+			<p class="tool_tit">2.Política de Uso</p>
+
+			<p class="tool_desc">IES Cities es una aplicación gratuita que permite su uso de forma no limitada. Usted se compromete a hacer un uso razonable de la misma. Se considera una violación de los Términos la consulta o escritura de datos excesiva de tal forma que el sistema se quede saturado o afectado no pudiendo dar servicio a otros usuarios.</p>
+
+			<p class="tool_desc">La Aplicación permite la publicación de información. El Usuario se hace responsable de toda la información, opinión, comentario, etc. que publique en IES Cities directamente o a través de la Aplicación. El Usuario se compromete a no publicar, ni fomentar la publicación de: </p>
+
+			<ul>
+				<li>
+				a)	información injuriosa, discriminatoria, vejatoria, obscena, etc. o cualquier otra que pueda considerarse ofensiva en términos relativos a raza, religión, sexo; </li>
+				<li>b)	Material que incite a la comisión de delitos; </li>
+				<li>c)	material del que no se sea titular y no se disponga de autorización para publicarlo o que infrinja el copyright, patentes, marcas registradas; </li>
+				<li>d)	publicidad, spam, esquemas piramidales; e) información que tenga como objetivo engañar a otros; </li>
+				<li>e)	material que explote o permita explotar brechas de seguridad; </li>
+				<li>f)	material que contenga virus, troyanos u otro tipo de código malicioso que afecte al funcionamiento del servicio o a los usuarios; </li>
+				<li>g)	material que acceda o intente acceder a las cuentas de otros usuarios; </li>
+				<li>h)	material que recopile información de otros usuarios; </li>
+				<li>i)	todo aquello que incumpla la ley local vigente.</li>
+			</ul>
+
+			<p class="tool_desc">En algunos casos, puede ser necesario el registro en el Sitio Web y/o en alguna de las aplicaciones y servicios para poder usar la aplicación. El Usuario se compromete a proporcionar información actual y precisa para formalizar el registro y siempre que se le solicite. Esta información, además, se deberá mantener actualizada. En caso de existir la sospecha de usar información falsa o inexacta se podrá suspender la cuenta. </p>
+
+			<p class="tool_desc">La violación de la política de uso supondrá la cancelación inmediata de la cuenta de usuario y el rechazo de la creación futuras cuentas y la de aplicación de los medio para impedir el uso de la Aplicación.</p>
+
+			<p class="tool_desc">En cualquier momento se pueden modificar los servicios, o suprimir parte de ellos.  Los cambios serán notificados de forma razonable. Seguir usando los servicios será entendido como una aceptación de los cambios y de los términos y condiciones.</p>
+
+			<p class="tool_tit">3.Pago por el Servicio</p>
+
+			<p class="tool_desc">Tanto la Aplicación como el servicio proporcionado por IES Cities se proporcionan sin ningún coste. </p>
+
+			<p class="tool_desc">En caso de que en un futuro se decidiese cobrar por el uso del servicio o ciertas partes de él, se comunicaría de forma razonable, así como las tarifas, permitiendo a los usuarios que no quieran usar esos servicios de pago mantener los servicios gratuitos o dejar de usar el servicio proporcionado antes de empezar a facturar por el uso.</p>
+
+			<p class="tool_desc">El uso de la aplicación implica un acceso a red lo que puede suponer costes adicionales para el usuario cuando lo hace tanto desde dispositivos móviles como desde dispositivos fijos por el uso de tarifas de red o de datos. Estos costes no son en ningún caso atribuibles a IES Cities   y serán asumidos por el Usuario.</p>
+
+			<p class="tool_tit">4.Privacidad de los Datos</p>
+
+			<p class="tool_desc">Cuando usted se registra en el Sitio Web y/o en alguna de las aplicaciones para su uso, proporciona una serie de datos personales que espera se gestionen de una forma correcta. TECNALIA Research and Innovation (“TECNALIA”) y el resto del consorcio de IES Cities tratará esos datos adecuadamente y siempre de acuerdo a las exigencias de la legislación local vigente o, en su ausencia, la legislación europea para la protección de los datos.</p>
+
+			<p class="tool_desc">Así mismo el Usuario deberá proteger su cuenta usando los medios que se le proporcionan para ello como son, sin limitarse a ellos, el uso de una contraseña adecuada, el cambio periódico de la misma, o no compartir los datos de la cuenta.</p>
+
+			<p class="tool_desc">TECNALIA y el resto del consorcio de IES Cities en ningún momento negociará con los datos y los mismos serán utilizados únicamente para la gestión del uso del sitio y la Aplicación.</p>
+
+			<p class="tool_desc">TECNALIA y el resto del consorcio de IES Cities no recopilarán información personal de los Usuarios durante su uso del Servicio. Sí se podrá recopilar información estadística anónima sobre el uso del servicio para tratar de mejorar el mismo y hacer una evaluación del uso de cada uno de los servicios.</p>
+
+			<p class="tool_desc">Los Usuarios pueden personalizar la Aplicación y las búsquedas mediante el uso de filtros. Estos filtros solo se guardarán en el dispositivo del usuario y en ningún momento viajarán por la red o serán recopilados por ningún motivo.</p>
+
+			<p class="tool_tit">5.Propiedad de los Datos</p>
+
+			<p class="tool_desc">Los datos a los que el usuario accede a través del Sitio Web y de la aplicación provienen de fuentes públicas o sus propietarios los han puesto a disposición del público para su uso y por tanto mantienen su propiedad.</p>
+
+			<p class="tool_desc">Los datos se ponen a la disposición del Usuario para su consulta. No se permite la recopilación o la creación de bases de datos a partir de estos. </p>
+
+			<p class="tool_desc">El acceso de los datos se ofrece sin ningún coste. El desarrollo de trabajos derivados que accedan a estos datos deberá mantener siempre el acceso a ellos sin coste.</p>
+
+			<p class="tool_desc">En el caso en el que los Usuarios pueden actualizar, modificar, incluir nuevos datos en el sistema, desde el Sitio Web o desde la aplicación, los datos pasarán a ser de dominio público si así son los datos base sobre los que se está actuando. Para la publicación en otros entornos, como redes sociales o sitios de terceras partes, por favor refiérase a la política de privacidad de dichos sitios antes de publicar. No se pagará ninguna contraprestación económica por los datos proporcionados. TECNALIA y el resto del consorcio de IES Cities se reserva el derecho de revisar los datos aportados y eliminarlos en caso de considerar que no son correctos o que violan el propósito del sitio.</p>
+
+			<p class="tool_desc">Por favor, si desea retener el copyright de sus datos u obtener alguna contraprestación por ellos es preferible que no los publique.</p>
+
+			<p class="tool_tit">6.Exactitud de los Datos</p>
+
+			<p class="tool_desc">La información se proporciona tal cual la proporcionan las fuentes. TECNALIA y el resto del consorcio de IES Cities no se hace responsable de la exactitud de la misma ni de los daños y costes directos o indirectos, causados por el uso de esta información.</p>
+
+			<p class="tool_tit">7.Terceras Partes</p>
+
+			<p class="tool_desc">Es posible que desde el Sitio Web o desde cada una de las aplicaciones y servicios asociados se pueda acceder a otros sitios y redes sociales, ajenas a TECNALIA y el resto del consorcio de IES Cities y gestionados por terceras partes. TECNALIA y el resto del consorcio de IES Cities no se hace responsable de las políticas de privacidad de estos sitios.</p>
+
+			<p class="tool_desc">En caso de usar la cuenta de redes sociales para registrarse en el Sitio Web o para el uso de la aplicación, TECNALIA y el resto del consorcio de IES Cities no recolectará más información que la estrictamente necesaria para gestionar la cuenta y el acceso a la misma.</p> 
+
+			<p class="tool_desc">La publicación de información en redes sociales, a través de la aplicación, estará regulada por la política de privacidad y los términos y condiciones de uso de dicha red social.</p>
+
+			<p class="tool_tit">8.Propiedad de la Aplicación</p>
+
+			<p class="tool_desc">La aplicación y los servicios asociados es propiedad de los autores de la misma; es decir, el consorcio IES Cities. Se concede al usuario una licencia no exclusiva, revocable para copiar, instalar y usar la aplicación en todos sus dispositivos y para usar el Servicio sin ningún coste. Esto no otorga al usuario ningún derecho sobre la propiedad de la aplicación que seguirá siendo de los autores.</p>
+
+			<p class="tool_tit">9.Disponibilidad</p>
+
+			<p class="tool_desc">TECNALIA y el resto del consorcio de IES Cities no adquieren ningún compromiso de disponibilidad del sitio o de la información. En cualquier caso, pondrá todo su esfuerzo para evitar o minimizar los tiempos de interrupción y que el tiempo de servicio sea el máximo posible. Siempre que sea posible, se notificarán las paradas programadas del sitio que vayan a afectar de forma reseñable a la disponibilidad del servicio.</p>
+
+			<p class="tool_desc">TECNALIA y el resto del consorcio de IES Cities no se hace responsable de los daños y los costes directos o indirectos que se puedan causar por la no disponibilidad del sitio.</p>
+
+			<p class="tool_tit">10.Protección Legal y Limitaciones</p>
+
+			<p class="tool_desc">Se concede al usuario una licencia no exclusiva, revocable para copiar, instalar y usar la aplicación en todos sus dispositivos y para usar el Servicio sin ningún coste.</p>
+
+			<p class="tool_desc">Usted acepta no usar la aplicación para:</p>
+
+			<ul>
+			<li>a)	interferir o manipular el Servicio; </li>
+			<li>b)	alterar los datos de forma maliciosa;  </li>
+			<li>c)	recopilar datos de los usuarios de la Aplicación;  </li>
+			<li>d)	amenazar, molestar, chantajear a otros usuarios;  </li>
+			<li>e)	interferir en los servicios de terceras partes;  </li>
+			<li>f)	afectar a los copyright de terceras partes. </li>
+			</ul>
+
+			<p class="tool_desc">La Aplicación se proporciona “tal cual” y usted la usa bajo su propia responsabilidad. TECNALIA y el resto del consorcio de IES Cities se exime de la responsabilidad por errores, mal funcionamiento en su terminal, si afecta a otras aplicaciones, pérdida de datos, pérdida de disponibilidad por el uso de la misma.</p>
+			
+			</div>
+
+			<div class="start" ng-click="acceptPrivacy()">Ok, entendido</div>
+			<div class="refuse" ng-click="refusePrivacy()">No acepto :(</div>
+
+			</div>
+
+		</div>
+
+	</div>
+
+</ion-view>
