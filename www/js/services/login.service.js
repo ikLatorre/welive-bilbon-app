@@ -34,7 +34,6 @@ function LoginService($http, $state, $q, $ionicLoading) { //Users, UserId
     return login;
 
     function requestAuthorize() {
-
         var promise;
         promise = $q(function (resolve, reject) {
             // generate the request URL

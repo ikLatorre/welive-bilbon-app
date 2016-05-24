@@ -39,6 +39,7 @@
  "login.title": "Saio hasiera",
  "login.text": "Interes puntuak eskaini herritarrei.",
  "login.credentials-button": "Saioa hasi",
+ "login.loading": "Saioa hasten...",
 
  "info-alert-popup-login-label-left": "",
  "info-alert-popup-login-label-right": " bezala saioa ireki duzu.",

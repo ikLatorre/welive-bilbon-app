@@ -39,6 +39,7 @@
  "login.title": "Inicio de sesión",
  "login.text": "Comparte puntos de interés con los ciudadanos.",
  "login.credentials-button": "Iniciar sesión",
+ "login.loading": "Iniciando sesión...",
 
  "info-alert-popup-login-label-left": "Ha iniciado sesión como ",
  "info-alert-popup-login-label-right": ".",

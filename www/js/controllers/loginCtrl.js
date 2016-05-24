@@ -4,8 +4,9 @@ bilbonAppControllers
 
 //LoginCtrl.$inject = ['$scope', '$state', '$ionicLoading', 'UserId', 'Login']; // 'Users', 'Language', 'KPI'
 
-function LoginCtrl($scope, $state, $ionicLoading, $ionicHistory, Login, UserLocalStorage){ // UserId, Users, Language, KPI
+function LoginCtrl($scope, $state, $ionicLoading, $ionicPopup, $filter, $ionicHistory, $timeout, Login, UserLocalStorage){ // UserId, Users, Language, KPI
 
+    $scope.loginBtnDisable = false;
     $scope.credentialsLogin = credentialsLogin;
 
     function credentialsLogin() {
@@ -15,7 +16,7 @@ function LoginCtrl($scope, $state, $ionicLoading, $ionicHistory, Login, UserLoca
             .then(function(){
                 $ionicLoading.show({
                     template: '<ion-spinner icon="bubbles"></ion-spinner><br/>'
-                            + $filter('translate')('menu.exit-item-text')
+                            + $filter('translate')('login.loading')
                 });
                 return Login.requestOauthToken();
             })
@@ -42,6 +43,8 @@ function LoginCtrl($scope, $state, $ionicLoading, $ionicHistory, Login, UserLoca
                 }
             };
             UserLocalStorage.setUserData(currentUserBasicProfile);
+
+            $scope.loginBtnDisable = true; // disable login button while message appears before change the view (page)
             $ionicLoading.hide();
 
             // show login message
@@ -55,8 +58,8 @@ function LoginCtrl($scope, $state, $ionicLoading, $ionicHistory, Login, UserLoca
 
                 // go to map's page
                 $ionicHistory.clearCache().then(function(){ $state.go('app.map')});
-                alert(Login.code);
-            }, 1800); //close the popup after 1.8 seconds 
+                //alert(Login.code, Login.accessToken);
+            }, 1600); //close the popup after 1.8 seconds 
 
 
             // Request Profile and store
