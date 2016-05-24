@@ -9,8 +9,7 @@ bilbonAppControllers
 function mapCtrl(
 	$scope, 
 	$state, 
-	$ionicPopup, 
-	Map, 
+	$ionicPopup,  
 	$window, 
 	$filter, 
 	$http, 
@@ -85,7 +84,7 @@ function mapCtrl(
 	var map = initializeMap(document.getElementById('mapa')); 
 	Map.setMap(map);
 
-	var autocomplete = loadGooglePlacesAutocompleteFeature(document.getElementById('location-input'), Map);
+	var autocomplete = loadGooglePlacesAutocompleteFeature(document.getElementById('location-input'), Map, $ionicPopup);
 	Map.setAutocomplete(autocomplete);
 
 

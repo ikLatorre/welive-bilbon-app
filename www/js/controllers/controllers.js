@@ -48,7 +48,16 @@ function appCtrl(
   $scope.filter.selectedText = false;
   $scope.filter.isTextShown = false;
   $scope.filter.textFilterInput = null;
+  // store selection's values of 'only no official (only citizen's POIs) POIs's checkbox (true|false):
+  $scope.filter.selectedCitizensPOIs = false;
 
+  // define POIs' arrays
+  $scope.gastronomyOfficialArray = [];
+  $scope.tourismOfficialArray = [];
+  $scope.accommodationOfficialArray = [];
+  $scope.gastronomyCitizenArray = [];
+  $scope.tourismCitizenArray = [];
+  $scope.accommodationCitizenArray = [];
 
 
   // ** Configure categories for the filter **
@@ -242,12 +251,31 @@ function appCtrl(
 
 
 
+  // ** Configure 'citizen's POIs' for the filter **
+
+  // Enable filter value changing by clicking in the text, not only in the checkbox.
+  $scope.citizenFilterClicked = function(){
+    $scope.filter.selectedCitizensPOIs = !$scope.filter.selectedCitizensPOIs;
+    $scope.citizenPOIsSelectionChanged();
+  };
+  // detect 'only citizen's's filter selection changing ($watchCollection does not work in this case)
+  // used in 'ng-change' attribute and also when the search icon is clicked.
+  $scope.citizenPOIsSelectionChanged = function() {
+    if($scope.filter.selectedCitizensPOIs){
+      $scope.callCitizensOnlyFilter();
+    }else{
+      $scope.showCitizensAndOfficial(); // disable filter
+    }
+  };
+
+
+
   // Show on the map the markers of the obtained items with the corresponding icons.
   // 'itemsFromDataset': the response of the /query method
   // 'categoryInfo': all the information related to the requested dataset stored in 'categories.js' 
   // 'isOfficialDataset': boolean parameter to know if the requested dataset is an official one or
   //                      the citizen's dataset (which includes all categories)
-  $scope.loadMarkers = function(itemsFromDataset, categoryInfo, isOfficialDataset){ 
+  function loadMarkers(itemsFromDataset, categoryInfo, isOfficialDataset){ 
     console.log('markers to display', itemsFromDataset.count, itemsFromDataset);
 
     var iconPath = null;
@@ -304,6 +332,11 @@ function appCtrl(
   }
 
 
+
+
+
+
+
   // ** Configure adding and removing filters **
 
   // Add category's filter (using specified categories of config/categories.js).
@@ -326,11 +359,21 @@ function appCtrl(
       console.log('Getting items from "' + url + '"...');
     }
 
+    // apply 'text' filter if neccesary
+    var queryText = "";
+    if($scope.filter.selectedText){
+      var searchTextSQL = " LIKE '%" + $scope.filter.textFilterInput + "%' ";
+      queryText = " AND (documentName " + searchTextSQL + " OR documentDescription " + searchTextSQL
+                        + " OR web " + searchTextSQL + " OR email " + searchTextSQL + " OR country " + searchTextSQL
+                        + " OR territory " + searchTextSQL + " OR municipality " + searchTextSQL
+                        + " OR historicTerritory " + searchTextSQL + ") "; 
+    }
+
     $http({
       method: 'POST',
       url: url,
       headers: { "Content-Type": "text/plain" },
-      data: 'SELECT * FROM rootTable WHERE municipalityCode = 480020;', // select from Bilbao
+      data: "SELECT * FROM rootTable WHERE municipalityCode = 480020 " + queryText + ";", // select from Bilbao
       timeout: 10000
     }).then(function successCallback(successCallback) {
           // this callback will be called asynchronously when the successCallback is available
@@ -347,12 +390,158 @@ function appCtrl(
     ).finally(
         function finallyCallback(callback, notifyCallback){
           $ionicLoading.hide(); 
-          if(response != null) $scope.loadMarkers(response, categoryInfo, true);
+          if(response != null){
+            // check location and citizen filters, and load markers
+            saveOfficialPOIs(response, categoryJsonId);
+            
+            //loadMarkers(response, categoryInfo, true);
+          }
+          else{
+            $ionicPopup.alert({
+                title: $filter('translate')('menu.filter.category-search.empty-popup-title'),
+                template: $filter('translate')('menu.filter.category-search.empty-popup-text'),
+                okText: $filter('translate')('menu.filter.category-search.empty-ok-button-label'),
+                okType: 'button-assertive' 
+            });
+          } 
           // initialize the map (with or without data about proposals' count)
           //infoWindowArray = initialize($scope.proposalsCountByZones, $scope);
         }
     );
+
   };
+  // save official pois' array (filtered by category and, maybe, by text and/or location)
+  function saveOfficialPOIs(response, categoryJsonId){
+    // save the obtained POIs (filtered by category and text)
+    if(categoryJsonId == 1){
+      $scope.gastronomyOfficialArray = response;
+    }else if(categoryJsonId == 2){
+      $scope.tourismOfficialArray = response;
+    }else if(categoryJsonId == 3){
+      $scope.accommodationOfficialArray = response;
+    }
+
+    var positionPrueba;
+    function success(position) {
+      var selectedLatLng = {lat: position.coords.latitude, lng: position.coords.longitude };
+      console.log('position: ', selectedLatLng);
+      positionPrueba = selectedLatLng;
+      console.log('positionPrueba1', positionPrueba);
+      return selectedLatLng;
+    };
+
+    // check location's filter
+    getCoordinates().then(function(){
+
+    });
+
+    function getCoordinates(){
+       var promise;
+        promise = $q(function (resolve, reject) {
+            var lat = null;
+            var lng = null;
+            if($scope.filter.selectedLocation['google-places']){
+              // get google places' coordinates
+              lat = Map.getAutocomplete().getPlace().geometry.location.lat();
+              lng = Map.getAutocomplete().getPlace().geometry.location.lng();
+              var selectedLatLng = {lat: lat, lng: lng };
+              filterLocation(categoryJsonId, selectedLatLng); // update the corresponding official POIs array
+
+            }else if($scope.filter.selectedLocation['device-gps']){
+              //ar selectedLatLng = searchDeviceLocation();
+              var selectedLatLng = searchDeviceLocation(success);
+              if(selectedLatLng == null){
+                $scope.filter.selectedLocation['device-gps'] = false; // disable filter because is not possible to get gps location
+                $ionicPopup.alert({
+                    title: $filter('translate')('menu.filter.category-search.error-popup-title'),
+                    template: 'gps no se ha logrado',//$filter('translate')('menu.filter.category-search.empty-popup-text'),
+                    okText: $filter('translate')('menu.filter.category-search.empty-ok-button-label'),
+                    okType: 'button-assertive' 
+                });
+
+              }else{
+                filterLocation(categoryJsonId, selectedLatLng); // update the corresponding official POIs array
+              }
+            }
+            resolve();
+        });
+        return promise;
+    }
+    console.log('aqui', selectedLatLng);
+    console.log('positionPrueba2', positionPrueba);
+    // check if citizens' POIs have to be loaded (of the corresponding category)
+
+    
+    // load filtered category markers
+
+
+    /*// define POIs' arrays
+    $scope.gastronomyOfficialArray = [];
+    $scope.tourismOfficialArray = [];
+    $scope.accommodationOfficialArray = [];
+    $scope.gastronomyCitizenArray = [];
+    $scope.tourismCitizenArray = [];
+    $scope.accommodationCitizenArray = [];*/
+  };
+
+  /*function myCallback(result) {
+      // Code that depends on 'result'
+  }
+  foo(myCallback);
+
+  function foo(callback) {
+      $.ajax({
+          // ...
+          success: callback
+      });
+  }*/
+  
+
+  function searchDeviceLocation(success){
+      ionic.Platform.ready(function(){
+        // will execute when device is ready, or immediately if the device is already ready.
+        var options = {
+          enableHighAccuracy: false,
+          timeout: 4000,
+          maximumAge: 0
+        };
+
+        function error(err) {
+          return null;
+        };
+        // Try HTML5 geolocation.
+        if ("geolocation" in navigator) { // Check if Geolocation is supported (also with 'navigator.geolocation')
+          navigator.geolocation.getCurrentPosition(success, error, options);
+        }else{
+          console.log('geolocaiton IS NOT available');
+        }
+      });
+  }
+  // remove from POIs' array the POIs that aren't near de selected location
+  function filterLocation(categoryJsonId, selectedLatLng){
+    if(categoryJsonId == 1){
+      $scope.gastronomyOfficialArray.rows = $scope.gastronomyOfficialArray.rows.filter(coordinateFilter, selectedLatLng);
+    }else if(categoryJsonId == 2){
+      $scope.tourismOfficialArray.rows = $scope.tourismOfficialArray.rows.filter(coordinateFilter, selectedLatLng);
+    }else if(categoryJsonId == 3){
+      $scope.accommodationOfficialArray.rows = $scope.accommodationOfficialArray.rows.filter(coordinateFilter, selectedLatLng);
+    }
+  }
+  // filter an array based on two coordinates
+  function coordinateFilter(item, index, array) {
+    var coordinatesLatLng =  item.latitudelongitude.split(",");
+    var poiLatLng = {lat: Number(coordinatesLatLng[0]), lng: Number(coordinatesLatLng[1]) };
+    return (arePointsNear(poiLatLng, this));
+  }
+  // check if a coordinate is near another one
+  function arePointsNear(poiLatLng, selectedLatLng) {
+    var sw = new google.maps.LatLng(selectedLatLng.lat() - 0.010, selectedLatLng.lng() - 0.010);
+    var ne = new google.maps.LatLng(selectedLatLng.lat() + 0.010, selectedLatLng.lng() + 0.010);
+    var bounds = new google.maps.LatLngBounds(sw, ne);
+    return bounds.contains(poiLatLng);
+  }
+
+
   // Remove category's filter.
   // 'categoryJsonId': category's identifier (1..N) of config/categories.js file
   //             (note that $scope.translatedCategories' array's range is 0..N-1)
@@ -365,6 +554,17 @@ function appCtrl(
   // 'locationMode': location searching mode ('google-places' | 'device-gps')
   $scope.callLocationFilter = function(locationMode){
     console.log("Applying location filter... (mode: " + locationMode + ")");
+    if(locationMode == 'google-places'){
+      var geometry  = Map.getAutocomplete().getPlace().geometry;
+      if (!geometry) return;
+      // If the place has a geometry, then present it on a map.
+      //if (geometry.viewport) {
+        //map.fitBounds(geometry.viewport);
+      //} else {
+        console.log('searched place: ', geometry.location.lat(), geometry.location.lng());
+        //map.setCenter(geometry.location);
+      //}
+    }
 
   };
   // Remove location's filter.
@@ -385,7 +585,14 @@ function appCtrl(
 
   };
 
-
+  // Add 'only citizen's POIs's filter
+  $scope.callCitizensOnlyFilter = function(){
+    console.log("Applying citizens' filter... (showing only citizens' POIs)");
+  };
+  // Remove 'only citizen's POIs's filter
+  $scope.showCitizensAndOfficial = function(){
+    console.log("Removing citizens' filter... (showing official and no official POIs)");
+  };
 
   // ** Configure language changing (UI's switch and $translate's language) **
 
@@ -537,7 +744,7 @@ function appCtrl(
 
 
     
-  $scope.searchDeviceLocation = function(){
+  function searchDeviceLocation2(){
       ionic.Platform.ready(function(){
         // will execute when device is ready, or immediately if the device is already ready.
 
@@ -553,27 +760,30 @@ function appCtrl(
         //console.log('Inicio de función GPS.');
         var options = {
           enableHighAccuracy: false,
-          timeout: 6000,
+          timeout: 4000,
           maximumAge: 0
         };
 
         function success(position) {
-          console.log('position: ', position);
-          var lat  = position.coords.latitude;
-          var lng = position.coords.longitude;
-           
-          var myLatlng = new google.maps.LatLng(lat, lng);
+          //console.log('position: ', position);
+          //var lat = position.coords.latitude;
+          //var lng = position.coords.longitude; 
+          //var myLatlng = new google.maps.LatLng(lat, lng);
+          var selectedLatLng = {lat: position.coords.latitude, lng: position.coords.longitude };
+          console.log('position: ', selectedLatLng);
+          return selectedLatLng;
 
-          $ionicLoading.hide();  
-          var myPopup = $ionicPopup.show({
+          //$ionicLoading.hide();  
+          /*var myPopup = $ionicPopup.show({
             template: '<center>Coordenadas GPS: ' + lat + ', ' + lng + '</center>',
             cssClass: 'custom-class custom-class-popup'
           });
-          $timeout(function() { myPopup.close(); }, 1800);
+          $timeout(function() { myPopup.close(); }, 1800);*/
         };
 
         function error(err) {
-          $ionicLoading.hide(); 
+          return null;
+          //$ionicLoading.hide(); 
           /*switch(error.code) {
               case error.PERMISSION_DENIED:
                   x.innerHTML = "User denied the request for Geolocation."
@@ -588,11 +798,11 @@ function appCtrl(
                   x.innerHTML = "An unknown error occurred."
                   break;
           }*/
-          var myPopup = $ionicPopup.show({
+          /*var myPopup = $ionicPopup.show({
             template: '<center>Error ' +  err.code + ': ' + err.message + '</center>',
             cssClass: 'custom-class custom-class-popup'
           });
-          $timeout(function() { myPopup.close(); }, 1800);
+          $timeout(function() { myPopup.close(); }, 1800);*/
           //console.warn('ERROR(' + err.code + '): ' + err.message);
         };
 
@@ -617,17 +827,17 @@ function appCtrl(
         // Try HTML5 geolocation.
         if ("geolocation" in navigator) { // Check if Geolocation is supported (also with 'navigator.geolocation')
           // geolocation is available
-          $ionicLoading.show({
+          /*$ionicLoading.show({
             template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Analizando GPS...'
-          });
+          });*/
          
           navigator.geolocation.getCurrentPosition(success, error, options);
         }else{
-          var myPopup = $ionicPopup.show({
+          /*var myPopup = $ionicPopup.show({
             template: '<center>Geolocalización no disponible</center>',
             cssClass: 'custom-class custom-class-popup'
-          }); 
-          $timeout(function() { myPopup.close(); }, 1800);
+          });
+          $timeout(function() { myPopup.close(); }, 1800);*/
           console.log('geolocaiton IS NOT available');
         }
       });

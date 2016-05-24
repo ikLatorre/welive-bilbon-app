@@ -65,7 +65,7 @@ function initializeMap(domMapContainer){
 };
 
 // load and associate Google Places' Autocomplete object with the input element
-function loadGooglePlacesAutocompleteFeature(domInputElement, MapFactory){
+function loadGooglePlacesAutocompleteFeature(domInputElement, MapFactory, $ionicPopup){
     
     var bilbaoBounds = new google.maps.LatLngBounds(  //Constructs a rectangle from the points at its south-west and north-east corners
         new google.maps.LatLng(43.199927, -3.017116),   //south-west corner
@@ -104,11 +104,11 @@ function loadGooglePlacesAutocompleteFeature(domInputElement, MapFactory){
                     okType: 'button-assertive' 
                 });
 
-                MapFactory.setGPlacesLocation('');
+                MapFactory.setGPlacesLocationToSearch('');
             }else{
                 // store 'domInputElement' value, because the user written text ($scope.filter.autocompleteLocation)
                 // is not the entire location (e.g. use 'Caso Viejo,...' instead of 'casc')
-                MapFactory.setGPlacesLocation(domInputElement.value);
+                MapFactory.setGPlacesLocationToSearch(domInputElement.value);
             }
 
             return;

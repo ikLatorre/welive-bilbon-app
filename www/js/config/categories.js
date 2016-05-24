@@ -19,7 +19,7 @@ var categories = [
 			 "official_marker": "img/categories_icons/gastronomy.png" },
 
 	{"id":2, "datasetId": "oficinas-de-turismo-de-euskadi", 
-			 "jsonId": "9bfb02f1-1a42-49b9-8356-d2e880439ef5",
+			 "jsonId": "94537200-5d08-44ce-a366-c6075ddff6a2",
 			 "es_ES": "Oficinas de turismo", "eu_ES":"Turismo bulegoak", 
 			 "official_marker": "img/categories_icons/tourism.png" },
 

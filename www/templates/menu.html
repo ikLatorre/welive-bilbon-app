@@ -72,9 +72,9 @@
               <div class="checkbox checkbox-square checkbox-assertive">      
                   <input type="checkbox" id="device_gps_checkbox" ng-model="filter.selectedLocation['device-gps']" ng-change="locationSelectionChanged('device-gps', 'google-places')">
               </div>
-                <div class="item location-gpslocation-div" ng-click="gpsFilterClicked()">
-                  <i class="icon ion-android-locate"></i>&nbsp;{{ 'menu.location-gps-button-text' | translate }}
-                </div>
+              <div class="item location-gpslocation-div" ng-click="gpsFilterClicked()">
+                <i class="icon ion-android-locate"></i>&nbsp;{{ 'menu.location-gps-button-text' | translate }}
+              </div>
             </li>
           </ion-item>
 
@@ -101,6 +101,17 @@
               </div>
             </li>
           </ion-item>
+
+        <ion-item>
+          <li class="item item-checkbox item-text-wrap">
+            <div class="checkbox checkbox-square checkbox-assertive">      
+                <input type="checkbox" id="no_oficial_checkbox" ng-model="filter.selectedCitizensPOIs" ng-change="citizenPOIsSelectionChanged()">
+            </div>
+            <div class="item location-gpslocation-div" ng-click="citizenFilterClicked()">
+              <i class="icon ion-android-locate"></i>&nbsp;{{ 'menu.citizen-button-text' | translate }}
+            </div>
+          </li>
+        </ion-item>
 
         <div class="item item-divider"></div>
 

@@ -14,6 +14,8 @@
  "menu.text-item": "Testu librea",
  "menu.text-search-placeholder": "Testua bilatu...",
 
+ "menu.citizen-button-text": "Herritarrenak ikusi",
+
  "menu.language-item": "Hizkuntza",
  "menu.exit-item": "Irten",
  "menu.exit-item-text": "Aplikazioa ixten...",
@@ -22,6 +24,9 @@
  "menu.filter.category-search.error-popup-title": "Errorea",
  "menu.filter.category-search.error-popup-text": "Kategoria filtratzen errore bat gertatu da. Geroago berriz saiatu mesedez.",
  "menu.filter.category-search.error-ok-button-label": "Itxi",
+ "menu.filter.category-search.empty-popup-title": "Emaitzik gabe",
+ "menu.filter.category-search.empty-popup-text": "Ez dira interes punturik aurkitu aukeratutako kategorian.",
+ "menu.filter.category-search.empty-ok-button-label": "Itxi",
 
  "menu.filter.location-search.error-popup-title": "Errorea",
  "menu.filter.location-search.error-popup-text": "Kokalekua lortzen errore bat gertatu da. Geroago berriz saiatu mesedez.",

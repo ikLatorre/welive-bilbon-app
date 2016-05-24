@@ -14,6 +14,8 @@
  "menu.text-item": "Texto libre",
  "menu.text-search-placeholder": "Buscar texto...",
 
+ "menu.citizen-button-text": "Ver de ciudadanos",
+
  "menu.language-item": "Idioma",
  "menu.exit-item": "Salir",
  "menu.exit-item-text": "Cerrando aplicación...",
@@ -22,6 +24,9 @@
  "menu.filter.category-search.error-popup-title": "Error",
  "menu.filter.category-search.error-popup-text": "Ha habido un problema al filtrar la categoría. Vuelva a intentarlo más tarde por favor.",
  "menu.filter.category-search.error-ok-button-label": "Cerrar",
+ "menu.filter.category-search.empty-popup-title": "Sin resultados",
+ "menu.filter.category-search.empty-popup-text": "No se han encontrado puntos de interés para la categoría seleccionada.",
+ "menu.filter.category-search.empty-ok-button-label": "Cerrar",
 
  "menu.filter.location-search.error-popup-title": "Error",
  "menu.filter.location-search.error-popup-text": "Ha habido un problema al obtener la localización. Vuelva a intentarlo más tarde por favor.",
