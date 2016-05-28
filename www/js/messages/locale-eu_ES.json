@@ -20,8 +20,10 @@
  "menu.exit-item": "Irten",
  "menu.exit-item-text": "Aplikazioa ixten...",
 
- "menu.filter.category-search.loading-text": "Kategoria filtratzen, itxaron mesedez...",
+ "menu.filter.category-search.loading-text": "Informazioa filtratzen, itxaron mesedez...",
  "menu.filter.category-search.error-popup-title": "Errorea",
+ "menu.filter.category-search.no-category-selected-error-popup-text": "Mesedez, kategoria bat aukeratu filtro hau aktibatu aurretik.",
+
  "menu.filter.category-search.error-popup-text": "Kategoria filtratzen errore bat gertatu da. Geroago berriz saiatu mesedez.",
  "menu.filter.category-search.error-ok-button-label": "Itxi",
  "menu.filter.category-search.empty-popup-title": "Emaitzik gabe",

@@ -20,8 +20,10 @@
  "menu.exit-item": "Salir",
  "menu.exit-item-text": "Cerrando aplicación...",
 
- "menu.filter.category-search.loading-text": "Filtrando categoría, por favor espere...",
+ "menu.filter.category-search.loading-text": "Filtrando información, por favor espere...",
  "menu.filter.category-search.error-popup-title": "Error",
+ "menu.filter.category-search.no-category-selected-error-popup-text": "Por favor, seleccione alguna categoría para aplicar este filtro.",
+
  "menu.filter.category-search.error-popup-text": "Ha habido un problema al filtrar la categoría. Vuelva a intentarlo más tarde por favor.",
  "menu.filter.category-search.error-ok-button-label": "Cerrar",
  "menu.filter.category-search.empty-popup-title": "Sin resultados",

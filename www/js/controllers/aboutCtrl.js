@@ -39,6 +39,7 @@ function aboutCtrl(
             + 'pilotId=' + params.pilotId;
 
         // open a new window with the request URL
+        // window.open = cordova.InAppBrowser.open;
         var ref = window.open(requestUrl, '_blank', 'location=no');
 
         console.log('Start URL:' + requestUrl + ' FIN URL');
@@ -63,7 +64,7 @@ function aboutCtrl(
                 ref.removeEventListener('loadstart', loadStartListener);
 
                 // hide survey if ok
-                if(result == 'OK'){
+                if(result === 'OK'){
                 	$scope.showSurvey = false;
                     $scope.$apply();
 
@@ -73,7 +74,7 @@ function aboutCtrl(
 						cssClass: 'custom-class custom-class-popup'
 					});
 					$timeout(function() { myPopup.close(); }, 1800); //close the popup after 1.8 seconds 
-				}else if(result == 'ERROR'){
+				}else if(result === 'ERROR'){
 					var myPopup = $ionicPopup.show({
 						template: "<center>" + $filter('translate')('about.questionnaire.submitted-error-label')
 								+ "</center>",
@@ -81,7 +82,7 @@ function aboutCtrl(
 					});
 					$timeout(function() { myPopup.close(); }, 1800); //close the popup after 1.8 seconds 
 
-				}else if(result == 'CANCEL'){
+				}else if(result === 'CANCEL'){
 					// close questionnaire without message
 				}
             }

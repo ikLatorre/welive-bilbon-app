@@ -24,6 +24,7 @@ function appCtrl(
   $ionicPlatform, 
   $ionicLoading, 
   $ionicModal,
+  FilteredPOIs,
   WELIVE_DATASET_API_URL) {
 
   // With the new view caching in Ionic, Controllers are only called
@@ -68,19 +69,21 @@ function appCtrl(
   $scope.basqueCategoriesArray = [];
 
   // Build spanish categories' array and initialize $scope.filter.selectedCategories array
+  // (this array's items represents the categories, with the category name as 'label' in the corresponding
+  // language and other data)
   angular.forEach(categories, function(item){
-    if(item.id != 0){ // avoid dataset of citizens (it includes all categories)
-      $scope.spanishCategoriesArray.push({id:item.id, datasetId:item.datasetId, jsonId:item.jsonId, 
-        label:item.es_ES, img_src:item.img_src}); 
+    if(item.datasetId != "bilbon-user-pois"){ // avoid dataset of citizens (it includes all categories)
+      $scope.spanishCategoriesArray.push({id:item.id, categoryCustomNumericId:item.categoryCustomNumericId,
+        datasetId:item.datasetId, jsonId:item.jsonId, label:item.es_ES, img_src:item.img_src}); 
       $scope.filter.selectedCategories[item.id] = false; // initialize model's categories to false (checkbox selection)
     } 
   });
   $scope.translatedCategories = $scope.spanishCategoriesArray; // initialize categories' language to spanish
   // Build basque categories' array
   angular.forEach(categories, function(item){
-    if(item.id != 0){
-      $scope.basqueCategoriesArray.push({id:item.id, datasetId:item.datasetId, jsonId:item.jsonId, 
-        label:item.eu_ES, img_src:item.img_src});  
+    if(item.datasetId != "bilbon-user-pois"){
+      $scope.basqueCategoriesArray.push({id:item.id, categoryCustomNumericId:item.categoryCustomNumericId,
+        datasetId:item.datasetId, jsonId:item.jsonId, label:item.eu_ES, img_src:item.img_src});  
     }
   });
 
@@ -102,7 +105,7 @@ function appCtrl(
   $scope.$watchCollection('filter.selectedCategories', 
     function(newValues, oldValues) { 
       angular.forEach(oldValues, function(item, key){
-        // 'key' is the category identifier (1..N) of categories.js
+        // 'key' is the category identifier (int) of categories.js
         if(newValues[key] != null && oldValues[key] !== newValues[key]){
           if(newValues[key]) $scope.callDatasetCategoriesFilter(key); // do the search because of the activation of this filter
           else $scope.disableCategoryFilter(key); // disable filter
@@ -262,98 +265,83 @@ function appCtrl(
   // used in 'ng-change' attribute and also when the search icon is clicked.
   $scope.citizenPOIsSelectionChanged = function() {
     if($scope.filter.selectedCitizensPOIs){
-      $scope.callCitizensOnlyFilter();
+      $scope.callAlsoCitizensFilter();
     }else{
-      $scope.showCitizensAndOfficial(); // disable filter
+      $scope.showOnlyOfficialPOIs(); // disable filter
     }
   };
 
 
 
-  // Show on the map the markers of the obtained items with the corresponding icons.
-  // 'itemsFromDataset': the response of the /query method
-  // 'categoryInfo': all the information related to the requested dataset stored in 'categories.js' 
-  // 'isOfficialDataset': boolean parameter to know if the requested dataset is an official one or
-  //                      the citizen's dataset (which includes all categories)
-  function loadMarkers(itemsFromDataset, categoryInfo, isOfficialDataset){ 
-    console.log('markers to display', itemsFromDataset.count, itemsFromDataset);
 
-    var iconPath = null;
-    if(isOfficialDataset) iconPath = categoryInfo[0]['official_marker'];
 
-    angular.forEach(itemsFromDataset.rows, function(item, key){
 
-      // if the there are citizen's markers, they could be from any of the
-      // categories, so is neccesary to assign the correct marker icon depending of each one
-      if(!isOfficialDataset){
-        if(item.category == categoryInfo[0]['gastronomy_categoryId']){
-          iconPath = categoryInfo[0]['citizen_gastronomy_marker'];
-        }else if(item.category == categoryInfo[0]['tourism_categoryId']){
-          iconPath = categoryInfo[0]['citizen_tourism_marker'];
-        }else if(item.category == categoryInfo[0]['accommodation_categoryId']){
-          iconPath = categoryInfo[0]['citizen_accommodation_marker'];
-        }
+
+
+
+  
+  // returns an array of integers of selected 'categoryCustomNumericId', or an empty array otherwise
+  // (e.g. [1,3]: selected 1 and 3 categories (see 'config/categories.js'))
+  function getSelectedCategories(){
+    var selectedCategories = [];
+    angular.forEach($scope.translatedCategories, function(item, key){ //iterate over existing categories
+      if($scope.filter.selectedCategories[item.id] == true){ // check form's (model's) value
+        selectedCategories.push(item.categoryCustomNumericId);
       }
-
-      // get the marker coordinates
-      var coordinatesLatLng =  item.latitudelongitude.split(",");
-      var latitude = Number(coordinatesLatLng[0]);
-      var longitude = Number(coordinatesLatLng[1]);
-
-      var marker = new google.maps.Marker({
-            position: new google.maps.LatLng(latitude, longitude),// place[i],
-            map: Map.getMap(),
-            title: item.documentName,
-            icon: iconPath,
-            animation : google.maps.Animation.DROP
-      });
-      
-      var infoWindow = new google.maps.InfoWindow();
-      google.maps.event.addListener(marker, 'click', function(){
-          // load marker's infoWindow's content
-          //var infoWindowContent = getInfoWindowContent(zone.id, this.title, proposalsCountByZones, 
-          //    $scope.proposalLabel_sing, $scope.proposalLabel_plu);
-          infoWindow.setContent(item.documentName);
-          infoWindow.open(Map.getMap(), this);
-
-          //infoWindowArray[zone.id] = infoWindow; // add marker's infoWindow to the array
-          // set current marker's infoWindow's data to use in MapCtrl if language changes
-          //$scope.currentMarkerZoneId = zone.id; 
-          //$scope.currentMarkerTitle = this.title;
-
-      });
-      /*google.maps.event.addListener(infoWindow, 'closeclick', function(){
-          // 'closeclick' listener runs for every infoWindow created, so initialize 
-          // $scope.currentMarkerZoneId only once
-          if($scope.currentMarkerZoneId == zone.id) $scope.currentMarkerZoneId = null;
-      });*/
-
     });
+    return selectedCategories;
+  };
+
+  function checkAndFinsihFilter(){
+    // comprobar lo dicho
+    // Map.reloadMarkers();
   }
 
+  // get POIs of specific category and, if neccesay, searched by text. 
+  // Returns a promise: if success, the api's response; otherwise error
+  function applyCategoryAndTextFilter(categoryCustomNumericId, isOfficial){
+    // remove this category's official and no official POIs
+    FilteredPOIs.removeCategoryPOIs(categoryCustomNumericId, isOfficial);
 
-
-
+  }
 
 
 
   // ** Configure adding and removing filters **
 
-  // Add category's filter (using specified categories of config/categories.js).
-  // 'categoryJsonId' parameter: category's identifier (1..N) of config/categories.js file
-  // (note that $scope.translatedCategories' array's range is 0..N-1, with categories identified from 1 to N)
-  $scope.callDatasetCategoriesFilter = function(categoryJsonId){
-    console.log('Applying category filter... ("' + $scope.translatedCategories[categoryJsonId-1].label + '")');
+  // Add a category's filter (using 'categories' array of config/categories.js).
+  // 'categoryId' parameter: 'id' property (0..Number of official categories-1) of 'config/categories.js' file
+  // (note that $scope.translatedCategories' array's range must be the same as official category's ID 
+  // identified from '0' to 'Number of official categories-1')
+  $scope.callDatasetCategoriesFilter = function(categoryId){
+
+    console.log('');
+    console.log('Applying category filter... ("' + $scope.translatedCategories[categoryId].label + '")');
+    // open loading panel
     $ionicLoading.show({
       template: '<ion-spinner icon="bubbles"></ion-spinner><br/>'
         + $filter('translate')('menu.filter.category-search.loading-text')
     });
 
+    applyCategoryAndTextFilter($scope.translatedCategories[categoryId].categoryCustomNumericId, true)
+    .then(
+      function(response){ // promise resolved
+        // applyLocationFilter
+        //    then --> if ciudadano? applyCategoryAndTextFilter(.., false) + location
+        //    then checkAndFinsihFilter
+
+      }, function(){ // promise rejected
+
+      });
+
+    
+    
+
     var response = null;
     var url = null;
 
     // get dataset/json/marker's info of the selected category (stored in 'categories.js')
-    var categoryInfo = categories.filter( function(item){ return item.id == categoryJsonId; } );
+    var categoryInfo = categories.filter( function(item){ return item.id == categoryId; } );
     if(categoryInfo != null){
       var url = WELIVE_DATASET_API_URL + categoryInfo[0]['datasetId'] + '/resource/' + categoryInfo[0]['jsonId'] + '/query';
       console.log('Getting items from "' + url + '"...');
@@ -369,6 +357,9 @@ function appCtrl(
                         + " OR historicTerritory " + searchTextSQL + ") "; 
     }
 
+
+    
+
     $http({
       method: 'POST',
       url: url,
@@ -379,7 +370,7 @@ function appCtrl(
           // this callback will be called asynchronously when the successCallback is available
           response = successCallback.data;
         }, function errorCallback(errorCallback) {
-          $scope.filter.selectedCategories[categoryJsonId] = false; // set category's checkbox to false
+          $scope.filter.selectedCategories[categoryId] = false; // set category's checkbox to false
           $ionicPopup.alert({
               title: $filter('translate')('menu.filter.category-search.error-popup-title'),
               template: $filter('translate')('menu.filter.category-search.error-popup-text'),
@@ -391,10 +382,16 @@ function appCtrl(
         function finallyCallback(callback, notifyCallback){
           $ionicLoading.hide(); 
           if(response != null){
+            //FilteredPOIs.callDataset(true, categoryInfo[0]['datasetId'], response);
+            //console.log(FilteredPOIs.getPOI(true, categoryInfo[0]['datasetId'], 2));
+            FilteredPOIs.emptyPOIs();
+
+            // $scope.filter.selectedLocation['device-gps'] = false; --> checkox OK, but not 'Removing...'
+
             // check location and citizen filters, and load markers
-            saveOfficialPOIs(response, categoryJsonId);
+            //saveOfficialPOIs(response, categoryId);
             
-            //loadMarkers(response, categoryInfo, true);
+            loadMarkers(response, categoryInfo, true);
           }
           else{
             $ionicPopup.alert({
@@ -413,11 +410,11 @@ function appCtrl(
   // save official pois' array (filtered by category and, maybe, by text and/or location)
   function saveOfficialPOIs(response, categoryJsonId){
     // save the obtained POIs (filtered by category and text)
-    if(categoryJsonId == 1){
+    if(categoryId == 1){
       $scope.gastronomyOfficialArray = response;
-    }else if(categoryJsonId == 2){
+    }else if(categoryId == 2){
       $scope.tourismOfficialArray = response;
-    }else if(categoryJsonId == 3){
+    }else if(categoryId == 3){
       $scope.accommodationOfficialArray = response;
     }
 
@@ -445,7 +442,7 @@ function appCtrl(
               lat = Map.getAutocomplete().getPlace().geometry.location.lat();
               lng = Map.getAutocomplete().getPlace().geometry.location.lng();
               var selectedLatLng = {lat: lat, lng: lng };
-              filterLocation(categoryJsonId, selectedLatLng); // update the corresponding official POIs array
+              filterLocation(categoryId, selectedLatLng); // update the corresponding official POIs array
 
             }else if($scope.filter.selectedLocation['device-gps']){
               //ar selectedLatLng = searchDeviceLocation();
@@ -460,7 +457,7 @@ function appCtrl(
                 });
 
               }else{
-                filterLocation(categoryJsonId, selectedLatLng); // update the corresponding official POIs array
+                filterLocation(categoryId, selectedLatLng); // update the corresponding official POIs array
               }
             }
             resolve();
@@ -518,12 +515,12 @@ function appCtrl(
       });
   }
   // remove from POIs' array the POIs that aren't near de selected location
-  function filterLocation(categoryJsonId, selectedLatLng){
-    if(categoryJsonId == 1){
+  function filterLocation(categoryId, selectedLatLng){
+    if(categoryId == 1){
       $scope.gastronomyOfficialArray.rows = $scope.gastronomyOfficialArray.rows.filter(coordinateFilter, selectedLatLng);
-    }else if(categoryJsonId == 2){
+    }else if(categoryId == 2){
       $scope.tourismOfficialArray.rows = $scope.tourismOfficialArray.rows.filter(coordinateFilter, selectedLatLng);
-    }else if(categoryJsonId == 3){
+    }else if(categoryId == 3){
       $scope.accommodationOfficialArray.rows = $scope.accommodationOfficialArray.rows.filter(coordinateFilter, selectedLatLng);
     }
   }
@@ -543,17 +540,36 @@ function appCtrl(
 
 
   // Remove category's filter.
-  // 'categoryJsonId': category's identifier (1..N) of config/categories.js file
-  //             (note that $scope.translatedCategories' array's range is 0..N-1)
-  $scope.disableCategoryFilter = function(categoryJsonId){
-    console.log('Removing category filter... ("' + $scope.translatedCategories[categoryJsonId-1].label + '")');
+  // 'categoryId': official category's identifier (0..Number of official categories-1) of config/categories.js file
+  //             (note that $scope.translatedCategories' array's range is the same as categoryId's range)
+  $scope.disableCategoryFilter = function(categoryId){
+    console.log('Removing category filter... ("' + $scope.translatedCategories[categoryId].label + '")');
 
   };
 
-  // Add location's filter (with the radius specified in config/config.js).
+  // Add location's filter.
   // 'locationMode': location searching mode ('google-places' | 'device-gps')
   $scope.callLocationFilter = function(locationMode){
+    // if there is no selected any category, don't activate this filter
+    if(getSelectedCategories().length == 0){
+      $ionicPopup.alert({
+          title: $filter('translate')('menu.filter.category-search.error-popup-title'),
+          template: $filter('translate')('menu.filter.category-search.no-category-selected-error-popup-text'),
+          okText: $filter('translate')('menu.filter.category-search.error-ok-button-label'),
+          okType: 'button-assertive' 
+      });
+      $scope.filter.selectedLocation[locationMode] = false; // disable filter's checkbox
+      return;
+    }
+    console.log('');
     console.log("Applying location filter... (mode: " + locationMode + ")");
+    $ionicLoading.show({
+      template: '<ion-spinner icon="bubbles"></ion-spinner><br/>'
+        + $filter('translate')('menu.filter.category-search.loading-text')
+    });
+
+
+
     if(locationMode == 'google-places'){
       var geometry  = Map.getAutocomplete().getPlace().geometry;
       if (!geometry) return;
@@ -585,14 +601,91 @@ function appCtrl(
 
   };
 
-  // Add 'only citizen's POIs's filter
-  $scope.callCitizensOnlyFilter = function(){
-    console.log("Applying citizens' filter... (showing only citizens' POIs)");
+  // Add 'also citizen's POIs' filter
+  $scope.callAlsoCitizensFilter = function(){
+    console.log("Applying citizens' filter... (showing also citizens' POIs)");
   };
-  // Remove 'only citizen's POIs's filter
-  $scope.showCitizensAndOfficial = function(){
-    console.log("Removing citizens' filter... (showing official and no official POIs)");
+  // Remove 'also citizen's POIs's filter
+  $scope.showOnlyOfficialPOIs = function(){
+    console.log("Removing citizens' filter... (showing only official POIs)");
   };
+
+
+
+
+
+  // Show on the map the markers of the obtained items with the corresponding icons.
+  // 'itemsFromDataset': the response of the /query method
+  // 'categoryInfo': all the information related to the requested dataset stored in 'categories.js' 
+  // 'isOfficialDataset': boolean parameter to know if the requested dataset is an official one or
+  //                      the citizen's dataset (which includes all categories)
+  function loadMarkers(itemsFromDataset, categoryInfo, isOfficialDataset){ 
+    console.log('markers to display', itemsFromDataset.count, itemsFromDataset);
+
+    var iconPath = null;
+    if(isOfficialDataset) iconPath = categoryInfo[0]['marker'];
+
+    var infoWindow = new google.maps.InfoWindow(); // define one infoWindow to close it when another is opened
+    angular.forEach(itemsFromDataset.rows, function(item, key){
+
+      // if the there are citizen's markers, they could be from any of the
+      // categories, so is neccesary to assign the correct marker icon depending of each one
+      if(!isOfficialDataset){
+        if(item.category == categoryInfo[0]['gastronomy_categoryId']){
+          iconPath = categoryInfo[0]['citizen_gastronomy_marker'];
+        }else if(item.category == categoryInfo[0]['tourism_categoryId']){
+          iconPath = categoryInfo[0]['citizen_tourism_marker'];
+        }else if(item.category == categoryInfo[0]['accommodation_categoryId']){
+          iconPath = categoryInfo[0]['citizen_accommodation_marker'];
+        }
+      }
+
+      // get the marker coordinates
+      var coordinatesLatLng =  item.latitudelongitude.split(",");
+      var latitude = Number(coordinatesLatLng[0]);
+      var longitude = Number(coordinatesLatLng[1]);
+
+      var marker = new google.maps.Marker({
+            position: new google.maps.LatLng(latitude, longitude),// place[i],
+            map: Map.getMap(),
+            title: item.documentName,
+            icon: iconPath,
+            animation : google.maps.Animation.DROP
+      });
+      
+      google.maps.event.addListener(marker, 'click', function(){
+          // load marker's infoWindow's content
+          //var infoWindowContent = getInfoWindowContent(zone.id, this.title, proposalsCountByZones, 
+          //    $scope.proposalLabel_sing, $scope.proposalLabel_plu);
+          infoWindow.setOptions({
+            content: item.documentName,
+            maxWidth: 200
+          });
+          /*var infowindow = new google.maps.InfoWindow({
+            content: item.documentName,
+            maxWidth: 200
+          });*/
+
+          infoWindow.open(Map.getMap(), this);
+
+          //infoWindowArray[zone.id] = infoWindow; // add marker's infoWindow to the array
+          // set current marker's infoWindow's data to use in MapCtrl if language changes
+          //$scope.currentMarkerZoneId = zone.id; 
+          //$scope.currentMarkerTitle = this.title;
+
+      });
+      /*google.maps.event.addListener(infoWindow, 'closeclick', function(){
+          // 'closeclick' listener runs for every infoWindow created, so initialize 
+          // $scope.currentMarkerZoneId only once
+          if($scope.currentMarkerZoneId == zone.id) $scope.currentMarkerZoneId = null;
+      });*/
+
+    });
+  }
+
+
+
+
 
   // ** Configure language changing (UI's switch and $translate's language) **
 

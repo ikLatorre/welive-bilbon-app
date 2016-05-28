@@ -1,7 +1,7 @@
 {
   "name": "welive",
   "version": "1.1.1",
-  "description": "welive: An Ionic project",
+  "description": "WeLive project app",
   "dependencies": {
     "gulp": "^3.5.6",
     "gulp-sass": "^2.0.4",
@@ -20,7 +20,7 @@
     "cordova-plugin-splashscreen",
     "com.ionic.keyboard",
     "cordova-plugin-whitelist",
-    "cordova-plugin-inappbrowser"
+    "cordova-plugin-inappbrowser@1.4.0"
   ],
   "cordovaPlatforms": [
     "android"

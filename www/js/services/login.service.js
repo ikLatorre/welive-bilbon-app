@@ -2,9 +2,12 @@
 bilbonAppServices
     .factory('Login', LoginService);
 
-//LoginService.$inject = ['$http', '$state', '$q']; //'Users', 'UserId'
+LoginService.$inject = ['$http', '$state', '$q', '$ionicLoading']; 
 
-function LoginService($http, $state, $q, $ionicLoading) { //Users, UserId
+/**
+ * @desc Manage WeLive's login system
+ */
+function LoginService($http, $state, $q, $ionicLoading) { 
 
     var login = {
         requestAuthorize: requestAuthorize,

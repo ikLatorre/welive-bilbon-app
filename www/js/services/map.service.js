@@ -2,13 +2,14 @@
 var bilbonAppServices = angular.module('starter.services', []);
 
 bilbonAppServices
-    .factory('Map', map);
+    .factory('Map', mapService);
 
+//mapService.$inject = []; 
 
 /**
-* @desc manage map and google autocomplete's objects
+* @desc Manage map and google autocomplete's objects
 */
-function map(){
+function mapService(){
 	var map = {};
 	map.mapObj = null;
 	map.googlePlacesAutocompleteObj = null;

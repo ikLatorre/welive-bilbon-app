@@ -2,8 +2,10 @@
 bilbonAppServices
     .factory('UserLocalStorage', userLocalStorage);
 
+userLocalStorage.$inject = ['localStorageService'];
+
 /**
-* @desc get and set user's data
+* @desc Get and set user's data using local storage
 */
 function userLocalStorage(localStorageService){
     return {
