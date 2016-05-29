@@ -20,6 +20,7 @@ function appCtrl(
   UserLocalStorage, 
   Map, 
   $http, 
+  $q,
   $ionicPopup, 
   $ionicPlatform, 
   $ionicLoading, 
@@ -279,6 +280,13 @@ function appCtrl(
 
 
 
+
+
+
+
+
+
+
   
   // returns an array of integers of selected 'categoryCustomNumericId', or an empty array otherwise
   // (e.g. [1,3]: selected 1 and 3 categories (see 'config/categories.js'))
@@ -292,24 +300,75 @@ function appCtrl(
     return selectedCategories;
   };
 
-  function checkAndFinsihFilter(){
+  function checkFilterAndReloadMarkers(){
     // comprobar lo dicho
     // Map.reloadMarkers();
   }
 
-  // get POIs of specific category and, if neccesay, searched by text. 
-  // Returns a promise: if success, the api's response; otherwise error
+  // get POIs of specific category and, if neccesary, searched by text (official or citinzen POIs). 
+  // Returns a promise: if success, the api's response; otherwise error.
   function applyCategoryAndTextFilter(categoryCustomNumericId, isOfficial){
-    // remove this category's official and no official POIs
-    FilteredPOIs.removeCategoryPOIs(categoryCustomNumericId, isOfficial);
+    var promise;
+    promise = $q(function (resolve, reject) {
+      // remove this category's official and no official POIs
+      FilteredPOIs.removeCategoryPOIs(categoryCustomNumericId, isOfficial);
+      
+      // check if text filter is enabled or not, and add if neccesary
+      var textInput = null;
+      if($scope.filter.selectedText) textInput = $scope.filter.textFilterInput;
+      // call official or citizen dataset to get POIs of specific category (and, maybe, filtered by text)
+      FilteredPOIs.callCategoryAndTextFilter(categoryCustomNumericId, isOfficial, textInput)
+      .then(
+        function(response){ // FilteredPOIs.callCategoryAndTextFilter's promise resolved
+          // resolve this function's promise
+          resolve(response); // FilteredPOIs.callCategoryAndTextFilter's promise rejected
+        }, 
+        function(){
+          // reject this function's promise
+          reject();
+        });
+    });
 
+    return promise; 
+  }
+
+  function applyLocationFilter(categoryCustomNumericId, isOfficial){
+    var promise;
+    promise = $q(function (resolve, reject) {
+      // if location filter is disabled, don't apply it
+      if($scope.filter.selectedLocation['google-places'] == false 
+        && $scope.filter.selectedLocation['device-gps'] == false){
+        resolve();
+      }else{
+        var lat = null;
+        var lng = null;
+        if($scope.filter.selectedLocation['google-places'] == true){
+          lat = Map.getAutocomplete().getPlace().geometry.location.lat();
+          lng = Map.getAutocomplete().getPlace().geometry.location.lng();
+        }
+        // apply location filter to stored POIs of specific category (if lat and lng are null, see gps's location)
+        FilteredPOIs.callLocationFilter(categoryCustomNumericId, isOfficial, lat, lng)
+        .then(
+          function(){ // FilteredPOIs.callLocationFilter's promise resolved
+            // resolve this function's promise
+            resolve(); // FilteredPOIs.callLocationFilter's promise rejected
+          }, 
+          function(){
+            // reject this function's promise
+            reject();
+          });
+      } 
+      
+    });
+
+    return promise; 
   }
 
 
 
   // ** Configure adding and removing filters **
 
-  // Add a category's filter (using 'categories' array of config/categories.js).
+  // Add a category's filter 
   // 'categoryId' parameter: 'id' property (0..Number of official categories-1) of 'config/categories.js' file
   // (note that $scope.translatedCategories' array's range must be the same as official category's ID 
   // identified from '0' to 'Number of official categories-1')
@@ -323,21 +382,32 @@ function appCtrl(
         + $filter('translate')('menu.filter.category-search.loading-text')
     });
 
+    // get official POIs based filtered by category (and, maybe, by text)
     applyCategoryAndTextFilter($scope.translatedCategories[categoryId].categoryCustomNumericId, true)
     .then(
-      function(response){ // promise resolved
-        // applyLocationFilter
+      function(response){ // promise resolved, check location filter
+        if(response.rows.length > 0){ // if there are POIs of the corresponding category (and text)
+          applyLocationFilter().then( // apply location filter if it is enabled
+            function(){ // promise resolved
+
+            }function(){ // promise rejected
+
+            }
+          );
+        } 
         //    then --> if ciudadano? applyCategoryAndTextFilter(.., false) + location
         //    then checkAndFinsihFilter
 
-      }, function(){ // promise rejected
+      }, function(){ // promise rejected, couldn't get POIs 
 
       });
 
     
     
+      //return;
+// ************************** VIEJO **************************
 
-    var response = null;
+    /*var response = null;
     var url = null;
 
     // get dataset/json/marker's info of the selected category (stored in 'categories.js')
@@ -345,7 +415,7 @@ function appCtrl(
     if(categoryInfo != null){
       var url = WELIVE_DATASET_API_URL + categoryInfo[0]['datasetId'] + '/resource/' + categoryInfo[0]['jsonId'] + '/query';
       console.log('Getting items from "' + url + '"...');
-    }
+    }//else console.log('no encontrado con ', categoryId);
 
     // apply 'text' filter if neccesary
     var queryText = "";
@@ -358,13 +428,17 @@ function appCtrl(
     }
 
 
-    
-
+    var queryText2 = " AND documentName LIKE '%La Granja%' "
+    var sqlQuery = "SELECT _id AS id, documentName, documentDescription, latitudelongitude, web, phoneNumber, email, country, "
+                + " territory, municipality, municipalityCode, historicTerritory, historicTerritoryCode "
+                + " FROM rootTable WHERE municipalityCode = 480020 " + queryText2 + ";";
+    console.log(sqlQuery);
     $http({
       method: 'POST',
       url: url,
-      headers: { "Content-Type": "text/plain" },
-      data: "SELECT * FROM rootTable WHERE municipalityCode = 480020 " + queryText + ";", // select from Bilbao
+      headers: { "Content-Type": "text/plain",
+                 "Accept": "application/json" },
+      data: sqlQuery, // select from Bilbao
       timeout: 10000
     }).then(function successCallback(successCallback) {
           // this callback will be called asynchronously when the successCallback is available
@@ -404,7 +478,7 @@ function appCtrl(
           // initialize the map (with or without data about proposals' count)
           //infoWindowArray = initialize($scope.proposalsCountByZones, $scope);
         }
-    );
+    );*/
 
   };
   // save official pois' array (filtered by category and, maybe, by text and/or location)
