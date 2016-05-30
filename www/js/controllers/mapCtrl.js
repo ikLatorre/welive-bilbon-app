@@ -21,10 +21,10 @@ function mapCtrl(
 	mapElement.css('height', screenHeight + 'px');
 
 	// initialize map's variables
-	var infoWindowArray = null; // array of initialized markers
+	/*var infoWindowArray = null; // array of initialized markers
 	$scope.currentMarkerZoneId = null;
 	$scope.currentMarkerTitle = null; // 
-	$scope.proposalsCountByZones = [];
+	$scope.proposalsCountByZones = [];*/
 
 	// manage infoWindow's content's language
 	//$scope.proposalLabel_sing = $filter('translate')('proposal-map-page.proposals-label-sing');

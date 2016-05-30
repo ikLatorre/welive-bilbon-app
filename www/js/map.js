@@ -5,7 +5,7 @@
 //function initialize(proposalsCountByZones, $scope){
 function initializeMap(domMapContainer){
     
-    var infoWindow = new google.maps.InfoWindow();
+    //var infoWindow = new google.maps.InfoWindow();
     var options = {
         zoom: 14, 
         zoomControl: false,
@@ -95,20 +95,12 @@ function loadGooglePlacesAutocompleteFeature(domInputElement, MapFactory, $ionic
                 autocompleteObj.getPlace() == null 
                 // enter pressed without selecting or error getting the place:
                 || (autocompleteObj.getPlace() != null && domInputElement.value == autocompleteObj.getPlace().name)){ 
-                console.log("Select a location from the suggestion list before activate the Google Places' filter");
 
-                $ionicPopup.alert({
-                    title: $filter('translate')('menu.filter.location-search.error-popup-title'),
-                    template: $filter('translate')('menu.filter.location-search.error-popup-text'),
-                    okText: $filter('translate')('menu.filter.location-search.error-ok-button-label'),
-                    okType: 'button-assertive' 
-                });
-
-                MapFactory.setGPlacesLocationToSearch('');
+                    MapFactory.setGPlacesLocationToSearch('');
             }else{
-                // store 'domInputElement' value, because the user written text ($scope.filter.autocompleteLocation)
-                // is not the entire location (e.g. use 'Caso Viejo,...' instead of 'casc')
-                MapFactory.setGPlacesLocationToSearch(domInputElement.value);
+                    // store 'domInputElement' value, because the user written text ($scope.filter.autocompleteLocation)
+                    // is not the entire location (e.g. use 'Caso Viejo,...' instead of 'casc')
+                    MapFactory.setGPlacesLocationToSearch(domInputElement.value);
             }
 
             return;

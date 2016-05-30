@@ -31,6 +31,19 @@
  "menu.filter.category-search.alert-ok-button-label": "Cerrar",
  "menu.filter.category-search.no-category-selected-error-popup-text": "Por favor, seleccione alguna categoría para aplicar este filtro.",
 
+ "menu.filter.location-search.info-popup-title": "Información",
+ "menu.filter.location-search.empty-official-popup-text": "No hay datos oficiales en la localización especificada.",
+ "menu.filter.location-search.empty-citizen-popup-text": "No hay datos de ciudadanos en la localización especificada.",
+ "menu.filter.location-search.alert-ok-button-label": "Cerrar",
+
+ "menu.filter.location-search.unselected-autocomplete.info-popup-title": "Información",
+ "menu.filter.location-search.unselected-autocomplete.info-popup-text": "Seleccione una ubicación de la lista de sugerencias para activar este filtro.",
+ "menu.filter.location-search.info-ok-button-label": "Cerrar",
+
+ "menu.filter.location-search.text-empty.info-popup-title": "Información",
+ "menu.filter.location-search.text-empty.info-popup-text": "Introduzca un texto para activar el filtro.",
+ "menu.filter.location-search.text-empty.info-ok-button-label": "Cerrar",
+
  "menu.filter.location-search.error-popup-title": "Error",
  "menu.filter.location-search.error-popup-text": "No se ha podido obtener su ubicación, compruebe que la tenga activada en su dispositivo.",
  "menu.filter.location-search.alert-ok-button-label": "Cerrar",

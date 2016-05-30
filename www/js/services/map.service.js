@@ -7,9 +7,9 @@ bilbonAppServices
 mapService.$inject = ['FilteredPOIs', '$q']; 
 
 /**
-* @desc Manage map and google autocomplete's objects
+* @desc Manage map, Google Autocomplete's objects and markers.
 */
-function mapService(FilteredPOIs,$q){
+function mapService(FilteredPOIs, $q){
 	var map = {};
 	map.mapObj = null;
 	map.googlePlacesAutocompleteObj = null;
@@ -24,7 +24,7 @@ function mapService(FilteredPOIs,$q){
 	initializeMarkersArrays();
 
 	// define service's methods
-	var map = {
+	var mapFunctions = {
 		getMap: getMap,
 		setMap: setMap,
 		getAutocomplete: getAutocomplete,
@@ -36,7 +36,7 @@ function mapService(FilteredPOIs,$q){
 
 		reloadMarkers: reloadMarkers
     };
-    return map;
+    return mapFunctions;
 
     function getMap(){
     	return map.mapObj;
@@ -51,6 +51,7 @@ function mapService(FilteredPOIs,$q){
     };
 
     function setAutocomplete(googlePlacesAutocompleteObj){
+
     	map.googlePlacesAutocompleteObj = googlePlacesAutocompleteObj;
     };
 
@@ -86,8 +87,21 @@ function mapService(FilteredPOIs,$q){
 	    	console.log('Filtered official POIs:', officialPOIs, 'Filtered citizen POIs:', citizenPOIs);
 
 	    	// create markers and add them to the map and to the corresponding arrays
-	    	createCategoryMarkers(officialPOIs, true);
-	    	createCategoryMarkers(citizenPOIs, false);
+	    	var bounds = new google.maps.LatLngBounds();
+	    	createCategoryMarkers(officialPOIs, true, bounds)
+	    	.then(function(officialMarkersCount){
+	    		createCategoryMarkers(citizenPOIs, false, bounds)
+	    		.then(function(citizensMarkersCount){
+	    			var markersCount = officialMarkersCount + citizensMarkersCount;
+	    			// fit map to cover all visible markers if there are no so much
+	    			if(markersCount > 30 || markersCount == 0){
+	    				getMap().setZoom(14);
+    					getMap().setCenter(new google.maps.LatLng(43.263606, -2.935214)); // Plaza de Don Federico Moyúa, Bilbao
+	    			}else{
+	    				getMap().fitBounds(bounds); 
+	    			}
+	    		});
+	    	});
 
 	    	resolve();
 	    });
@@ -144,52 +158,66 @@ function mapService(FilteredPOIs,$q){
 
     // create all filtered categories' markers.
     // 'filteredPOIs' parameter is the array of filtered POIs of all categories of one type (official or citizen)
-    function createCategoryMarkers(filteredPOIs, isOfficial){
-    	// create official or citizen POIs' markers, iterate over the array of dataset results of each category
-    	angular.forEach(filteredPOIs, function(datasetItem, categoryKey){
+    // Returns a promise with created markers count as parameter when resolved
+    function createCategoryMarkers(filteredPOIs, isOfficial, bounds){
+    	var promise;
+    	promise = $q(function (resolve, reject) {
 
-    		if(datasetItem != null && datasetItem.hasOwnProperty("rows")){
-    			// iterate over the array of filtered official POIs of specific category
-    			angular.forEach(datasetItem.rows, function(POIitem, POIkey){
+    		var markersCount = 0;
 
-    				// get marker's coordinates
-					var coordinatesLatLng =  POIitem.latitudelongitude.split(",");
-					var latitude = Number(coordinatesLatLng[0]);
-					var longitude = Number(coordinatesLatLng[1]);
+	    	// create official or citizen POIs' markers, iterate over the array of dataset results of each category
+	    	angular.forEach(filteredPOIs, function(datasetItem, categoryKey){
 
-					// get marker's icon (based on category and type (official or not))
-					var iconPath = null;
-					var categoryInfo = categories.filter( function(item){ //'categories' is defined in config/categories.js
-						return (item.categoryCustomNumericId == categoryKey && item.isOfficial == isOfficial); 
-					});
-					if(categoryInfo != null) iconPath = categoryInfo[0]['marker'];
+	    		if(datasetItem != null && datasetItem.hasOwnProperty("rows")){
+	    			// iterate over the array of filtered official POIs of specific category
+	    			angular.forEach(datasetItem.rows, function(POIitem, POIkey){
 
-					// add the marker to the map
-    				var marker = new google.maps.Marker({
-				        position: new google.maps.LatLng(latitude, longitude),// place[i],
-				        map: getMap(),
-				        title: POIitem.documentName,
-				        icon: iconPath,
-				        animation : google.maps.Animation.DROP
-					});
+	    				// get marker's coordinates
+						var coordinatesLatLng =  POIitem.latitudelongitude.split(",");
+						var latitude = Number(coordinatesLatLng[0]);
+						var longitude = Number(coordinatesLatLng[1]);
 
-    				// set infoWindow to the marker's 'click' event
-					google.maps.event.addListener(marker, 'click', function(){
-						map.infoWindow.setOptions({
-							content: POIitem.documentName,
-							maxWidth: 200
+						// get marker's icon (based on category and type (official or not))
+						var iconPath = null;
+						var categoryInfo = categories.filter( function(item){ //'categories' is defined in config/categories.js
+							return (item.categoryCustomNumericId == categoryKey && item.isOfficial == isOfficial); 
 						});
-						map.infoWindow.open(getMap(), this);
-					});
+						if(categoryInfo != null) iconPath = categoryInfo[0]['marker'];
 
-    				// push the marker to the corresponding array
-    				if(isOfficial) map.officialMarkers[categoryKey].push(marker);
-    				else map.citizenMarkers[categoryKey].push(marker);
-    			});
-    		}
-    		// see for another category
-    	});
-    	// all categories' items iteration finished
+						// add the marker to the map
+	    				var marker = new google.maps.Marker({
+					        position: new google.maps.LatLng(latitude, longitude),// place[i],
+					        map: getMap(),
+					        title: POIitem.documentName,
+					        icon: iconPath,
+					        animation : google.maps.Animation.DROP
+						});
+
+						bounds.extend(marker.getPosition());
+						markersCount++;
+
+	    				// set infoWindow to the marker's 'click' event
+						google.maps.event.addListener(marker, 'click', function(){
+							map.infoWindow.setOptions({
+								content: POIitem.documentName,
+								maxWidth: 200
+							});
+							map.infoWindow.open(getMap(), this);
+						});
+
+	    				// push the marker to the corresponding array
+	    				if(isOfficial) map.officialMarkers[categoryKey].push(marker);
+	    				else map.citizenMarkers[categoryKey].push(marker);
+	    			});
+	    		}
+	    		// see for another category
+	    	});
+	    	// all categories' items iteration finished
+	    	resolve(markersCount);
+	    	
+ 		});
+
+    	return promise;
     }
 
 

@@ -275,14 +275,16 @@ function filteredPOIs($http, $state, $q, $ionicLoading, WELIVE_DATASET_API_URL) 
 	    	// get category array of POIs if exists (reject() promise otherwise)
     		if(datasetResults != null && datasetResults.hasOwnProperty("rows")){
     			// override existing POIs by filtered ones (datasetResults.rows has the reference to real array)
-    			var sw = new google.maps.LatLng(lat - 0.0035, lng - 0.0035);
-				var ne = new google.maps.LatLng(lat + 0.0035, lng + 0.0035);
+    			var sw = new google.maps.LatLng(Number(lat) - 0.0035, Number(lng) - 0.0035);
+				var ne = new google.maps.LatLng(Number(lat) + 0.0035, Number(lng) + 0.0035);
 				var bounds = new google.maps.LatLngBounds(sw, ne); // set bounds (more or less 500m of radius)
 				
 				var previousPOICount = datasetResults.rows.length;
 				datasetResults.rows = datasetResults.rows.filter(poiIsContained, bounds);
-				var removedPOIsCount = previousPOICount - datasetResults.rows;
-				console.log('Finished location filter (removed ' + removedPOIsCount + ' POIs)');
+				var removedPOIsCount = previousPOICount - datasetResults.rows.length;
+				console.log('Finished location filter with ' + datasetResults.rows.length + ' POIs '
+					+ '(removed ' + removedPOIsCount + '/' + previousPOICount + ' POIs)');
+				// official dataset's could contain the same POI twice
 
 				resolve(datasetResults.rows);
     		}else{
@@ -296,8 +298,13 @@ function filteredPOIs($http, $state, $q, $ionicLoading, WELIVE_DATASET_API_URL) 
 	// 'this' value is the optional parameter passed by 'filter' function: google maps' 'bounds' function
 	function poiIsContained(item, index, array) {
 		var coordinatesLatLng =  item.latitudelongitude.split(",");
-		var poiLatLng = { lat: Number(coordinatesLatLng[0]), lng: Number(coordinatesLatLng[1]) };
-		return this.contains(poiLatLng);
+		var poiLatLng = new google.maps.LatLng(Number(coordinatesLatLng[0]), Number(coordinatesLatLng[1]));
+		if(coordinatesLatLng[0] == null || coordinatesLatLng[1] == null){
+			return false;
+		} 
+		else{
+			return this.contains(poiLatLng);
+		} 
 	}
 
 }
