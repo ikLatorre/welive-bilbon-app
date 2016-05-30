@@ -12,6 +12,7 @@
 * 'es_ES' and 'eu_ES' parameters of citizens' POIs have not any value because they not appear in the filter's menu.
 *
 * There can not be two items with the same 'categoryCustomNumericId' and 'isOfficial' properties.
+* ('id' property's range must be 0..N)
 */
 var categories = [
 	{"id":0, "datasetId": "restaurantes-sidrerias-y-bodegas-de-euskadi", 

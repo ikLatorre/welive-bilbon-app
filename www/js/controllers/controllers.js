@@ -36,6 +36,8 @@ function appCtrl(
   //});
 
 
+
+
   // ** define filter's model **
 
   $scope.filter = {}; 
@@ -53,13 +55,46 @@ function appCtrl(
   // store selection's values of 'only no official (only citizen's POIs) POIs's checkbox (true|false):
   $scope.filter.selectedCitizensPOIs = false;
 
-  // define POIs' arrays
-  $scope.gastronomyOfficialArray = [];
-  $scope.tourismOfficialArray = [];
-  $scope.accommodationOfficialArray = [];
-  $scope.gastronomyCitizenArray = [];
-  $scope.tourismCitizenArray = [];
-  $scope.accommodationCitizenArray = [];
+
+
+
+  // ** Configure user's login **
+
+  // initialize form data for the login modal
+  UserLocalStorage.removeUserData(); 
+
+  // Define function to show menu's login/logout items
+  $scope.getCurrentUserId = function (){
+      return UserLocalStorage.getUserId();
+  }
+
+
+
+
+  // ** Configure language changing (UI's switch and $translate's language) **
+
+  $scope.selectedLang = false; // false: es_ES | true: eu_ES
+  $scope.changeLang = function() {
+    if($scope.selectedLang == false) {
+      $scope.selectedLang = true;
+      $scope.switchLanguage('eu_ES');   
+    } else{
+      $scope.selectedLang = false;
+      $scope.switchLanguage('es_ES');
+    }
+  };
+  $scope.switchLanguage = function (key) {
+      $translate.use(key);
+  }; 
+  $rootScope.$on('$translateChangeEnd', function() { 
+    if ($translate.use() == 'eu_ES')
+      $scope.translatedCategories = $scope.basqueCategoriesArray; // change language of menu's items categories' items
+    else
+      $scope.translatedCategories = $scope.spanishCategoriesArray;
+  });
+
+
+
 
 
   // ** Configure categories for the filter **
@@ -166,16 +201,18 @@ function appCtrl(
       }
     }
 
+    var isLocationSwitched = false; // used in '$scope.callLocationFilter(...)' to manage location filter
     // switch between location modes if neccesary ('google-places' | 'device-gps')
     if($scope.filter.selectedLocation[locationMode]){
       // activate location mode, check if the other mode is already activated to disable it if is neccesary
       if($scope.filter.selectedLocation[otherLocationMode]){ 
+        isLocationSwitched = true;
         $scope.filter.selectedLocation[otherLocationMode] = false;
-        $scope.disableLocationFilter(otherLocationMode); // disable filter
+        $scope.disableLocationFilter(otherLocationMode, isLocationSwitched); // disable filter
       }
-      $scope.callLocationFilter(locationMode); // do the search because of the activation of this filter
+      $scope.callLocationFilter(locationMode, isLocationSwitched); // do the search because of the activation of this filter
     }else{
-      $scope.disableLocationFilter(locationMode); // disable filter
+      $scope.disableLocationFilter(locationMode, isLocationSwitched); // disable filter
     }
   };
   // if the user empty the input, remove previously selected location and force the user to select another one 
@@ -279,13 +316,7 @@ function appCtrl(
 
 
 
-
-
-
-
-
-
-
+  // ** Manage the filters' enabling and disabling (auxiliary functions) **
 
   
   // returns an array of integers of selected 'categoryCustomNumericId', or an empty array otherwise
@@ -300,12 +331,20 @@ function appCtrl(
     return selectedCategories;
   };
 
-  function checkFilterAndReloadMarkers(){
-    // comprobar lo dicho
-    // Map.reloadMarkers();
+  // hide $ionicLoading panel after reloading the filter, and show the new POIs in the map
+  function finishFilterAndReloadMarkers(){
+    $ionicLoading.hide();
+    // with the filter's errors if all the categories' checkboxes are programatically disabled, disable too other filters
+    // (in this case the errors cause alert panels, so is not neccesary to check if checkboxes are disabled or not)
+
+    Map.reloadMarkers()
+    .then(function(){
+      console.log('All markers have been reloaded.');
+      console.log();
+    });
   }
 
-  // get POIs of specific category and, if neccesary, searched by text (official or citinzen POIs). 
+  // get POIs of specific category and, if neccesary, searched by text (official or citizen POIs). 
   // Returns a promise: if success, the api's response; otherwise error.
   function applyCategoryAndTextFilter(categoryCustomNumericId, isOfficial){
     var promise;
@@ -321,9 +360,9 @@ function appCtrl(
       .then(
         function(response){ // FilteredPOIs.callCategoryAndTextFilter's promise resolved
           // resolve this function's promise
-          resolve(response); // FilteredPOIs.callCategoryAndTextFilter's promise rejected
+          resolve(response); 
         }, 
-        function(){
+        function(){ // FilteredPOIs.callCategoryAndTextFilter's promise rejected
           // reject this function's promise
           reject();
         });
@@ -332,30 +371,35 @@ function appCtrl(
     return promise; 
   }
 
+  // apply location filter (override stored POIs' array) to specific category and type (official or not)
+  // Returns a promise: resolved with 'filteredArray' parameter (null if it isn't neccesary to apply this filter) 
+  // or rejected with 'errorType': 'gps-error' (couldn't get device's location) or 'bounds-error' (apply to null POIs array)
   function applyLocationFilter(categoryCustomNumericId, isOfficial){
     var promise;
     promise = $q(function (resolve, reject) {
       // if location filter is disabled, don't apply it
       if($scope.filter.selectedLocation['google-places'] == false 
         && $scope.filter.selectedLocation['device-gps'] == false){
-        resolve();
+        resolve(null);
       }else{
         var lat = null;
         var lng = null;
         if($scope.filter.selectedLocation['google-places'] == true){
+          // get Google Autocomplete's location if selected
           lat = Map.getAutocomplete().getPlace().geometry.location.lat();
           lng = Map.getAutocomplete().getPlace().geometry.location.lng();
         }
-        // apply location filter to stored POIs of specific category (if lat and lng are null, see gps's location)
-        FilteredPOIs.callLocationFilter(categoryCustomNumericId, isOfficial, lat, lng)
+        // apply location filter to stored POIs of specific category (if lat and lng are null, get gps's location)
+        FilteredPOIs.callSelectedLocationFilter(categoryCustomNumericId, isOfficial, lat, lng)
         .then(
-          function(){ // FilteredPOIs.callLocationFilter's promise resolved
+          function(filteredArray){ // FilteredPOIs.callSelectedLocationFilter's promise resolved
             // resolve this function's promise
-            resolve(); // FilteredPOIs.callLocationFilter's promise rejected
+            resolve(filteredArray);
           }, 
-          function(){
-            // reject this function's promise
-            reject();
+          function(errorType){ // FilteredPOIs.callSelectedLocationFilter's promise rejected
+            // reject this function's promise (errorType: 'gps-error' or 'bounds-error')
+            // 'gps-error': couldn't get device's location; 'bounds-error': couldn't check some POIs
+            reject(errorType);
           });
       } 
       
@@ -363,6 +407,98 @@ function appCtrl(
 
     return promise; 
   }
+
+  // show category empty alert based on category and type (official or citizen)
+  // if 'categoryName' parameter is null, get it from 'categoryCustomNumericId' parameter
+  function showCategoryEmptyAlert(isOfficial, categoryName, categoryCustomNumericId){
+    var templateTextlanguageId;
+    if(isOfficial) templateTextlanguageId = 'menu.filter.category-search.empty-official-popup-text';
+    else templateTextlanguageId = 'menu.filter.category-search.empty-citizen-popup-text';
+    
+    // get the name of the category
+    var categoryNameText = categoryName; 
+    if(categoryName == null) categoryNameText = getCategoryTranslatedName(categoryCustomNumericId);
+
+    $ionicPopup.alert({
+        title: $filter('translate')('menu.filter.category-search.info-popup-title'),
+        template: '(' + categoryNameText + ') ' + $filter('translate')(templateTextlanguageId),
+        okText: $filter('translate')('menu.filter.category-search.alert-ok-button-label'),
+        okType: 'button-assertive' 
+    });
+  }
+
+  // show category error alert based on category and type (official or citizen)
+  // if 'categoryName' parameter is null, get it from 'categoryCustomNumericId' parameter
+  function showCategoryErrorAlert(isOfficial, categoryName, categoryCustomNumericId){
+    var templateTextlanguageId;
+    if(isOfficial) templateTextlanguageId = 'menu.filter.category-search.error-official-popup-text';
+    else templateTextlanguageId = 'menu.filter.category-search.error-citizen-popup-text';
+
+    // get the name of the category
+    var categoryNameText = categoryName; 
+    if(categoryName == null) categoryNameText = getCategoryTranslatedName(categoryCustomNumericId);
+
+    $ionicPopup.alert({
+        title: $filter('translate')('menu.filter.category-search.error-popup-title'),
+        template: '(' + categoryNameText + ') ' + $filter('translate')(templateTextlanguageId),
+        okText: $filter('translate')('menu.filter.category-search.alert-ok-button-label'),
+        okType: 'button-assertive' 
+    });
+  }
+
+  // get category's translated name based on 'categoryCustomNumericId' (see config/categories.js)
+  // his function is used in 'showCategoryEmptyAlert(...)' and 'showCategoryErrorAlert(...)'
+  function getCategoryTranslatedName(categoryCustomNumericId){ 
+    var categoryInfo = categories.filter( function(item){
+      return (item.categoryCustomNumericId == categoryCustomNumericId && item.isOfficial == true); 
+    });
+    if(categoryInfo != null) return $scope.translatedCategories[categoryInfo[0]['id']].label;
+  }
+
+  function showGpsLocationErrorAlert(){
+    $ionicPopup.alert({
+        title: $filter('translate')('menu.filter.location-search.error-popup-title'),
+        template: $filter('translate')('menu.filter.location-search.error-popup-text'),
+        okText: $filter('translate')('menu.filter.location-search.alert-ok-button-label'),
+        okType: 'button-assertive' 
+    });
+  }
+
+  // get citizen POIs of the corresponding category, called from 'callDatasetCategoriesFilter(...)'
+  // after official POIs' search is completed
+  // 'officialPOIsSuccess' parameter: true if category and text filter finish successfully
+  function getFilteredCitizensPOIs(categoryCustomNumericId){
+    if($scope.filter.selectedCitizensPOIs){ // citizen POIs' filter enabled, check them
+      // get citizen POIs filtered by category (and, maybe, by text)
+      applyCategoryAndTextFilter(categoryCustomNumericId, false)
+      .then(function(response){  
+          if(response.rows.length > 0){
+            applyLocationFilter(categoryCustomNumericId, false)
+            .then(function(filteredArray){ 
+                finishFilterAndReloadMarkers();
+            }, function(errorType){ // promise rejected ('errorType': 'gps-error' or 'bounds-error')
+                // GPS disabled in the device (it is not possible to show a popup to enable it in hybrid apps)
+                if(errorType == 'gps-error'){ showGpsLocationErrorAlert(); }
+                finishFilterAndReloadMarkers();
+            });
+          }else{
+            showCategoryEmptyAlert(false, null, categoryCustomNumericId);
+            finishFilterAndReloadMarkers();
+          }
+      }, function(){ // promise rejected, couldn't get POIs 
+        showCategoryErrorAlert(false, null, categoryCustomNumericId);
+        finishFilterAndReloadMarkers();
+      });
+    }else{
+      finishFilterAndReloadMarkers(); // there are no citizens' POIs, but previously official POIs have been loaded
+    }
+
+  }
+
+
+
+
+
 
 
 
@@ -372,6 +508,7 @@ function appCtrl(
   // 'categoryId' parameter: 'id' property (0..Number of official categories-1) of 'config/categories.js' file
   // (note that $scope.translatedCategories' array's range must be the same as official category's ID 
   // identified from '0' to 'Number of official categories-1')
+  // After official POIs have been loaded, repeat the process with the citizens' ('getFilteredCitizensPOIs(...)')
   $scope.callDatasetCategoriesFilter = function(categoryId){
 
     console.log('');
@@ -379,253 +516,64 @@ function appCtrl(
     // open loading panel
     $ionicLoading.show({
       template: '<ion-spinner icon="bubbles"></ion-spinner><br/>'
-        + $filter('translate')('menu.filter.category-search.loading-text')
+        + $filter('translate')('menu.filter.search.loading-text')
     });
 
-    // get official POIs based filtered by category (and, maybe, by text)
+    // get official POIs filtered by category (and, maybe, by text)
+    // after process official POIs do the same with citizens' POIs
     applyCategoryAndTextFilter($scope.translatedCategories[categoryId].categoryCustomNumericId, true)
-    .then(
-      function(response){ // promise resolved, check location filter
+    .then( 
+    function(response){ // promise resolved, check location filter
         if(response.rows.length > 0){ // if there are POIs of the corresponding category (and text)
-          applyLocationFilter().then( // apply location filter if it is enabled
-            function(){ // promise resolved
-
-            }function(){ // promise rejected
-
-            }
-          );
-        } 
-        //    then --> if ciudadano? applyCategoryAndTextFilter(.., false) + location
-        //    then checkAndFinsihFilter
-
-      }, function(){ // promise rejected, couldn't get POIs 
-
-      });
-
-    
-    
-      //return;
-// ************************** VIEJO **************************
-
-    /*var response = null;
-    var url = null;
-
-    // get dataset/json/marker's info of the selected category (stored in 'categories.js')
-    var categoryInfo = categories.filter( function(item){ return item.id == categoryId; } );
-    if(categoryInfo != null){
-      var url = WELIVE_DATASET_API_URL + categoryInfo[0]['datasetId'] + '/resource/' + categoryInfo[0]['jsonId'] + '/query';
-      console.log('Getting items from "' + url + '"...');
-    }//else console.log('no encontrado con ', categoryId);
-
-    // apply 'text' filter if neccesary
-    var queryText = "";
-    if($scope.filter.selectedText){
-      var searchTextSQL = " LIKE '%" + $scope.filter.textFilterInput + "%' ";
-      queryText = " AND (documentName " + searchTextSQL + " OR documentDescription " + searchTextSQL
-                        + " OR web " + searchTextSQL + " OR email " + searchTextSQL + " OR country " + searchTextSQL
-                        + " OR territory " + searchTextSQL + " OR municipality " + searchTextSQL
-                        + " OR historicTerritory " + searchTextSQL + ") "; 
-    }
-
-
-    var queryText2 = " AND documentName LIKE '%La Granja%' "
-    var sqlQuery = "SELECT _id AS id, documentName, documentDescription, latitudelongitude, web, phoneNumber, email, country, "
-                + " territory, municipality, municipalityCode, historicTerritory, historicTerritoryCode "
-                + " FROM rootTable WHERE municipalityCode = 480020 " + queryText2 + ";";
-    console.log(sqlQuery);
-    $http({
-      method: 'POST',
-      url: url,
-      headers: { "Content-Type": "text/plain",
-                 "Accept": "application/json" },
-      data: sqlQuery, // select from Bilbao
-      timeout: 10000
-    }).then(function successCallback(successCallback) {
-          // this callback will be called asynchronously when the successCallback is available
-          response = successCallback.data;
-        }, function errorCallback(errorCallback) {
-          $scope.filter.selectedCategories[categoryId] = false; // set category's checkbox to false
-          $ionicPopup.alert({
-              title: $filter('translate')('menu.filter.category-search.error-popup-title'),
-              template: $filter('translate')('menu.filter.category-search.error-popup-text'),
-              okText: $filter('translate')('menu.filter.category-search.error-ok-button-label'),
-              okType: 'button-assertive' 
+          applyLocationFilter($scope.translatedCategories[categoryId].categoryCustomNumericId, true)
+          .then( function(filteredArray){ // apply location filter if it is enabled
+              // promise resolved ('filteredArray' null iff location disabled, or the filtered array otherwise)
+              getFilteredCitizensPOIs($scope.translatedCategories[categoryId].categoryCustomNumericId);
+          }, function(errorType){ // promise rejected ('errorType': 'gps-error' or 'bounds-error')
+              //if(errorType == 'gps-error'){ showGpsLocationErrorAlert(); }
+              //else if(errorType == 'bounds-error'){} // array of POIs is null
+              getFilteredCitizensPOIs($scope.translatedCategories[categoryId].categoryCustomNumericId);
           });
+        }else{
+          // there are no POIs with the requested category and, maybe, text
+          showCategoryEmptyAlert(true, $scope.translatedCategories[categoryId].label, null);
+          getFilteredCitizensPOIs($scope.translatedCategories[categoryId].categoryCustomNumericId);
         }
-    ).finally(
-        function finallyCallback(callback, notifyCallback){
-          $ionicLoading.hide(); 
-          if(response != null){
-            //FilteredPOIs.callDataset(true, categoryInfo[0]['datasetId'], response);
-            //console.log(FilteredPOIs.getPOI(true, categoryInfo[0]['datasetId'], 2));
-            FilteredPOIs.emptyPOIs();
 
-            // $scope.filter.selectedLocation['device-gps'] = false; --> checkox OK, but not 'Removing...'
-
-            // check location and citizen filters, and load markers
-            //saveOfficialPOIs(response, categoryId);
-            
-            loadMarkers(response, categoryInfo, true);
-          }
-          else{
-            $ionicPopup.alert({
-                title: $filter('translate')('menu.filter.category-search.empty-popup-title'),
-                template: $filter('translate')('menu.filter.category-search.empty-popup-text'),
-                okText: $filter('translate')('menu.filter.category-search.empty-ok-button-label'),
-                okType: 'button-assertive' 
-            });
-          } 
-          // initialize the map (with or without data about proposals' count)
-          //infoWindowArray = initialize($scope.proposalsCountByZones, $scope);
-        }
-    );*/
-
-  };
-  // save official pois' array (filtered by category and, maybe, by text and/or location)
-  function saveOfficialPOIs(response, categoryJsonId){
-    // save the obtained POIs (filtered by category and text)
-    if(categoryId == 1){
-      $scope.gastronomyOfficialArray = response;
-    }else if(categoryId == 2){
-      $scope.tourismOfficialArray = response;
-    }else if(categoryId == 3){
-      $scope.accommodationOfficialArray = response;
-    }
-
-    var positionPrueba;
-    function success(position) {
-      var selectedLatLng = {lat: position.coords.latitude, lng: position.coords.longitude };
-      console.log('position: ', selectedLatLng);
-      positionPrueba = selectedLatLng;
-      console.log('positionPrueba1', positionPrueba);
-      return selectedLatLng;
-    };
-
-    // check location's filter
-    getCoordinates().then(function(){
-
+    }, function(){ // promise rejected, couldn't get POIs 
+        showCategoryErrorAlert(true, $scope.translatedCategories[categoryId].label, null);
+        getFilteredCitizensPOIs($scope.translatedCategories[categoryId].categoryCustomNumericId);
     });
 
-    function getCoordinates(){
-       var promise;
-        promise = $q(function (resolve, reject) {
-            var lat = null;
-            var lng = null;
-            if($scope.filter.selectedLocation['google-places']){
-              // get google places' coordinates
-              lat = Map.getAutocomplete().getPlace().geometry.location.lat();
-              lng = Map.getAutocomplete().getPlace().geometry.location.lng();
-              var selectedLatLng = {lat: lat, lng: lng };
-              filterLocation(categoryId, selectedLatLng); // update the corresponding official POIs array
-
-            }else if($scope.filter.selectedLocation['device-gps']){
-              //ar selectedLatLng = searchDeviceLocation();
-              var selectedLatLng = searchDeviceLocation(success);
-              if(selectedLatLng == null){
-                $scope.filter.selectedLocation['device-gps'] = false; // disable filter because is not possible to get gps location
-                $ionicPopup.alert({
-                    title: $filter('translate')('menu.filter.category-search.error-popup-title'),
-                    template: 'gps no se ha logrado',//$filter('translate')('menu.filter.category-search.empty-popup-text'),
-                    okText: $filter('translate')('menu.filter.category-search.empty-ok-button-label'),
-                    okType: 'button-assertive' 
-                });
-
-              }else{
-                filterLocation(categoryId, selectedLatLng); // update the corresponding official POIs array
-              }
-            }
-            resolve();
-        });
-        return promise;
-    }
-    console.log('aqui', selectedLatLng);
-    console.log('positionPrueba2', positionPrueba);
-    // check if citizens' POIs have to be loaded (of the corresponding category)
-
-    
-    // load filtered category markers
-
-
-    /*// define POIs' arrays
-    $scope.gastronomyOfficialArray = [];
-    $scope.tourismOfficialArray = [];
-    $scope.accommodationOfficialArray = [];
-    $scope.gastronomyCitizenArray = [];
-    $scope.tourismCitizenArray = [];
-    $scope.accommodationCitizenArray = [];*/
   };
-
-  /*function myCallback(result) {
-      // Code that depends on 'result'
-  }
-  foo(myCallback);
-
-  function foo(callback) {
-      $.ajax({
-          // ...
-          success: callback
-      });
-  }*/
   
-
-  function searchDeviceLocation(success){
-      ionic.Platform.ready(function(){
-        // will execute when device is ready, or immediately if the device is already ready.
-        var options = {
-          enableHighAccuracy: false,
-          timeout: 4000,
-          maximumAge: 0
-        };
-
-        function error(err) {
-          return null;
-        };
-        // Try HTML5 geolocation.
-        if ("geolocation" in navigator) { // Check if Geolocation is supported (also with 'navigator.geolocation')
-          navigator.geolocation.getCurrentPosition(success, error, options);
-        }else{
-          console.log('geolocaiton IS NOT available');
-        }
-      });
-  }
-  // remove from POIs' array the POIs that aren't near de selected location
-  function filterLocation(categoryId, selectedLatLng){
-    if(categoryId == 1){
-      $scope.gastronomyOfficialArray.rows = $scope.gastronomyOfficialArray.rows.filter(coordinateFilter, selectedLatLng);
-    }else if(categoryId == 2){
-      $scope.tourismOfficialArray.rows = $scope.tourismOfficialArray.rows.filter(coordinateFilter, selectedLatLng);
-    }else if(categoryId == 3){
-      $scope.accommodationOfficialArray.rows = $scope.accommodationOfficialArray.rows.filter(coordinateFilter, selectedLatLng);
-    }
-  }
-  // filter an array based on two coordinates
-  function coordinateFilter(item, index, array) {
-    var coordinatesLatLng =  item.latitudelongitude.split(",");
-    var poiLatLng = {lat: Number(coordinatesLatLng[0]), lng: Number(coordinatesLatLng[1]) };
-    return (arePointsNear(poiLatLng, this));
-  }
-  // check if a coordinate is near another one
-  function arePointsNear(poiLatLng, selectedLatLng) {
-    var sw = new google.maps.LatLng(selectedLatLng.lat() - 0.010, selectedLatLng.lng() - 0.010);
-    var ne = new google.maps.LatLng(selectedLatLng.lat() + 0.010, selectedLatLng.lng() + 0.010);
-    var bounds = new google.maps.LatLngBounds(sw, ne);
-    return bounds.contains(poiLatLng);
-  }
-
-
   // Remove category's filter.
   // 'categoryId': official category's identifier (0..Number of official categories-1) of config/categories.js file
   //             (note that $scope.translatedCategories' array's range is the same as categoryId's range)
   $scope.disableCategoryFilter = function(categoryId){
+    console.log(''); 
     console.log('Removing category filter... ("' + $scope.translatedCategories[categoryId].label + '")');
+    // open loading panel
+    $ionicLoading.show({
+      template: '<ion-spinner icon="bubbles"></ion-spinner><br/>'
+        + $filter('translate')('menu.filter.category-search.remove-text')
+    });
 
+    // remove all POIs from the selected category (official and citizens')
+    FilteredPOIs.removeCategoryPOIs($scope.translatedCategories[categoryId].categoryCustomNumericId, true);
+    FilteredPOIs.removeCategoryPOIs($scope.translatedCategories[categoryId].categoryCustomNumericId, false);
+
+    // hide loading panel and reload the map's markers
+    finishFilterAndReloadMarkers();
   };
 
   // Add location's filter.
   // 'locationMode': location searching mode ('google-places' | 'device-gps')
-  $scope.callLocationFilter = function(locationMode){
+  // 'isLocationSwitched': true if the other 'locationMode' filter is already applied; false otherwise.
+  $scope.callLocationFilter = function(locationMode, isLocationSwitched){
     // if there is no selected any category, don't activate this filter
-    if(getSelectedCategories().length == 0){
+    var activatedCategoriesArray = getSelectedCategories();
+    if(activatedCategoriesArray.length == 0){
       $ionicPopup.alert({
           title: $filter('translate')('menu.filter.category-search.error-popup-title'),
           template: $filter('translate')('menu.filter.category-search.no-category-selected-error-popup-text'),
@@ -639,31 +587,52 @@ function appCtrl(
     console.log("Applying location filter... (mode: " + locationMode + ")");
     $ionicLoading.show({
       template: '<ion-spinner icon="bubbles"></ion-spinner><br/>'
-        + $filter('translate')('menu.filter.category-search.loading-text')
+        + $filter('translate')('menu.filter.search.loading-text')
     });
 
+    activatedCategoriesArray
+    if(isLocationSwitched){
+      // this 'locationMode' filter is enabled after switching between location filters (so reload all the filters)
+      // apply category+text and location filter to all enabled categories (official and citizen)
+      for (var i = 0; i < activatedCategoriesArray.length; i++){
+          var categoryCustomNumericId = activatedCategoriesArray[i];
 
+          applyCategoryAndTextFilter(categoryCustomNumericId, true)
+          .then(function(response){ // promise resolved, check location filter
+              if(response.rows.length > 0){ 
+                applyLocationFilter(categoryCustomNumericId, true)
+                .then( function(filteredArray){ // apply location filter if it is enabled
+                    getFilteredCitizensPOIs(categoryCustomNumericId);
+                }, function(errorType){ // promise rejected ('errorType': 'gps-error' or 'bounds-error')
+                    //if(errorType == 'gps-error'){ showGpsLocationErrorAlert(); }
+                    getFilteredCitizensPOIs(categoryCustomNumericId);
+                });
+              }else{
+                showCategoryEmptyAlert(true, null, categoryCustomNumericId);
+                getFilteredCitizensPOIs($scope.translatedCategories[categoryId].categoryCustomNumericId);
+              }
+          }, function(){ // promise rejected, couldn't get POIs 
+              showCategoryErrorAlert(true, null, categoryCustomNumericId);
+              getFilteredCitizensPOIs($scope.translatedCategories[categoryId].categoryCustomNumericId);
+          });
 
-    if(locationMode == 'google-places'){
-      var geometry  = Map.getAutocomplete().getPlace().geometry;
-      if (!geometry) return;
-      // If the place has a geometry, then present it on a map.
-      //if (geometry.viewport) {
-        //map.fitBounds(geometry.viewport);
-      //} else {
-        console.log('searched place: ', geometry.location.lat(), geometry.location.lng());
-        //map.setCenter(geometry.location);
-      //}
+      }
+
+    }else{
+      // apply location filter to existing POIs (previously the location filter hasn't been selected)
+
     }
 
   };
   // Remove location's filter.
   // Filter's search by location (with the radius specified in config/config.js).
   // 'locationMode': location searching mode ('google-places' | 'device-gps')
-  $scope.disableLocationFilter = function(locationMode){
+  // 'isLocationSwitched': true if the other 'locationMode' filter is already applied; false otherwise.
+  $scope.disableLocationFilter = function(locationMode, isLocationSwitched){
     console.log('Removing location filter... (mode: ' + locationMode + ')');
 
   };
+
   // Add text's filter
   $scope.callTextFilter = function(textToSearch){
     console.log('Applying text filter... (searching "' + textToSearch + '")');
@@ -685,200 +654,6 @@ function appCtrl(
   };
 
 
-
-
-
-  // Show on the map the markers of the obtained items with the corresponding icons.
-  // 'itemsFromDataset': the response of the /query method
-  // 'categoryInfo': all the information related to the requested dataset stored in 'categories.js' 
-  // 'isOfficialDataset': boolean parameter to know if the requested dataset is an official one or
-  //                      the citizen's dataset (which includes all categories)
-  function loadMarkers(itemsFromDataset, categoryInfo, isOfficialDataset){ 
-    console.log('markers to display', itemsFromDataset.count, itemsFromDataset);
-
-    var iconPath = null;
-    if(isOfficialDataset) iconPath = categoryInfo[0]['marker'];
-
-    var infoWindow = new google.maps.InfoWindow(); // define one infoWindow to close it when another is opened
-    angular.forEach(itemsFromDataset.rows, function(item, key){
-
-      // if the there are citizen's markers, they could be from any of the
-      // categories, so is neccesary to assign the correct marker icon depending of each one
-      if(!isOfficialDataset){
-        if(item.category == categoryInfo[0]['gastronomy_categoryId']){
-          iconPath = categoryInfo[0]['citizen_gastronomy_marker'];
-        }else if(item.category == categoryInfo[0]['tourism_categoryId']){
-          iconPath = categoryInfo[0]['citizen_tourism_marker'];
-        }else if(item.category == categoryInfo[0]['accommodation_categoryId']){
-          iconPath = categoryInfo[0]['citizen_accommodation_marker'];
-        }
-      }
-
-      // get the marker coordinates
-      var coordinatesLatLng =  item.latitudelongitude.split(",");
-      var latitude = Number(coordinatesLatLng[0]);
-      var longitude = Number(coordinatesLatLng[1]);
-
-      var marker = new google.maps.Marker({
-            position: new google.maps.LatLng(latitude, longitude),// place[i],
-            map: Map.getMap(),
-            title: item.documentName,
-            icon: iconPath,
-            animation : google.maps.Animation.DROP
-      });
-      
-      google.maps.event.addListener(marker, 'click', function(){
-          // load marker's infoWindow's content
-          //var infoWindowContent = getInfoWindowContent(zone.id, this.title, proposalsCountByZones, 
-          //    $scope.proposalLabel_sing, $scope.proposalLabel_plu);
-          infoWindow.setOptions({
-            content: item.documentName,
-            maxWidth: 200
-          });
-          /*var infowindow = new google.maps.InfoWindow({
-            content: item.documentName,
-            maxWidth: 200
-          });*/
-
-          infoWindow.open(Map.getMap(), this);
-
-          //infoWindowArray[zone.id] = infoWindow; // add marker's infoWindow to the array
-          // set current marker's infoWindow's data to use in MapCtrl if language changes
-          //$scope.currentMarkerZoneId = zone.id; 
-          //$scope.currentMarkerTitle = this.title;
-
-      });
-      /*google.maps.event.addListener(infoWindow, 'closeclick', function(){
-          // 'closeclick' listener runs for every infoWindow created, so initialize 
-          // $scope.currentMarkerZoneId only once
-          if($scope.currentMarkerZoneId == zone.id) $scope.currentMarkerZoneId = null;
-      });*/
-
-    });
-  }
-
-
-
-
-
-  // ** Configure language changing (UI's switch and $translate's language) **
-
-  $scope.selectedLang = false; // false: es_ES | true: eu_ES
-  $scope.changeLang = function() {
-    if ($scope.selectedLang == false) {
-        $scope.selectedLang = true;
-        $scope.switchLanguage('eu_ES');
-        
-    } else{
-        $scope.selectedLang = false;
-        $scope.switchLanguage('es_ES');
-    }
-  };
-  $scope.switchLanguage = function (key) {
-      $translate.use(key);
-  }; 
-  $rootScope.$on('$translateChangeEnd', function() { 
-    if ($translate.use() == 'eu_ES')
-      $scope.translatedCategories = $scope.basqueCategoriesArray; // change language of menu's items categories' items
-    else
-      $scope.translatedCategories = $scope.spanishCategoriesArray;
-  });
-  
-
-
-  // ** Configure user login **
-
-  //$scope.loginData = {}; // initialize form data for the login modal
-  UserLocalStorage.removeUserData(); 
-
-  // Define function to show menu's login/logout items
-  $scope.getCurrentUserId = function (){
-      return UserLocalStorage.getUserId();
-  }
-
-  // Create the login modal that we will use later
-  /*$ionicModal.fromTemplateUrl('templates/login.html', {
-      scope: $scope,
-      animation: 'slide-in-up'
-  }).then(function(modal) {
-      $scope.modal = modal;
-  });*/
-
-
-  // Perform the login action when the user submits the login form
-  /*$scope.doLogin = function() {
-    console.log('Doing login', $scope.loginData.userId);
-    // Simulate a login delay. Remove this and replace with your login
-    // code if using a login system
-    $timeout(function() {
-        var currentUserSession = {
-            currentUser: {
-              name: "",
-              surname: "",
-              socialId: "",
-              userId: $scope.loginData.userId
-            }
-        };
-        UserLocalStorage.setUserData(currentUserSession)
-        $scope.closeLoginModal();
-    }, 500)
-    .then(function(){
-          var myPopup = $ionicPopup.show({
-            template: "<center>" + $filter('translate')('info-alert-popup-login-label-left') + "'" 
-              + UserLocalStorage.getUserId() + "'" + $filter('translate')('info-alert-popup-login-label-right') + "</center>",
-            cssClass: 'custom-class custom-class-popup'
-          });
-          $timeout(function() { myPopup.close(); }, 1800); //close the popup after 1.8 seconds for some reason
-      }//, function(error) { }
-    );
-
-  };*/
-
-  /*$scope.doLogout = function() {
-    // Simulate a login delay
-    $timeout(function() {
-        console.log('Doing logout');
-        UserLocalStorage.removeUserData(); 
-        $scope.loginData = {};
-    }, 200)
-    .then(function(){
-          var myPopup = $ionicPopup.show({
-            template: '<center>' + $filter('translate')('info-alert-popup-logout-label') + "</center>",
-            cssClass: 'custom-class custom-class-popup'
-          });
-          $timeout(function() { myPopup.close(); }, 1800);
-      }//, function(error) { }
-    );
-  }*/
-
-  $scope.$on('$destroy', function() {
-    $scope.modal.remove();
-  });
-
-
-
-
-
-
-
-
-
-  /*
-  // Reload proposal list when clicking 'Proposal list' menu item
-  $scope.reloadProposalsList = function(){
-    if($state.current.name == 'app.playlists'){
-        //$state.go($state.current, {}, {reload:true});
-    }else{
-        $ionicHistory.clearCache().then(function(){ $state.go('app.playlists')});
-    }
-  };
-  */
-  // Reload map when clicking 'Map' menu item
-  /*$scope.reloadMap = function(){
-    if($state.current.name != 'app.map'){
-        $ionicHistory.clearCache().then(function(){ $state.go('app.map')});
-    }
-  };*/
 
 
 
@@ -910,104 +685,70 @@ function appCtrl(
 
 
 
-    
-  function searchDeviceLocation2(){
-      ionic.Platform.ready(function(){
-        // will execute when device is ready, or immediately if the device is already ready.
 
-        /*var deviceInformation = ionic.Platform.device();
-        var isWebView = ionic.Platform.isWebView();
-        var isIPad = ionic.Platform.isIPad();
-        var isIOS = ionic.Platform.isIOS();
-        var isAndroid = ionic.Platform.isAndroid();
-        var isWindowsPhone = ionic.Platform.isWindowsPhone();
-        var currentPlatform = ionic.Platform.platform();
-        var currentPlatformVersion = ionic.Platform.version();*/
+function asyncLoop(iterations, func, callback) {
+    var index = 0;
+    var done = false;
+    var loop = {
+        next: function() {
+            if (done) return;
 
-        //console.log('Inicio de función GPS.');
-        var options = {
-          enableHighAccuracy: false,
-          timeout: 4000,
-          maximumAge: 0
-        };
+            if(index < iterations){
+               index++;
+               func(loop);
+            }else{
+              done = true;
+              callback();
+            }
+        },
 
-        function success(position) {
-          //console.log('position: ', position);
-          //var lat = position.coords.latitude;
-          //var lng = position.coords.longitude; 
-          //var myLatlng = new google.maps.LatLng(lat, lng);
-          var selectedLatLng = {lat: position.coords.latitude, lng: position.coords.longitude };
-          console.log('position: ', selectedLatLng);
-          return selectedLatLng;
+        iteration: function() {
+            return index - 1;
+        },
 
-          //$ionicLoading.hide();  
-          /*var myPopup = $ionicPopup.show({
-            template: '<center>Coordenadas GPS: ' + lat + ', ' + lng + '</center>',
-            cssClass: 'custom-class custom-class-popup'
-          });
-          $timeout(function() { myPopup.close(); }, 1800);*/
-        };
-
-        function error(err) {
-          return null;
-          //$ionicLoading.hide(); 
-          /*switch(error.code) {
-              case error.PERMISSION_DENIED:
-                  x.innerHTML = "User denied the request for Geolocation."
-                  break;
-              case error.POSITION_UNAVAILABLE:
-                  x.innerHTML = "Location information is unavailable."
-                  break;
-              case error.TIMEOUT:
-                  x.innerHTML = "The request to get user location timed out."
-                  break;
-              case error.UNKNOWN_ERROR:
-                  x.innerHTML = "An unknown error occurred."
-                  break;
-          }*/
-          /*var myPopup = $ionicPopup.show({
-            template: '<center>Error ' +  err.code + ': ' + err.message + '</center>',
-            cssClass: 'custom-class custom-class-popup'
-          });
-          $timeout(function() { myPopup.close(); }, 1800);*/
-          //console.warn('ERROR(' + err.code + '): ' + err.message);
-        };
-
-        // Not supported plugin in Ionic View (http://docs.ionic.io/v1.0/docs/view-usage)
-        /*cordova.plugins.diagnostic.isLocationEnabled(function(enabled){
-          //console.log("Location is " + (enabled ? "enabled" : "disabled"));
-          var myPopup = $ionicPopup.show({
-            template: "Location is " + (enabled ? "enabled" : "disabled"),
-            cssClass: 'custom-class custom-class-popup'
-          }); 
-          $timeout(function() { myPopup.close(); }, 1800);
-        }, function(error){
-          console.error("The following error occurred: "+error);
-          var myPopup = $ionicPopup.show({
-            template: "<center>Error getting location status:</br>"
-              + "'" + error + "'</center>",
-            cssClass: 'custom-class custom-class-popup'
-          }); 
-          $timeout(function() { myPopup.close(); }, 1800);
-        });*/
-
-        // Try HTML5 geolocation.
-        if ("geolocation" in navigator) { // Check if Geolocation is supported (also with 'navigator.geolocation')
-          // geolocation is available
-          /*$ionicLoading.show({
-            template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Analizando GPS...'
-          });*/
-         
-          navigator.geolocation.getCurrentPosition(success, error, options);
-        }else{
-          /*var myPopup = $ionicPopup.show({
-            template: '<center>Geolocalización no disponible</center>',
-            cssClass: 'custom-class custom-class-popup'
-          });
-          $timeout(function() { myPopup.close(); }, 1800);*/
-          console.log('geolocaiton IS NOT available');
+        break: function() {
+            done = true;
+            callback();
         }
-      });
+    };
+    loop.next();
+    return loop;
+};
+
+function someFunction(a, b, callback) {
+    console.log('Hey doing some stuff!', a);
+    callback();
+};
+
+asyncLoop(
+  10, 
+  function(loop) {
+    someFunction(loop.iteration(), 2, function(result) {
+        // log the iteration
+        console.log(loop.iteration());
+
+        // Okay, for cycle could continue
+        loop.next();
+    });
+  },
+  function(){
+    console.log('cycle ended')
   }
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }
