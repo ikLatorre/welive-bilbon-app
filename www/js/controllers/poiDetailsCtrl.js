@@ -11,73 +11,48 @@ function POIDetailsCtrl(
 	$state, 
 	$filter, 
 	$ionicPopup, 
-	$http, 
-	LoginService, 
-	BILBOZKATU_BB_URL){
+	$stateParams,
+	FilteredPOIs){
 
-	$scope.zones = zones; // load 'zones' list from  zones.js for combobox
-  	$scope.newProposal = {}; // store form data
+	console.log('');
+	console.log('categoryCustomNumericId', $stateParams.categoryCustomNumericId);
+	console.log('poiId', $stateParams.poiId);
+	console.log('type', $stateParams.type);
 
-  	/*$scope.submitProposal = function(){
-
-	// verify if current user is logged
-	var currentUserId = LoginService.getUserId();
-	if(currentUserId == null){
-	  $ionicPopup.confirm({
-	      title: $filter('translate')('info-alert-popup-title'),
-	      template: $filter('translate')('proposal-create-page.proposal.user-not-logged-error-label'),
-	      cancelText: $filter('translate')('info-confirm-popup-cancel-button-label'),
-	      cancelType: 'button-default',
-	      okText: $filter('translate')('info-confirm-popup-login-button-label'),
-	      okType: 'button-assertive'
-	  }).then(function(res) { if(res) { $scope.openLoginModal(); } });
-	  return;
+	var isOfficial = true;
+	if($stateParams.type == 'citizen'){
+		isOfficial = false;
 	}
-	// send the feedback
-	$http({
-	  method: 'GET',
-	  url: BILBOZKATU_BB_URL + '/proposal/add?'
-	                      + 'title='+ $scope.newProposal.title
-	                      + '&userID=' + currentUserId
-	                      + '&zone=' + $scope.newProposal.zone
-	                      + '&category=' + $scope.newProposal.category
-	                      + '&description=' + $scope.newProposal.description
-	                      + '&type=' + 'Ciudadano',
-	  timeout: 10000
-	}).then(function successCallback(successCallback) {
-	      // this callback will be called asynchronously when the successCallback is available
-	      var response_data = successCallback.data;
-	      if(response_data.hasOwnProperty('message')){ 
-	          if(response_data.message == "The proposal was successfully created"){
-	              $scope.newProposal = {};
-	              $ionicPopup.alert({
-	                  title: $filter('translate')('info-alert-popup-title'),
-	                  template: $filter('translate')('proposal-create-page.proposal.succesfully-submitted-label'),
-	                  okText: $filter('translate')('info-alert-popup-ok-button-label'),
-	                  okType: 'button-assertive' 
-	              });
-	          }else if(response_data.message == "The 'userID' does not exist in the database"){
-	              $ionicPopup.alert({
-	                  title: $filter('translate')('error-alert-popup-title'),
-	                  template: $filter('translate')('proposal-create-page.proposal.user-unregistered-error-label'),
-	                  okText: $filter('translate')('error-alert-popup-ok-button-label'),
-	                  okType: 'button-assertive' 
-	              });
-	          }
-	      }
 
-	    }, function errorCallback(errorCallback) {
-	      $ionicPopup.alert({
-	          title: $filter('translate')('error-alert-popup-title'),
-	          template: $filter('translate')('proposal-create-page.proposal.user-proposal-submit-error-label'),
-	          okText: $filter('translate')('error-alert-popup-ok-button-label'),
-	          okType: 'button-assertive' 
-	      });
-	      //if(errorCallback.status <= 1 || errorCallback.status == 404){
-	        // net::ERR_CONNECTION_REFUSED (API is offline) || Not found
-	      //}
-	    }
-	);
-	};*/
+	// get poi's details from stored POIs arrays
+	$scope.poiDetails = FilteredPOIs.getPOI(isOfficial, $stateParams.categoryCustomNumericId, $stateParams.poiId);
+
+	if($scope.poiDetails == null){
+		// couldn't get poi details
+		$ionicPopup.alert({
+            title: $filter('translate')('poi-details.error-popup-title'),
+            template: $filter('translate')('poi-details.error-popup-text'),
+            okText: $filter('translate')('poi-details.error-ok-button-label'),
+            okType: 'button-assertive' 
+        });
+		$state.go('app.map');
+	}
+	console.log($scope.poiDetails);
+
+	/* poiDetails example:
+		country: "España"
+		documentDescription:"En el restaurante Beraia utilizan como materia prima mariscos, pescados y carnes de primera calid..."
+		documentName:"Beraia"
+		email:"info@beraia.com"
+		historicTerritory:"BIZKAIA"
+		historicTerritoryCode:48
+		id:123
+		latitudelongitude:"43.2654242,-2.9341127000000142"
+		municipality:"BILBAO"
+		municipalityCode:480020
+		phoneNumber:"944 052 844"
+		territory:"BIZKAIA"
+		web:"http://www.facebook.com/pages/Restaurante-Beraia/207847902629777?sk=info&tab=page_info"
+	*/
 
 }

@@ -196,10 +196,20 @@ function mapService(FilteredPOIs, $q){
 						bounds.extend(marker.getPosition());
 						markersCount++;
 
+						// construct link to specific POI (set categoryId, poiId and type params)
+						var categoryCustomNumericIdParam = categoryInfo[0]['categoryCustomNumericId'];
+						var poiIdParam = POIitem.id;
+						var typeParam = (isOfficial)? 'official' : 'citizen' ;
+						var contentLink = "<a href='#/app/poi?"
+										+ "categoryCustomNumericId=" + categoryCustomNumericIdParam 
+										+ "&poiId=" + poiIdParam
+										+ "&type=" + typeParam + "'>"
+										+ POIitem.documentName + "</a>";
+
 	    				// set infoWindow to the marker's 'click' event
 						google.maps.event.addListener(marker, 'click', function(){
 							map.infoWindow.setOptions({
-								content: POIitem.documentName,
+								content: contentLink,
 								maxWidth: 200
 							});
 							map.infoWindow.open(getMap(), this);

@@ -53,9 +53,12 @@
  "info-confirm-popup-exit-accept-button-label": "Sí",
  "info-confirm-popup-exit-cancel-button-label": "No",
 
-
  "map-page.title": "Mapa",
  "map-page.text": "Consulte los puntos de interés:",
+
+ "poi-details.error-popup-title": "Error",
+ "poi-details.error-popup-text": "Se ha producido un error al obtener los detalles del punto de interés. Vuelva a intentarlo más tarde por favor.",
+ "poi-details.error-ok-button-label": "Cerrar",
 
  "login.title": "Inicio de sesión",
  "login.text": "Comparte puntos de interés con los ciudadanos.",

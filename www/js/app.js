@@ -95,7 +95,7 @@ angular.module('starter', ['ionic','ionic.service.core', 'starter.controllers', 
     })
 
     .state('app.poi', {
-      url: '/poi/:poiId',
+      url: '/poi?categoryCustomNumericId&poiId&type',
       views: {
         'menuContent': {
           templateUrl: 'templates/poi-details.html',

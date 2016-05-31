@@ -1,149 +1,44 @@
 <ion-view>
   <ion-nav-title>
-    {{ 'proposal-details-page.title' | translate }}
+    Detalles
   </ion-nav-title>
   <ion-content>
+
+    <img ng-src="img/guggenheim_image.jpg" class="imagen_peticion"/> 
+
     <div class="movement slideInUp animated">
-     
-      <img ng-src="{{getCurrentProposal().categoryImageSrc}}" class="imagen_peticion"/> 
-      <div class="peticion_pre">
-        <div class="peticion_barrio"><div>{{getCurrentProposal().zone}}</div></div>
-        <div class="peticion_estado" ng-hide="getCurrentProposal().isExpired">{{ 'proposal-list-page.proposal.opened-status' | translate | uppercase}}</div>
-        <div class="peticion_estado_cerrado" ng-show="getCurrentProposal().isExpired">{{ 'proposal-list-page.proposal.closed-status' | translate | uppercase}}</div>
-      </div>
-      <div class="datos_detalle_peticion titulo slideInLeft animated2"><h2>{{getCurrentProposal().title}}</h2>
+    
+      <div class="list">
 
-          <div class="item item-divider datos_peticion">
-            <div class="valoracion_general">
-
-              <span>{{getCurrentProposal().averageRating}} / 5 (</span><!--
-
-              --><span ng-show="getCurrentProposal().feedbackError === false && getCurrentProposal().feedbackCount == 1">{{ 'proposal-list-page.proposal.votes-izq' | translate }}</span><!--
-              -->{{getCurrentProposal().feedbackCount}}<!--
-              --><span ng-show="getCurrentProposal().feedbackError === false && getCurrentProposal().feedbackCount == 1">{{ 'proposal-list-page.proposal.votes-dch' | translate }})</span><!--
-
-              --><span  ng-show="getCurrentProposal().feedbackError === false && getCurrentProposal().feedbackCount != 1">{{ 'proposal-list-page.proposal.votes' | translate }})</span><!--
-
-              --><span  ng-show="{{'getCurrentProposal().feedbackError === true'}}">{{ 'proposal-list-page.proposal.votes-error-label' | translate }})</span>
-
-            </div> 
-            <div class="votos_general">
-
-              <!-- Show thumb's icon filled or not depending on the current user's vote -->
-              <!-- 'ng-style' does not work for changing dynamically background-image in Ionic view -->
-              <div ng-show="{{'isFavorVote() === false'}}" class="votos_up_empty" 
-                ng-click="voteProposal(getCurrentProposal().objectID, true, getCurrentProposal().isExpired)">{{getCurrentProposal().votesInFavor}}
-              </div> 
-              <div ng-show="{{'isFavorVote() === true'}}" class="votos_up_filled" 
-                ng-click="voteProposal(getCurrentProposal().objectID, true, getCurrentProposal().isExpired)">{{getCurrentProposal().votesInFavor}}
-              </div> 
-
-              <div ng-show="{{'isAgainstVote() === false'}}" class="votos_down_empty" 
-                ng-click="voteProposal(getCurrentProposal().objectID, false, getCurrentProposal().isExpired)">{{getCurrentProposal().votesAgainst}}
-              </div>
-              <div ng-show="{{'isAgainstVote() === true'}}" class="votos_down_filled" 
-                ng-click="voteProposal(getCurrentProposal().objectID, false, getCurrentProposal().isExpired)">{{getCurrentProposal().votesAgainst}}
-              </div>
-            </div>
-          </div>
-          
-          <p>{{getCurrentProposal().description}}</p>
-
-          <div class="detalle_estadisticas_div">
-            <button class="button button-small button-assertive detalle_estadisticas_btn" 
-            ui-sref="app.statistics({playlistId:getCurrentProposal().objectID})">
-              <i class="icon ion-ios-pie-outline"></i>
-              {{ 'proposal-details-page.statistics-button-label' | translate }}
-            </button>
-          </div>
-
-      </div>
-     
-    </div>
- 
-    <div class="datos_detalle_peticion detalle_comentarios_titulo slideInLeft animated2"><h2>{{ 'proposal-details-page.feedbacks-title' | translate }}</h2>
-
-      <!-- New feedback's form -->
-      <a ng-if="!getCurrentProposal().isExpired" class="card feedback-card" href="#">
-        <div class="item header_peticion">
-          <div class="feedback-header-title">{{ 'proposal-details-page.feedbacks-new-title' | translate }}</div>
-        </div>
-        <form name='feedbackForm'>
-            <div class="item item-text-wrap">
-
-              <label class="item item-input item-floating-label">
-                <!-- 'users feedbacks' building block 'comment' field's length is large, so it is not necessary to validate this -->
-                <textarea ng-form='step1form' ng-model="newFeedback.comment" placeholder="{{ 'proposal-details-page.feedbacks-new-placeholder' | translate }}" rows="3" required></textarea>
-              </label>
-              <div class="feedback-footer">
-                <div class="feedback-send-button">
-                  <button ng-disabled="!step1form.$valid" class="button button-small button-assertive" ng-click="submitFeedback()">
-                    {{ 'proposal-details-page.feedbacks-new-submit-button-label' | translate }}
-                  </button>
-                </div>
-
-                <div class="feedback-rating">
-                  <ionic-ratings ratingsobj='ratingsObject'></ionic-ratings>
-                </div>
-              </div>
-
-            </div>
-        </form>
-      </a>
-
-      <!-- Error message if proposal is expired -->
-      <a ng-show="getCurrentProposal().isExpired" class="card feedback-card" href="#">
-        <div class="item header_peticion">
-          <div class="feedback-header-title">{{ 'proposal-details-page.feedbacks-new-title' | translate }}</div>
+        <div class="item item-divider item-text-wrap">
+          Punto de interés
         </div>
         <div class="item item-text-wrap">
-          <div>
-            <p>{{ 'proposal-details-page.feedbacks.new-feedback-blocked-error-label' | translate }}</p>
-          </div>
+          <!--{{ 'proposal-statistics-page.ratings.votes-count-item' | translate }} {{currentProposal.votesCount}}-->
+          Título: {{poiDetails.documentName}}
         </div>
-      </a>
-
-    <!-- Error messages if there are no feedbacks -->
-    <div ng-hide="feedbacksError || (feedbacks.length && !feedbacksError)">
-      <p>{{ 'proposal-details-page.feedbacks.empty-label' | translate }}</p>
-    </div>
-    <div ng-show="feedbacksError">
-      <p>{{ 'proposal-details-page.feedbacks.get-feedbacks-error-label' | translate }}</p>
-    </div>
-
-    <!-- Scroll-up button if there are more than 5 proposals -->
-    <div class="text-center" ng-if="newFeedbacks.showNewFeedbacksButton">
-      <button class="button button-assertive" ng-click="loadNewFeedbacks()">
-        Cargar nuevos
-      </button>
-    </div>
-
-    <!-- Load list of feedbacks -->
-    <a ng-repeat="feedback in feedbacks" class="card feedback-card" href="#">
-        <div class="item header_peticion">
-          <div class="feedback-header-title">{{feedback.userID}}</div><div class="feedback-header-date">{{feedback.creationDate}}</div>
-        </div>
-
         <div class="item item-text-wrap">
-          <div class="feedback-text">
-            {{feedback.comment}}
-          </div>
-          <div class="statistics-rating">
-            <!-- use track by $index to avoid "Error: [ngRepeat:dupes] Duplicate Key in Repeater" -->
-            <div class="feedback-rating-img" ng-repeat="i in getRatingCollection(feedback.rating) track by $index"></div>
-          </div>
+          Descripción: {{poiDetails.documentDescription}}
         </div>
-    </a>
 
-    <!-- List's infinite-scroll -->
-    <ion-infinite-scroll ng-if="feedbacks.length && !noMoreItemsAvailable" on-infinite="loadMore()" distance="1%" 
-                         immediate-check="false" spinner="circles"></ion-infinite-scroll>
+        <div class="item item-divider item-text-wrap">
+          Otros datos
+        </div>
+        <div class="item item-text-wrap">
+          Página web: {{poiDetails.web}}
+        </div>
+        <div class="item item-text-wrap">
+          Email: {{poiDetails.email}}
+        </div>
+        <div class="item item-text-wrap">
+          Teléfono: {{poiDetails.phoneNumber}}
+        </div>
+        <div class="item item-text-wrap">
+          Provincia: {{poiDetails.historicTerritory}}
+        </div>
 
-    <!-- Scroll-up button if there are more than 5 feedbacks -->
-    <div class="text-center" ng-show="feedbacks.length >= 6">
-      <button class="button button-assertive" ng-click="scrollTop()">
-        {{ 'proposal-details-page.feedbacks.scroll-button-label' | translate }}
-      </button>
+      </div>
+
     </div>
 
   </ion-content>
