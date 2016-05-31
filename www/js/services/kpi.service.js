@@ -27,6 +27,7 @@ function KPIService(
 
     // KPI id: KPI.BIO.12
     function appStarted(){
+        console.log("Trying 'appStarted' KPI...");
         if (enabled) {
             $http.defaults.headers.post['Content-Type'] = 'application/json';
             return $http({

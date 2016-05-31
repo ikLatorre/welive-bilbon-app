@@ -2,13 +2,16 @@
 var bilbonAppControllers = angular.module('starter.controllers', []);
 
 bilbonAppControllers
-    .controller('AppCtrl', appCtrl);
+    .controller('AppCtrl', AppCtrl);
 
+AppCtrl.$inject = ['$scope', '$rootScope', '$state', '$timeout', '$translate', '$ionicHistory', '$ionicPopup', 
+                  '$filter', 'UserLocalStorage', 'Map', '$http', '$q', '$ionicPlatform', '$ionicLoading', '$ionicModal', 
+                  'FilteredPOIs', 'WELIVE_DATASET_API_URL'];
 
 /**
  * Controller - Main (menu's filter)
  */
-function appCtrl(
+function AppCtrl(
   $scope, 
   $rootScope, 
   $state, 
@@ -21,7 +24,6 @@ function appCtrl(
   Map, 
   $http, 
   $q,
-  $ionicPopup, 
   $ionicPlatform, 
   $ionicLoading, 
   $ionicModal,
@@ -34,9 +36,6 @@ function appCtrl(
   // listen for the $ionicView.enter event:
   //$scope.$on('$ionicView.enter', function(e) {
   //});
-
-
-
 
   // ** define filter's model **
 
@@ -108,7 +107,7 @@ function appCtrl(
   // (this array's items represents the categories, with the category name as 'label' in the corresponding
   // language and other data)
   angular.forEach(categories, function(item){
-    if(item.datasetId != "bilbon-user-pois"){ // avoid dataset of citizens (it includes all categories)
+    if(item.isOfficial){ // avoid dataset of citizens (it includes all categories)
       $scope.spanishCategoriesArray.push({id:item.id, categoryCustomNumericId:item.categoryCustomNumericId,
         datasetId:item.datasetId, jsonId:item.jsonId, label:item.es_ES, img_src:item.img_src}); 
       $scope.filter.selectedCategories[item.id] = false; // initialize model's categories to false (checkbox selection)
@@ -117,7 +116,7 @@ function appCtrl(
   $scope.translatedCategories = $scope.spanishCategoriesArray; // initialize categories' language to spanish
   // Build basque categories' array
   angular.forEach(categories, function(item){
-    if(item.datasetId != "bilbon-user-pois"){
+    if(item.isOfficial){
       $scope.basqueCategoriesArray.push({id:item.id, categoryCustomNumericId:item.categoryCustomNumericId,
         datasetId:item.datasetId, jsonId:item.jsonId, label:item.eu_ES, img_src:item.img_src});  
     }

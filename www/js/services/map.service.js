@@ -9,7 +9,10 @@ mapService.$inject = ['FilteredPOIs', '$q'];
 /**
 * @desc Manage map, Google Autocomplete's objects and markers.
 */
-function mapService(FilteredPOIs, $q){
+function mapService(
+	FilteredPOIs, 
+	$q){
+	
 	var map = {};
 	map.mapObj = null;
 	map.googlePlacesAutocompleteObj = null;

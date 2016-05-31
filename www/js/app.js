@@ -7,7 +7,7 @@
 angular.module('starter', ['ionic','ionic.service.core', 'starter.controllers', 'starter.services', 
   'bilbonApp.config', 'pascalprecht.translate', 'LocalStorageModule'])
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, KPI) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -27,6 +27,12 @@ angular.module('starter', ['ionic','ionic.service.core', 'starter.controllers', 
       // remove the status bar on iOS or change it to use white instead of dark colors.
       StatusBar.styleDefault();
     }
+
+    KPI.appStarted().then(function(){
+      console.log("'appStarted' KPI logged");
+    }, function(){
+      console.log("Error logging 'appStarted' KPI");
+    });
   });
 })
 
@@ -71,7 +77,7 @@ angular.module('starter', ['ionic','ionic.service.core', 'starter.controllers', 
           controller: 'TermsCtrl'
         }
       },
-      resolve: termsCtrl.resolve
+      resolve: TermsCtrl.resolve
     })
     
     .state('app.login', {

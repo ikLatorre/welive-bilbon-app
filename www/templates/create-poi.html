@@ -1,51 +1,128 @@
 <ion-view>
   <ion-nav-title>
-    {{ 'proposal-create-page.title' | translate }}
+    {{ 'poi-create-page.title' | translate }}
   </ion-nav-title>
   <ion-content class="cuerposearch">
-    <p>{{ 'proposal-create-page.request-text' | translate }}</p>
+    <p>{{ 'poi-create-page.request-text' | translate }}</p>
 
-    <form name='proposalForm'>
+    <form name='poiForm'>
       <div class="list">
 
+        <!-- POI name -->
         <label class="item item-input item-stacked-label">
-          <span class="input-label">* {{ 'proposal-create-page.title-label' | translate }}</span>
-          <input type="text" ng-form='step1form' ng-model="newProposal.title" placeholder="{{ 'proposal-create-page.title-placeholder' | translate }}" required ng-maxlength="200"></input>
+          <span class="input-label">* {{ 'poi-create-page.title-label' | translate }}</span>
+          <input type="text" ng-form='step1form' ng-model="newPOI.documentName" placeholder="{{ 'poi-create-page.title-placeholder' | translate }}" required ng-maxlength="300"></input>
         </label>
         <div role="alert">
-          <div class="error error-text" ng-show="proposalForm.step1form.$error.maxlength">{{ 'proposal-create-page.form.title-too-long-error-label' | translate }}</div>
+          <!--<span class="error" ng-show="poiForm.step1form.$error.required">Required!</span>-->
+          <div class="error error-text" ng-show="poiForm.step1form.$error.maxlength  && !poiForm.step1form.$pristine">
+            {{ 'poi-create-page.title-too-long-error-label' | translate }}
+          </div>
+          <div class="error error-text" ng-show="poiForm.step1form.$error.required && poiForm.step1form.$dirty">
+            {{ 'poi-create-page.title-required-error-label' | translate }}
+          </div>
         </div>
 
-        <label class="item item-input item-select">
-          <div class="input-label">
-            * {{ 'proposal-create-page.zone-label' | translate }}
-          </div>
-          <select  ng-form='step2form' ng-model="newProposal.zone" ng-options="zone.id as zone.label for zone in zones" required>
-            <option value="">{{ 'proposal-create-page.search.select-empty-option' | translate }}</option>
-          </select>
-        </label>
-
-        <label class="item item-input item-select">
-          <div class="input-label">
-            * {{ 'proposal-create-page.category-label' | translate }}
-          </div>
-          <select ng-form='step3form' ng-model="newProposal.category" ng-options="category.id as category.label for category in translatedCategories" required>
-            <option value="">{{ 'proposal-create-page.search.select-empty-option' | translate }}</option>
-          </select>
-        </label>
-
+        <!-- POI description -->
         <label class="item item-input item-stacked-label">
-          <span class="input-label">* {{ 'proposal-create-page.description-label' | translate }}</span>
-          <textarea ng-form='step4form' ng-model="newProposal.description" placeholder="{{ 'proposal-create-page.description-placeholder' | translate }}" rows="4" required></textarea>
+          <span class="input-label">* {{ 'poi-create-page.description-label' | translate }}</span>
+          <textarea ng-form='step2form' ng-model="newPOI.documentDescription" placeholder="{{ 'poi-create-page.description-placeholder' | translate }}" rows="4" required></textarea>
         </label>
+        <div role="alert">
+          <div class="error error-text" ng-show="poiForm.step2form.$error.required && poiForm.step2form.$dirty">
+            {{ 'poi-create-page.description-required-error-label' | translate }}
+          </div>
+        </div>
+
+        <!-- POI category -->
+        <label class="item item-input item-select">
+          <div class="input-label">
+            * {{ 'poi-create-page.category-label' | translate }}
+          </div>
+          <!-- 'translatedCategories' variable is defined in AppCtrl abstract controller (see controllers.js) -->
+          <select ng-form='step3form' ng-model="newPOI.category" ng-options="category.datasetId as category.label for category in translatedCategories" required>
+            <option value="">{{ 'poi-create-page.category.select-empty-option' | translate }}</option>
+          </select>
+        </label>
+        <div role="alert">
+          <div class="error error-text" ng-show="poiForm.step3form.$error.required && poiForm.step3form.$dirty">
+            {{ 'poi-create-page.category-required-error-label' | translate }}
+          </div>
+        </div>
+
+        <div class="item item-divider item-text-wrap">
+          {{ 'poi-create-page.list.other-data-divider-text' | translate }}
+        </div>
+
+        <!-- POI web -->
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">{{ 'poi-create-page.web-page-label' | translate }}</span>
+          <!-- use 'http-prefix' directive to automatically add 'http://' to the input if neccesary to avoid validation error -->
+          <input type="url" http-prefix ng-form='step4form' ng-model="newPOI.web" placeholder="{{ 'poi-create-page.web-page-placeholder' | translate }}"></input>
+        </label>
+        <div role="alert">
+          <div class="error error-text" ng-show="poiForm.step4form.$invalid  && !poiForm.step4form.$pristine">
+            {{ 'poi-create-page.form.url-validation-error-label' | translate }}
+          </div>
+        </div>
+
+        <!-- POI email -->
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">{{ 'poi-create-page.email-page-label' | translate }}</span>
+          <input type="email" ng-form='step5form' ng-model="newPOI.email" placeholder="{{ 'poi-create-page.email-page-placeholder' | translate }}"></input>
+        </label>
+        <div role="alert">
+          <div class="error error-text" ng-show="poiForm.step5form.$invalid && !poiForm.step5form.$pristine">
+            {{ 'poi-create-page.email-validation-error-label' | translate }}
+          </div>
+        </div>
         
-        <button ng-disabled="!step1form.$valid || !step2form.$valid || !step3form.$valid || !step4form.$valid" 
-                ng-click="submitProposal()" class="button button-full icon-right ion-chevron-right button-assertive">
-          {{ 'proposal-create-page.submit-button-label' | translate }}
+        <!-- POI phone number -->
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">{{ 'poi-create-page.tfn-page-label' | translate }}</span>
+          <input type="text" ng-pattern="phoneREGEXP" ng-form='step6form' ng-model="newPOI.phoneNumber" placeholder="{{ 'poi-create-page.tfn-page-placeholder' | translate }}"></input>
+        </label>
+        <div role="alert">
+          <div class="error error-text" ng-show="poiForm.step6form.$error.pattern && !poiForm.step6form.$pristine">
+            {{ 'poi-create-page.tfn-validation-error-label' | translate }}
+          </div>
+        </div>
+
+        <!-- POI coordinates -->
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">* {{ 'poi-create-page.map-page-label' | translate }}</span>
+
+              <div class="item location-autocomplete-div create-form-autocomplete-div">
+                <div class="location-inline-item location-autocomplete-search-img">
+                  <i class="icon ion-ios-location"></i>
+                </div>
+                <!--  'disableTap()' is defined in 'AppCtrl' (controllers.js), and is used to
+                avoid the neccesity of pushing a location from the suggestions list for a long time
+                to select it in movile devices-->
+                <div class="location-inline-item location-autocomplete-input-div create-form-autocomplete-input-div">
+                    <input type="text" id="map-creation-location-input" data-tap-disabled="true"
+                    ng-change="disableTap()" ng-model="locationAutocompleteInput" 
+                    placeholder="{{ 'poi-create-page.location-autocomplete-search-placeholder' | translate }}"
+                    class="location-autocomplete-input">
+                </div>
+              </div>
+
+          <div id="mapa-creation-poi" class="map-div poi-creation-map-div"></div>
+        </label>
+        <div role="alert">
+          <div class="error error-text" ng-show="!isLocationSelected">
+            {{ 'poi-create-page.map-validation-error-label' | translate }}
+          </div>
+        </div>
+       
+        <!-- ng-disabled="!step1form.$valid || !step2form.$valid || !step3form.$valid || !step4form.$valid" -->
+        <button ng-disabled="poiForm.$invalid" ng-click="submitPOI()" 
+          class="button button-full icon-right ion-chevron-right button-assertive">
+          {{ 'poi-create-page.submit-button-label' | translate }}
         </button>
 
         <div class="texto-informativo-registro">
-          <p>{{ 'proposal-create-page.form.advert-label' | translate }}</p>
+          <p>{{ 'poi-create-page.form.advert-label' | translate }}</p>
         </div>
 
       </div>

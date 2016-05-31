@@ -656,6 +656,19 @@ input[type="checkbox"] + .track .handle .handle-text-false {
   box-shadow:0 0 9px rgba(0,0,0,0.8);
 }
 
+.poi-creation-map-div {
+  width:95%; 
+  height: 300px;
+  margin-top: 10px;
+}
+
+.create-form-autocomplete-input-div {
+  width: 95%;
+}
+
+.create-form-autocomplete-div {
+  margin-right: 10px;
+}
 
 /* Login page */
 .div-login {

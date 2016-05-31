@@ -2,6 +2,7 @@
 bilbonAppControllers
     .controller('POIDetailsCtrl', POIDetailsCtrl);
 
+POIDetailsCtrl.$inject = ['$scope', '$state', '$filter', '$ionicPopup', '$stateParams', 'FilteredPOIs', 'KPI'];
 
 /**
  * Controller - Details of a POI (Point of interest)
@@ -12,7 +13,8 @@ function POIDetailsCtrl(
 	$filter, 
 	$ionicPopup, 
 	$stateParams,
-	FilteredPOIs){
+	FilteredPOIs,
+	KPI){
 
 	console.log('');
 	console.log('categoryCustomNumericId', $stateParams.categoryCustomNumericId);
@@ -27,6 +29,9 @@ function POIDetailsCtrl(
 	// get poi's details from stored POIs arrays
 	$scope.poiDetails = FilteredPOIs.getPOI(isOfficial, $stateParams.categoryCustomNumericId, $stateParams.poiId);
 
+	if(isOfficial) $scope.poiDetails.type = $filter('translate')('poi-details.official-type-text');
+	else $scope.poiDetails.type = $filter('translate')('poi-details.citizen-type-text');
+
 	if($scope.poiDetails == null){
 		// couldn't get poi details
 		$ionicPopup.alert({
@@ -38,6 +43,36 @@ function POIDetailsCtrl(
 		$state.go('app.map');
 	}
 	console.log($scope.poiDetails);
+
+	// KPI when a POI is selected
+	KPI.POIsSelected($stateParams.poiId, $scope.poiDetails.documentName, 
+					$scope.poiDetails.latitudelongitude).then(function(){
+      console.log("'POIsSelected' KPI logged");
+    }, function(){
+      console.log("Error logging 'POIsSelected' KPI");
+    });
+
+
+	if($scope.poiDetails.documentName == null || $scope.poiDetails.documentName == ''
+		|| $scope.poiDetails.documentName == 'null') $scope.poiDetails.documentName = '-';
+	
+	if($scope.poiDetails.documentDescription == null || $scope.poiDetails.documentDescription == ''
+		|| $scope.poiDetails.documentDescription == 'null') $scope.poiDetails.documentDescription = '-';
+	
+	if($scope.poiDetails.web == null || $scope.poiDetails.web == ''
+		|| $scope.poiDetails.web == 'null') $scope.poiDetails.web = '-';
+	
+	if($scope.poiDetails.email == null || $scope.poiDetails.email == ''
+		|| $scope.poiDetails.email == 'null') $scope.poiDetails.email = '-';
+	
+	if($scope.poiDetails.phoneNumber == null || $scope.poiDetails.phoneNumber == ''
+		|| $scope.poiDetails.phoneNumber == 'null') $scope.poiDetails.phoneNumber = '-';
+
+	if($scope.poiDetails.municipality == null || $scope.poiDetails.municipality == ''
+		|| $scope.poiDetails.municipality == 'null') $scope.poiDetails.municipality = '-';
+	
+	if($scope.poiDetails.historicTerritory == null || $scope.poiDetails.historicTerritory == ''
+		|| $scope.poiDetails.historicTerritory == 'null') $scope.poiDetails.historicTerritory = '-';
 
 	/* poiDetails example:
 		country: "España"

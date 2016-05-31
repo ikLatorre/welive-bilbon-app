@@ -1,12 +1,13 @@
 
 bilbonAppControllers
-    .controller('AboutCtrl', aboutCtrl);
+    .controller('AboutCtrl', AboutCtrl);
 
+AboutCtrl.$inject = ['$scope', '$filter', '$ionicPopup', '$timeout', 'WELIVE_SERVICE_ID'];
 
 /**
  * Controller - About
  */
-function aboutCtrl(
+function AboutCtrl(
     $scope, 
     $filter, 
     $ionicPopup,

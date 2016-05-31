@@ -7,7 +7,11 @@ LoginService.$inject = ['$http', '$state', '$q', '$ionicLoading'];
 /**
  * @desc Manage WeLive's login system
  */
-function LoginService($http, $state, $q, $ionicLoading) { 
+function LoginService(
+    $http, 
+    $state, 
+    $q, 
+    $ionicLoading) { 
 
     var login = {
         requestAuthorize: requestAuthorize,

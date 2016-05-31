@@ -1,6 +1,6 @@
 <ion-view>
   <ion-nav-title>
-    Detalles
+    {{ 'poi-details.title' | translate }}
   </ion-nav-title>
   <ion-content>
 
@@ -14,27 +14,32 @@
           Punto de interés
         </div>
         <div class="item item-text-wrap">
-          <!--{{ 'proposal-statistics-page.ratings.votes-count-item' | translate }} {{currentProposal.votesCount}}-->
-          Título: {{poiDetails.documentName}}
+          <b>{{ 'poi-details.list.name-text' | translate }}</b> {{poiDetails.documentName}}
         </div>
         <div class="item item-text-wrap">
-          Descripción: {{poiDetails.documentDescription}}
+          <b>{{ 'poi-details.list.description-text' | translate }}</b> {{poiDetails.documentDescription}}
         </div>
 
         <div class="item item-divider item-text-wrap">
-          Otros datos
+          {{ 'poi-details.list.other-data-divider-text' | translate }}
         </div>
         <div class="item item-text-wrap">
-          Página web: {{poiDetails.web}}
+          <b>{{ 'poi-details.list.web-text' | translate }}</b> {{poiDetails.web}}
         </div>
         <div class="item item-text-wrap">
-          Email: {{poiDetails.email}}
+          <b>{{ 'poi-details.list.email-text' | translate }}</b> {{poiDetails.email}}
         </div>
         <div class="item item-text-wrap">
-          Teléfono: {{poiDetails.phoneNumber}}
+          <b>{{ 'poi-details.list.phone-text' | translate }}</b> {{poiDetails.phoneNumber}}
         </div>
         <div class="item item-text-wrap">
-          Provincia: {{poiDetails.historicTerritory}}
+          <b>{{ 'poi-details.list.municipality-text' | translate }}</b> {{poiDetails.municipality}}
+        </div>
+        <div class="item item-text-wrap">
+          <b>{{ 'poi-details.list.province-text' | translate }}</b> {{poiDetails.historicTerritory}}
+        </div>
+        <div class="item item-text-wrap">
+          <b>{{ 'poi-details.list.type-text' | translate }}</b> {{poiDetails.type}}
         </div>
 
       </div>

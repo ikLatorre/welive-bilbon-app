@@ -2,9 +2,20 @@
 bilbonAppControllers
     .controller('LoginCtrl', LoginCtrl);
 
-//LoginCtrl.$inject = ['$scope', '$state', '$ionicLoading', 'UserId', 'Login']; // 'Users', 'Language', 'KPI'
+LoginCtrl.$inject = ['$scope', '$state', '$ionicLoading', '$ionicPopup', '$filter', '$ionicHistory',
+                    '$timeout', 'Login', 'UserLocalStorage', 'KPI'];
 
-function LoginCtrl($scope, $state, $ionicLoading, $ionicPopup, $filter, $ionicHistory, $timeout, Login, UserLocalStorage){ // UserId, Users, Language, KPI
+function LoginCtrl(
+    $scope, 
+    $state, 
+    $ionicLoading, 
+    $ionicPopup, 
+    $filter, 
+    $ionicHistory, 
+    $timeout, 
+    Login, 
+    UserLocalStorage,
+    KPI){ 
 
     $scope.loginBtnDisable = false;
     $scope.credentialsLogin = credentialsLogin;
@@ -31,7 +42,11 @@ function LoginCtrl($scope, $state, $ionicLoading, $ionicPopup, $filter, $ionicHi
         function requestBasicProfileSuccessCallback(basicProfileResponse){
 
             // KPI when a user logged in
-            //KPI.appUserRegistered(basicProfileResponse.data.userId);
+            KPI.appUserRegistered(basicProfileResponse.data.userId).then(function(){
+              console.log("'appUserRegistered' KPI logged");
+            }, function(){
+              console.log("Error logging 'appUserRegistered' KPI");
+            });
 
             // store user's basic information
             var currentUserBasicProfile = {
@@ -57,9 +72,11 @@ function LoginCtrl($scope, $state, $ionicLoading, $ionicPopup, $filter, $ionicHi
                 myPopup.close();
 
                 // go to map's page
-                $ionicHistory.clearCache().then(function(){ $state.go('app.map')});
+                $ionicHistory.nextViewOptions({ disableBack: true }); // Avoid back button in the next view
+                $state.go('app.map');
+                //$ionicHistory.clearCache().then(function(){ $state.go('app.map')});
                 //alert(Login.code, Login.accessToken);
-            }, 1600); //close the popup after 1.8 seconds 
+            }, 1600); //close the popup after 1.6 seconds 
 
 
             // Request Profile and store

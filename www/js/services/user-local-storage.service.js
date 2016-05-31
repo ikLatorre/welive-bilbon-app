@@ -12,12 +12,12 @@ function userLocalStorage(localStorageService){
         getUserId: function() {
           var userData = localStorageService.get('userData');
           if(userData != null) return JSON.parse(userData).currentUser.userId;
-          else userData;
+          else null;
         },
         getUserName: function() {
           var userData = localStorageService.get('userData');
           if(userData != null) return JSON.parse(userData).currentUser.name;
-          else userData;
+          else null;
         },
         setUserData: function(userData) {
           return localStorageService.set('userData', JSON.stringify(userData));

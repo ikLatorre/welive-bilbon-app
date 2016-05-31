@@ -2,12 +2,18 @@
 bilbonAppServices
     .factory('FilteredPOIs', filteredPOIs);
 
-filteredPOIs.$inject = ['$http', '$state', '$q', '$ionicLoading', 'WELIVE_DATASET_API_URL']; 
+filteredPOIs.$inject = ['$http', '$state', '$q', '$ionicLoading', 'WELIVE_DATASET_API_URL', 'KPI']; 
 
 /**
  * @desc Store searched POIs and manage the filtering 
  */
-function filteredPOIs($http, $state, $q, $ionicLoading, WELIVE_DATASET_API_URL) { 
+function filteredPOIs(
+	$http, 
+	$state, 
+	$q, 
+	$ionicLoading, 
+	WELIVE_DATASET_API_URL, 
+	KPI) { 
 
 	// each item of the array is identified by 'categoryCustomNumericId', and contains all the filetred POIs of 
 	// the corresponding category (see 'config/categories.js')
@@ -95,6 +101,13 @@ function filteredPOIs($http, $state, $q, $ionicLoading, WELIVE_DATASET_API_URL) 
 		        }
 		    };
 		    console.log('Getting items from "' + datasetCall.params.url + '"...');
+
+		    // KPI when new POIs are searched with SQL statement
+			KPI.POIsSearched(datasetCall.params.sqlQuery).then(function(){
+              console.log("'POIsSearched' KPI logged");
+            }, function(){
+              console.log("Error logging 'POIsSearched' KPI");
+            });
 
 		    // call the corresponding dataset to filter by category and, maybe, by text
 	    	$http({
