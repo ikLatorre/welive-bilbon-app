@@ -275,6 +275,7 @@ function filteredPOIs(
 
     	return promise;
     }
+
     // Used in callSelectedLocationFilter(...) function to apply location filter to specific category array. 
     // It overrides the corresponding POIs' array removing the POI that are not near de selected location. Returns a promise.
     function applyLocationFilter(categoryCustomNumericId, isOfficial, lat, lng){
@@ -307,6 +308,7 @@ function filteredPOIs(
 
     	return promise;
     }
+    
 	// function to be run for each element in 'filter' 'datasetResults.rows' array of applyLocationFilter(...)
 	// 'this' value is the optional parameter passed by 'filter' function: google maps' 'bounds' function
 	function poiIsContained(item, index, array) {

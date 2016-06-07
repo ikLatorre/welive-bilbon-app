@@ -47,9 +47,20 @@ function CreatePOICtrl(
 	// pattern: 9 digits with, maybe, some spaces between them; optionally preceded by country code with these formats: '+34' or '0034'
 	$scope.phoneREGEXP = /^\s*(\+\d{2}|00\d{2})?(\s*\d\s*\d\s*\d\s*){3}$/i;
 
-	// define variables to manage location
-	$scope.isLocationSelected = true; // check when 'submit' button is clicked ('true' to avoid error alert the first time)
-	$scope.locationAutocompleteInput = ''; // empty Google Autocomplete's object's input
+	// define variables to manage location and the marker
+	var currentMarker = null;
+
+	// define object to manage location (text input and error messages)
+	$scope.location = {};  //only do this if $scope.course has not already been declared
+	$scope.location.showLocationRequiredMsg = false; // hide error message the first time
+	$scope.location.locationAutocompleteInput = ''; // empty Google Autocomplete's object's input
+	$scope.location.showLocationBoundsErrorMsg = false; // hide error message the first time
+
+	//Set bounds for location selection and Google Autocomplete. 
+	// Construct a rectangle from the points at its south-west and north-east corners
+	var bilbaoBounds = new google.maps.LatLngBounds(  
+	        new google.maps.LatLng(43.199927, -3.017116),   //south-west corner
+	        new google.maps.LatLng(43.310109, -2.827070));  //north-east corner
 
 	// initialize map object
 	var map = initializeMap(document.getElementById('mapa-creation-poi'));
@@ -58,59 +69,68 @@ function CreatePOICtrl(
 		changeMarker(event.latLng);
 	});
 
-	// define marker object
-	var currentMarker = null;
-
-	// load Google Autocompelte object binding it to the corresponding object
+	// load Google Autocomplete object binding it to the corresponding object
 	loadGoogleAutocomplete();
 
 	// run when form's 'submit' button is clicked to send the new POI to citizens' datasets
 	$scope.submitPOI = function(){
-		
-		if($scope.newPOI.latitudelongitude == ''){
-			$scope.isLocationSelected = false; // show location error alert (required field)
+		// check if the user has selected a location (required field)
+		if($scope.newPOI.latitudelongitude == ''){ 
+			$scope.location.showLocationRequiredMsg = true; 
 			return;
-		}else{
-			// send POI's information and check the response
-			sendPOItoCitizensDataset()
-			.then(function(){ // success
-				console.log('POI successfully submited! ', $scope.newPOI);
-
-				// KPI when a user creates a new POI
-				KPI.POIAdded('null', $scope.newPOI.documentName, $scope.newPOI.latitudelongitude).then(function(){
-	              console.log("'POIAdded' KPI logged");
-	            }, function(){
-	              console.log("Error logging 'POIAdded' KPI");
-	            });
-
-				$ionicLoading.hide();
-				// show success message and return to main map's page
-	            var myPopup = $ionicPopup.show({
-	                template: "<center>" + $filter('translate')('poi-create-page.info-alert-popup-label') + "</center>",
-	                cssClass: 'custom-class custom-class-popup'
-	            });
-	            $timeout(function() { 
-	                $ionicHistory.nextViewOptions({ disableBack: true }); // Avoid back button in the next view
-	                $state.go('app.map'); //$ionicHistory.clearCache().then(function(){ $state.go('app.map')});
-	            }, 1600).then(function(){ myPopup.close(); }); //close the popup after 1.6 seconds 
-
-			}, function(error){
-				console.log('Error sending new OPI information.');
-				$ionicLoading.hide();
-				$ionicPopup.alert({
-		            title: $filter('translate')('poi-create-page.error-popup-title'),
-		            template: $filter('translate')('poi-create-page.error-popup-text'),
-		            okText: $filter('translate')('poi-create-page.error-ok-button-label'),
-		            okType: 'button-assertive' 
-		        });
-			});
 		}
+		return;
+		// send POI's information and check the response
+		sendPOItoCitizensDataset()
+		.then(function(){ // success
+			console.log('POI successfully submited! ', $scope.newPOI);
+
+			// KPI when a user creates a new POI
+			KPI.POIAdded('null', $scope.newPOI.documentName, $scope.newPOI.latitudelongitude).then(function(){
+              console.log("'POIAdded' KPI logged");
+            }, function(){
+              console.log("Error logging 'POIAdded' KPI");
+            });
+
+			$ionicLoading.hide();
+			// show success message and return to main map's page
+            var myPopup = $ionicPopup.show({
+                template: "<center>" + $filter('translate')('poi-create-page.info-alert-popup-label') + "</center>",
+                cssClass: 'custom-class custom-class-popup'
+            });
+            $timeout(function() { 
+                $ionicHistory.nextViewOptions({ disableBack: true }); // Avoid back button in the next view
+                $state.go('app.map'); //$ionicHistory.clearCache().then(function(){ $state.go('app.map')});
+            }, 1600).then(function(){ myPopup.close(); }); //close the popup after 1.6 seconds 
+
+		}, function(error){
+			console.log('Error sending new OPI information.');
+			$ionicLoading.hide();
+			$ionicPopup.alert({
+	            title: $filter('translate')('poi-create-page.error-popup-title'),
+	            template: $filter('translate')('poi-create-page.error-popup-text'),
+	            okText: $filter('translate')('poi-create-page.error-ok-button-label'),
+	            okType: 'button-assertive' 
+	        });
+		});
 
 	};
+
+
+
+
 
 	// change map's marker to another location (location is a 'google.maps.LatLng(lat, lng)' object) if exists,
 	// or create new one and set on the map otherwise.
 	function changeMarker(location){
+		// show error alert if the new location is invalid (it isn't in bilbao)
+		if(!bilbaoBounds.contains(location)){
+			$scope.location.showLocationBoundsErrorMsg = true;
+		}else{
+			$scope.location.showLocationBoundsErrorMsg = false;
+		}
+
+		// create marker and hide 'required location' alert if neccesary
 		if(currentMarker != null){
     		currentMarker.setPosition(location);
 		}else{
@@ -122,16 +142,13 @@ function CreatePOICtrl(
 		map.setCenter(location);
 
 		// tell angular that variable has changed (hide location selected error if it is showing)
-		$scope.$apply(function(){ $scope.isLocationSelected = true; });
+		$scope.$apply(function(){ $scope.location.showLocationRequiredMsg = false; });
 		$scope.newPOI.latitudelongitude = location.lat() + ',' + location.lng();
 		console.log('Stored location: ', $scope.newPOI.latitudelongitude);
 	};
 
+	// define Google Autocomplete object
 	function loadGoogleAutocomplete(){
-		// define Google Autocomplete object
-		var bilbaoBounds = new google.maps.LatLngBounds(  //Constructs a rectangle from the points at its south-west and north-east corners
-	        new google.maps.LatLng(43.199927, -3.017116),   //south-west corner
-	        new google.maps.LatLng(43.310109, -2.827070));  //north-east corner
 	    // (Google Places) Create the autocomplete object, restricting the search to geographical location types.
 	    var domInputElement = document.getElementById('map-creation-location-input');
 	    var autocompleteObj = new google.maps.places.Autocomplete(
@@ -146,14 +163,32 @@ function CreatePOICtrl(
 	        function() {
 	            console.log('"place_changed" event fired.');
 	            // If the user press 'enter' with the searcher, but without selecting an item from the list
+	            // or occurring some kind of error getting the place
 	            if(autocompleteObj.getPlace() == null || !autocompleteObj.getPlace().geometry
 	        		|| (autocompleteObj.getPlace() != null && domInputElement.value == autocompleteObj.getPlace().name)){ 
-	            		// enter pressed without selecting or error getting the place:
-	                    $scope.newPOI.latitudelongitude = '';
+	                    
+	                    // remove marker if exist
 	                    if(currentMarker != null) currentMarker.setMap(null); // remove previous marker
 	                    currentMarker = null;
+
+	                    // remove previously selected location coordinates
+	                    $scope.$apply(function(){ $scope.newPOI.latitudelongitude = ''; });
+
+	                    // remove location error of 'location out of bounds' and empty input textbox
+	                    $scope.$apply(function(){ $scope.location.showLocationBoundsErrorMsg = false; });
+	                    $scope.$apply(function(){ $scope.location.locationAutocompleteInput = '';  });
+	                         
+	                    // show error alert
+	                    //alert('error al obtener de google autocompelte');
+	                    /*$ionicPopup.alert({
+				            title: $filter('translate')('poi-create-page.location-gmaps-error-popup-title'),
+				            template: $filter('translate')('poi-create-page.location-gmaps-error-popup-text'),
+				            okText: $filter('translate')('poi-create-page.location-gmaps-error-ok-button-label'),
+				            okType: 'button-assertive' 
+				        });*/
 	                    console.log('Location removed.');
 	            }else{
+	            		// get selected place and reload the marker if exists, or create a new one
 	                    var lat = autocompleteObj.getPlace().geometry.location.lat();
 	          			var lng = autocompleteObj.getPlace().geometry.location.lng();
 	          			changeMarker(new google.maps.LatLng(lat, lng));

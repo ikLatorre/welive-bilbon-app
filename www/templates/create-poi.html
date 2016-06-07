@@ -101,7 +101,7 @@
                 to select it in movile devices-->
                 <div class="location-inline-item location-autocomplete-input-div create-form-autocomplete-input-div">
                     <input type="text" id="map-creation-location-input" data-tap-disabled="true"
-                    ng-change="disableTap()" ng-model="locationAutocompleteInput" 
+                    ng-change="disableTap()" ng-model="location.locationAutocompleteInput" 
                     placeholder="{{ 'poi-create-page.location-autocomplete-search-placeholder' | translate }}"
                     class="location-autocomplete-input">
                 </div>
@@ -110,13 +110,17 @@
           <div id="mapa-creation-poi" class="map-div poi-creation-map-div"></div>
         </label>
         <div role="alert">
-          <div class="error error-text" ng-show="!isLocationSelected">
-            {{ 'poi-create-page.map-validation-error-label' | translate }}
+          <div class="error error-text" ng-show="location.showLocationRequiredMsg">
+            {{ 'poi-create-page.map-validation-required-error-labe' | translate }}
+          </div>
+        </div>
+        <div role="alert">
+          <div class="error error-text" ng-show="location.showLocationBoundsErrorMsg">
+            {{ 'poi-create-page.map-validation-bounds-error-label' | translate }}
           </div>
         </div>
        
-        <!-- ng-disabled="!step1form.$valid || !step2form.$valid || !step3form.$valid || !step4form.$valid" -->
-        <button ng-disabled="poiForm.$invalid" ng-click="submitPOI()" 
+        <button ng-disabled="poiForm.$invalid || location.showLocationBoundsErrorMsg" ng-click="submitPOI()" 
           class="button button-full icon-right ion-chevron-right button-assertive">
           {{ 'poi-create-page.submit-button-label' | translate }}
         </button>
