@@ -17,10 +17,7 @@ function LoginService(
         requestAuthorize: requestAuthorize,
         requestOauthToken: requestOauthToken,
         requestOauthTokenSuccessCallback: requestOauthTokenSuccessCallback,
-        requestOauthTokenErrorCallback: requestOauthTokenErrorCallback,
         requestBasicProfile: requestBasicProfile,
-        requestBasicProfileErrorCallback: requestBasicProfileErrorCallback,
-        //requestProfile: requestProfile,
         params : {
             clientId:'e6ad6e82-075d-4800-85a0-95731c412c25',
             responseType:'code',
@@ -40,6 +37,9 @@ function LoginService(
 
     return login;
 
+    /**
+     * open WeLive's login page in an inAppBrowser
+     */
     function requestAuthorize() {
         var promise;
         promise = $q(function (resolve, reject) {
@@ -69,7 +69,6 @@ function LoginService(
 
                 // check if the url is the same of the redirection
                 if ((event.url).startsWith('http://localhost/callback')) {
-
                     // take the requestToken from the url
                     login.code = (event.url).split('code=')[1].split('&')[0];
                     // close the opened window
@@ -85,12 +84,15 @@ function LoginService(
         return promise;
     }
 
+    /**
+     * (token generation) request the oauth token to get permission to other requests of WeLive's APIs
+     */
     function requestOauthToken() {
         $http.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
         return $http({
-            method:"post",
-            url:"https://dev.welive.eu/aac/oauth/token",
-            data:"grant_type=authorization_code"
+            method: "post",
+            url: "https://dev.welive.eu/aac/oauth/token",
+            data: "grant_type=authorization_code"
                 + "&client_id=" + login.params.clientId
                 + '&client_secret=' + login.params.clientSecret
                 + "&redirect_uri=" + login.params.redirectUri
@@ -99,22 +101,13 @@ function LoginService(
     }
 
     /**
-     * manage the error of the post request
-     * @param response the error from the request
-     */
-    function requestOauthTokenErrorCallback(response) {
-        alert("ERROR: " + response.data.toString());
-        $ionicLoading.hide();
-    }
-
-    /**
      * manage the success of the request oauth
-     * @param response the response from the request
+     * @param response: the response from the request
      */
     function requestOauthTokenSuccessCallback(response) {
         var promise;
         promise = $q(function(resolve, reject) {
-            if (!response.data.exception) {
+            if(!response.data.exception) {
                 login.accessToken = response.data.access_token;
                 login.refreshToken = response.data.refresh_token;
                 login.expiresIn = response.data.expires_in;
@@ -141,6 +134,10 @@ function LoginService(
         return promise;
     }
 
+    /**
+     * get current user's basic profile (name, surname, socialId and userId)
+     * @param token: previously generated token (resolved by 'requestOauthTokenSuccessCallback()')
+     */
     function requestBasicProfile(token){
         return $http.get('https://dev.welive.eu/aac/basicprofile/me', {
             headers:{
@@ -149,21 +146,4 @@ function LoginService(
         });
     }
 
-    /**
-     * manage the error of the get request
-     * @param response the error from the request
-     */
-    function requestBasicProfileErrorCallback(response){
-        alert("ERROR: " + response.data.toString());
-        $ionicLoading.hide();
-    }
-
-    /*function requestProfile(){
-        console.log('login.accessToken'+ login.accessToken);
-        return $http.get('https://dev.welive.eu/dev/api/cdv/getuserprofile', {
-            headers:{
-                'Authorization':'Bearer ' + login.accessToken
-            }
-        });
-    }*/
 }

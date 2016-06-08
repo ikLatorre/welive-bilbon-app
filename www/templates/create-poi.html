@@ -120,6 +120,8 @@
           </div>
         </div>
        
+        <!-- Disable 'submit' button if the introduced data is not correct (but the 'location
+        required error' is checked when this button is clicked) -->
         <button ng-disabled="poiForm.$invalid || location.showLocationBoundsErrorMsg" ng-click="submitPOI()" 
           class="button button-full icon-right ion-chevron-right button-assertive">
           {{ 'poi-create-page.submit-button-label' | translate }}

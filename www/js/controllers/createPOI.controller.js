@@ -2,8 +2,8 @@
 bilbonAppControllers
     .controller('CreatePOICtrl', CreatePOICtrl);
 
-CreatePOICtrl.$inject = ['$scope', '$state', '$stateParams', '$filter', '$filter', '$timeout',
-                    '$ionicLoading', '$http', '$ionicHistory', '$ionicPopup', 'Login', 'WELIVE_DATASET_API_URL', 'KPI'];
+CreatePOICtrl.$inject = ['$scope', '$state', '$stateParams', '$filter', '$timeout', '$ionicLoading', 
+						'$http', '$ionicHistory', '$ionicPopup', 'Login', 'WELIVE_DATASET_API_URL', 'KPI'];
 
 /**
  * Controller - Create new POI 
@@ -54,7 +54,7 @@ function CreatePOICtrl(
 	$scope.location = {};  //only do this if $scope.course has not already been declared
 	$scope.location.showLocationRequiredMsg = false; // hide error message the first time
 	$scope.location.locationAutocompleteInput = ''; // empty Google Autocomplete's object's input
-	$scope.location.showLocationBoundsErrorMsg = false; // hide error message the first time
+	$scope.location.showLocationBoundsErrorMsg = false; 
 
 	//Set bounds for location selection and Google Autocomplete. 
 	// Construct a rectangle from the points at its south-west and north-east corners
@@ -79,7 +79,7 @@ function CreatePOICtrl(
 			$scope.location.showLocationRequiredMsg = true; 
 			return;
 		}
-		return;
+
 		// send POI's information and check the response
 		sendPOItoCitizensDataset()
 		.then(function(){ // success
@@ -177,15 +177,18 @@ function CreatePOICtrl(
 	                    // remove location error of 'location out of bounds' and empty input textbox
 	                    $scope.$apply(function(){ $scope.location.showLocationBoundsErrorMsg = false; });
 	                    $scope.$apply(function(){ $scope.location.locationAutocompleteInput = '';  });
+
+	                    // center the map
+	                    map.setZoom(14);
+    					map.setCenter(new google.maps.LatLng(43.263606, -2.935214)); // Plaza de Don Federico Moyúa, Bilbao
 	                         
 	                    // show error alert
-	                    //alert('error al obtener de google autocompelte');
-	                    /*$ionicPopup.alert({
+	                    $ionicPopup.alert({
 				            title: $filter('translate')('poi-create-page.location-gmaps-error-popup-title'),
 				            template: $filter('translate')('poi-create-page.location-gmaps-error-popup-text'),
 				            okText: $filter('translate')('poi-create-page.location-gmaps-error-ok-button-label'),
 				            okType: 'button-assertive' 
-				        });*/
+				        });
 	                    console.log('Location removed.');
 	            }else{
 	            		// get selected place and reload the marker if exists, or create a new one

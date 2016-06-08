@@ -119,7 +119,7 @@ function mapService(
 
 
 
-    // ** Define auxiliary functions used in functions of 'filter' variable **
+    // ** Define auxiliary functions used in functions of 'mapFunctions' variable **
 
     // initialize POIs' arrays for each category. 'categories' is definied in 'config/categories.js'
     function initializeMarkersArrays() {

@@ -31,12 +31,15 @@ function MapCtrl(
 	// run when map's red button is clicked 
 	$scope.createPOI = function(){
 		if(UserLocalStorage.getUserId() == null){
-			$ionicPopup.alert({
-	            title: $filter('translate')('map-page.aac-error-popup-title'),
-	            template: $filter('translate')('map-page.aac-error-popup-text'),
-	            okText: $filter('translate')('map-page.aac-error-popup-ok-button-label'),
-	            okType: 'button-assertive' 
-	        });
+	        $ionicPopup.confirm({
+                title: $filter('translate')('map-page.aac-error-popup-title'),
+                template: $filter('translate')('map-page.aac-error-popup-text'),
+                cancelText: $filter('translate')('map-page.aac-error-popup-cancel-button-label'),
+                cancelType: 'button-default',
+                okText: $filter('translate')('map-page.aac-error-popup-login-button-label'),
+                okType: 'button-assertive'
+            }).then(function(res) { if(res) { $state.go('app.login'); } });
+            return;
 		}else{
 			$state.go('app.create'); // go to form's page
 		}

@@ -5,8 +5,8 @@ bilbonAppControllers
     .controller('AppCtrl', AppCtrl);
 
 AppCtrl.$inject = ['$scope', '$rootScope', '$state', '$timeout', '$translate', '$ionicHistory', '$ionicPopup', 
-                  '$filter', 'UserLocalStorage', 'Map', '$http', '$q', '$ionicPlatform', '$ionicLoading', '$ionicModal', 
-                  'FilteredPOIs', 'WELIVE_DATASET_API_URL'];
+                  '$filter', '$http', '$q', '$ionicPlatform', '$ionicLoading', '$ionicModal', 
+                  'UserLocalStorage', 'FilteredPOIs', 'Map', 'WELIVE_DATASET_API_URL'];
 
 /**
  * Controller - Main (menu's filter)
@@ -19,15 +19,15 @@ function AppCtrl(
   $translate, 
   $ionicHistory, 
   $ionicPopup, 
-  $filter, 
-  UserLocalStorage, 
-  Map, 
+  $filter,   
   $http, 
   $q,
   $ionicPlatform, 
   $ionicLoading, 
   $ionicModal,
+  UserLocalStorage, 
   FilteredPOIs,
+  Map,
   WELIVE_DATASET_API_URL) {
 
   // With the new view caching in Ionic, Controllers are only called

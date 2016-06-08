@@ -16,10 +16,10 @@ function AboutCtrl(
 	
 	$scope.launchSurvey = launchSurvey;
     $scope.showSurvey = true;
-
+    
 	function launchSurvey(){
 		var result;
-
+        
 		//app: WELIVE_SERVICE_ID | 'test'
         var params = {
             app: WELIVE_SERVICE_ID,

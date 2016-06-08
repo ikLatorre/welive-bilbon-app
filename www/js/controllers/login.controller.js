@@ -20,6 +20,10 @@ function LoginCtrl(
     $scope.loginBtnDisable = false;
     $scope.credentialsLogin = credentialsLogin;
 
+
+    /**
+    *  run when 'Login' button is clicked
+    */
     function credentialsLogin() {
 
         // Oauth authentication
@@ -31,13 +35,36 @@ function LoginCtrl(
                 });
                 return Login.requestOauthToken();
             })
-            .then(Login.requestOauthTokenSuccessCallback, Login.requestOauthTokenErrorCallback)
+            .then(Login.requestOauthTokenSuccessCallback, requestOauthTokenErrorCallback)
             .then(Login.requestBasicProfile)
-            .then(requestBasicProfileSuccessCallback, Login.requestBasicProfileErrorCallback);
+            .then(requestBasicProfileSuccessCallback, requestBasicProfileErrorCallback);
+
+        
+        /**
+        * manage the error of the post request
+        * @param response: the error from the request
+        */
+        function requestOauthTokenErrorCallback(response){
+            var promise;
+            promise = $q(function(resolve, reject) {
+                console.log("ERROR: " + response.data.toString());
+                $ionicLoading.hide();
+                $ionicPopup.alert({
+                    title: $filter('translate')('login.error-popup-title'),
+                    template: $filter('translate')('login.error-popup-text'),
+                    okText: $filter('translate')('login.error-popup-button-label'),
+                    okType: 'button-assertive' 
+                });
+                reject();
+            });
+
+            return promise;
+        };
+
 
         /**
          * manage the success of the get request
-         * @param basicProfileResponse the response from the request
+         * @param basicProfileResponse: the response from the request
          */
         function requestBasicProfileSuccessCallback(basicProfileResponse){
 
@@ -59,6 +86,8 @@ function LoginCtrl(
             };
             UserLocalStorage.setUserData(currentUserBasicProfile);
 
+            // register user's userId if neccesary
+
             $scope.loginBtnDisable = true; // disable login button while message appears before change the view (page)
             $ionicLoading.hide();
 
@@ -78,44 +107,28 @@ function LoginCtrl(
                 //alert(Login.code, Login.accessToken);
             }, 1600); //close the popup after 1.6 seconds 
 
-
-            // Request Profile and store
-            //Login.requestProfile().then(requestProfileSuccessCallback);
-
-            // Launch next state after check the user
-            //Users.loaded.then(usersLoaded);
+        };
 
 
-            /*function requestProfileSuccessCallback(response){
-                UserId.userId = response.data.ccUserID;
-                UserId.name = response.data.name;
-                UserId.surname = response.data.surname;
-                UserId.referredPilot = response.data.referredPilot;
-                UserId.gender = response.data.gender;
-                UserId.birthdate = response.data.birthdate;
-                UserId.address = response.data.address;
-                UserId.city = response.data.city;
-                UserId.country = response.data.country;
-                UserId.zipCode = response.data.zipCode;
-                UserId.email = response.data.email;
-            }*/
-
-            /*function usersLoaded() {
+        /**
+        * manage the error of the get request
+        * @param response: the error from the request
+        */
+        function requestBasicProfileErrorCallback(response){
+            var promise;
+            promise = $q(function(resolve, reject) {
+                console.log("ERROR: " + response.data.toString());
                 $ionicLoading.hide();
+                $ionicPopup.alert({
+                    title: $filter('translate')('login.error-popup-title'),
+                    template: $filter('translate')('login.error-popup-text'),
+                    okText: $filter('translate')('login.error-popup-button-label'),
+                    okType: 'button-assertive' 
+                });
+                reject();
+            });
 
-                UserId.setName(basicProfileResponse.data.name);
-                UserId.setSurName(basicProfileResponse.data.surname);
-                UserId.setSocialId(basicProfileResponse.data.socialId);
-
-                if (Users.findById(parseInt(basicProfileResponse.data.userId))){
-                    UserId.setUserId(basicProfileResponse.data.userId);
-                    $state.go('app.main');
-                }
-                else{
-                    UserId.setUserId(basicProfileResponse.data.userId);
-                    $state.go('location', {userId:parseInt(basicProfileResponse.data.userId), userName:basicProfileResponse.data.name});
-                }
-            }*/
-        }
+            return promise;
+        };
     }
 }

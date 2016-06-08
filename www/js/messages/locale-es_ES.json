@@ -52,7 +52,8 @@
  "map-page.text": "Consulte los puntos de interés:",
  "map-page.aac-error-popup-title": "Información",
  "map-page.aac-error-popup-text": "Por favor, inicie sesión para poder crear nuevos puntos de interés.",
- "map-page.aac-error-popup-ok-button-label": "Cerrar",
+ "map-page.aac-error-popup-cancel-button-label": "Cancelar",
+ "map-page.aac-error-popup-login-button-label": "Iniciar sesión",
 
  "poi-details.title": "Detalles",
  "poi-details.error-popup-title": "Error",
@@ -113,6 +114,9 @@
  "login.text": "Comparte puntos de interés con los ciudadanos.",
  "login.credentials-button": "Iniciar sesión",
  "login.loading": "Iniciando sesión...",
+ "login.error-popup-title": "Error",
+ "login.error-popup-text": "Ha habido un error al iniciar sesión en WeLive. Por favor, inténtelo de nuevo más tarde.",
+ "login.error-popup-button-label": "Cerrar",
 
  "info-alert-popup-login-label-left": "Ha iniciado sesión como ",
  "info-alert-popup-login-label-right": ".",

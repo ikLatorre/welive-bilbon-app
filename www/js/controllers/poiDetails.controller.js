@@ -75,19 +75,21 @@ function POIDetailsCtrl(
 		|| $scope.poiDetails.historicTerritory == 'null') $scope.poiDetails.historicTerritory = '-';
 
 	/* poiDetails example:
-		country: "España"
-		documentDescription:"En el restaurante Beraia utilizan como materia prima mariscos, pescados y carnes de primera calid..."
-		documentName:"Beraia"
-		email:"info@beraia.com"
-		historicTerritory:"BIZKAIA"
-		historicTerritoryCode:48
-		id:123
-		latitudelongitude:"43.2654242,-2.9341127000000142"
-		municipality:"BILBAO"
-		municipalityCode:480020
-		phoneNumber:"944 052 844"
-		territory:"BIZKAIA"
-		web:"http://www.facebook.com/pages/Restaurante-Beraia/207847902629777?sk=info&tab=page_info"
+		{
+			country: "España",
+			documentDescription:"En el restaurante Beraia utilizan como materia prima mariscos, pescados y carnes de primera calid...",
+			documentName:"Beraia",
+			email:"info@beraia.com",
+			historicTerritory:"BIZKAIA",
+			historicTerritoryCode:48,
+			id:123,
+			latitudelongitude:"43.2654242,-2.9341127000000142",
+			municipality:"BILBAO",
+			municipalityCode:480020,
+			phoneNumber:"944 052 844",
+			territory:"BIZKAIA",
+			web:"http://www.facebook.com/pages/Restaurante-Beraia/207847902629777?sk=info&tab=page_info"
+		}
 	*/
 
 }

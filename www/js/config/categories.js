@@ -1,5 +1,5 @@
 
-/*
+/**
 * Configuration of official and no official datasets. 
 * Each official dataset corresponds to one category (is identified by the dataset ID and json ID).
 * 

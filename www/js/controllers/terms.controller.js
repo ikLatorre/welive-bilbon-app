@@ -2,8 +2,8 @@
 bilbonAppControllers
     .controller('TermsCtrl', TermsCtrl);
 
-TermsCtrl.$inject = ['$scope', '$ionicHistory', '$state', '$filter', 'localStorageService', '$ionicPopup', 
-                    '$timeout', '$ionicSideMenuDelegate'];
+TermsCtrl.$inject = ['$scope', '$ionicHistory', '$state', '$filter', '$ionicPopup', 
+                    '$timeout', '$ionicSideMenuDelegate', 'UserLocalStorage'];
 
 /**
  * Controller - Privacy policy
@@ -13,10 +13,10 @@ function TermsCtrl(
     $ionicHistory,
     $state,
     $filter,
-    localStorageService,
     $ionicPopup,
     $timeout,
-    $ionicSideMenuDelegate) {
+    $ionicSideMenuDelegate,
+    UserLocalStorage) {
 
     // Avoid dragging content to show side menu and go to another page without accepting the privacy policy
     $ionicSideMenuDelegate.canDragContent(false);
@@ -31,7 +31,7 @@ function TermsCtrl(
     };
 
     function acceptPrivacy() {
-        localStorageService.set("isPrivacyAccepted", true); //window.localStorage.setItem("isPrivacyAccepted", true);
+        UserLocalStorage.setPrivacyAccepted(true);
         goToProposalsList();
     };
 
@@ -54,8 +54,8 @@ function TermsCtrl(
  * Code to be executed before route change goes here (/app/terms)
  */
 TermsCtrl.resolve = {
-    checkBeforeDraw: function (localStorageService, $ionicHistory, $state, $timeout, $q) {
-        var isPrivacyAccepted = localStorageService.get("isPrivacyAccepted"); //window.localStorage.getItem("isPrivacyAccepted");
+    checkBeforeDraw: function (UserLocalStorage, $ionicHistory, $state, $timeout, $q) {
+        var isPrivacyAccepted = UserLocalStorage.getPrivacyAccepted();
 
         if (isPrivacyAccepted){
             goToProposalsList();

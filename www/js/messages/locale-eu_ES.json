@@ -51,8 +51,9 @@
  "map-page.title": "Mapa",
  "map-page.text": "Aztertu itzazu interes puntuak:",
  "map-page.aac-error-popup-title": "Informazioa",
- "map-page.aac-error-popup-text": "Mesedez, saia hasi interes puntu berriak sortu ahal izateko.",
- "map-page.aac-error-popup-ok-button-label": "Itxi",
+ "map-page.aac-error-popup-text": "Mesedez, saioa hasi interes puntu berriak sortu ahal izateko.",
+ "map-page.aac-error-popup-cancel-button-label": "Itxi",
+ "map-page.aac-error-popup-login-button-label": "Saioa hasi",
 
  "poi-details.title": "Xehetasunak",
  "poi-details.error-popup-title": "Errorea",
@@ -113,6 +114,9 @@
  "login.text": "Interes puntuak eskaini herritarrei.",
  "login.credentials-button": "Saioa hasi",
  "login.loading": "Saioa hasten...",
+ "login.error-popup-title": "Errorea",
+ "login.error-popup-text": "WeLive-en saioa hasten errore bat gertatu da. Mesedez, geroago berriz saiatu.",
+ "login.error-popup-button-label": "Itxi",
 
  "info-alert-popup-login-label-left": "",
  "info-alert-popup-login-label-right": " bezala saioa ireki duzu.",

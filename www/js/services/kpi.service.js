@@ -12,8 +12,8 @@ function KPIService(
     WELIVE_SERVICE_ID,
     WELIVE_SERVICE_NAME) {
 
-    var appId = WELIVE_SERVICE_ID; // 'es.eurohelp.welive.bilbon'
-    var appName = WELIVE_SERVICE_NAME; // the name of the app (don't use 'es.eurohelp.welive.bilbon', only 'bilbon')
+    var appId = WELIVE_SERVICE_ID;      // 'bilbon'
+    var appName = WELIVE_SERVICE_NAME;  // the name of the app (don't use 'es.eurohelp.welive.bilbon', only 'bilbon')
 
     var enabled = true; //enable or disable KPI service
 
@@ -47,7 +47,7 @@ function KPIService(
         {
             return $http({ method: "get", url: "http://localhost"});
         }
-    }
+    };
 
     // KPI id: KPI.BIO.13
     function appUserRegistered(userId){
@@ -71,7 +71,7 @@ function KPIService(
         {
             return $http({ method: "get", url: "http://localhost"});
         }
-    }
+    };
 
     // KPI id: KPI.BIO.14
     function POIAdded(POI_ID, POIName, POICoords) {
@@ -97,7 +97,7 @@ function KPIService(
         {
             return $http({ method: "get", url: "http://localhost"});
         }
-    }
+    };
 
     // KPI id: KPI.BIO.15
     function POIsSearched(QueryStr) {
@@ -121,7 +121,7 @@ function KPIService(
         {
             return $http({ method: "get", url: "http://localhost"});
         }
-    }
+    };
 
     // KPI id: KPI.BIO.16
     function POIsSelected(POI_ID, POIName, POICoords) {
@@ -147,29 +147,6 @@ function KPIService(
         {
             return $http({ method: "get", url: "http://localhost"});
         }
-    }
-
-    /*// KPI id: KPI.BIO.9
-    function votingCampaignOrganized(votingCampaignID, votingCampaignName) {
-       if (enabled) {
-            $http.defaults.headers.post['Content-Type'] = 'application/json';
-            return $http({
-                method: "post",
-                url:"https://dev.welive.eu/dev/api/log/" + appId,
-                data: {
-                    "msg": "test",
-                    "appId": appId,
-                    "type": "VotingCampaignOrganized",
-                    "custom_attr": {
-                        "VotingCampaignID": votingCampaignID,
-                        "VotingCampaignName": votingCampaignName,
-                        "appname": appName
-                    }
-                }
-            });
-        }else{
-            return $http({ method: "get", url: "http://localhost"});
-        }
-    }*/
+    };
 
 }
