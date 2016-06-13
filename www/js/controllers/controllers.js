@@ -62,7 +62,7 @@ function AppCtrl(
   // initialize form data for the login modal
   UserLocalStorage.removeUserData(); 
 
-  // Define function to show menu's login/logout items
+  // Define function to show or hide menu's login item or to know if user has logged in
   $scope.getCurrentUserId = function (){
       return UserLocalStorage.getUserId();
   }

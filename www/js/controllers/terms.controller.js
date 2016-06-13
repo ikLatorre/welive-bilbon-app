@@ -64,7 +64,7 @@ TermsCtrl.resolve = {
         function goToPOIsMap() {
             $timeout(function() {
                 $ionicHistory.nextViewOptions({ disableBack: true }); // Avoid back button in the next view
-                $state.go('app.map')
+                $state.go('app.map');
             }, 0);
             return $q.reject();
         };
