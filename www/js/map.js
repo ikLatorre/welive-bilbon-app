@@ -1,5 +1,7 @@
 
-// create map object with the corresponding parameters
+/**
+*   Create map object with the corresponding parameters
+*/ 
 function initializeMap(domMapContainer){
     
     //var infoWindow = new google.maps.InfoWindow();
@@ -23,8 +25,11 @@ function initializeMap(domMapContainer){
     return map;
 };
 
-// load and associate Google Places' Autocomplete object with the input element
-// (used in 'map.controller.js' to associate to the abstract 'menu.html's #location-input element)
+
+/**
+*   Load and associate Google Places' Autocomplete object with the input element
+*   (used in 'map.controller.js' to associate to the abstract 'menu.html's #location-input element)
+*/
 function loadGooglePlacesAutocompleteFeature(domInputElement, MapFactory, $ionicPopup){
     
     var bilbaoBounds = new google.maps.LatLngBounds(  //Constructs a rectangle from the points at its south-west and north-east corners

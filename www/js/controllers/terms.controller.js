@@ -25,14 +25,14 @@ function TermsCtrl(
     $scope.refusePrivacy = refusePrivacy;
     
     // go to the app's first page
-    function goToProposalsList() {
+    function goToPOIsMap() {
         $ionicHistory.nextViewOptions({ disableBack: true }); // Avoid back button in the next view
         $state.go('app.map');
     };
 
     function acceptPrivacy() {
         UserLocalStorage.setPrivacyAccepted(true);
-        goToProposalsList();
+        goToPOIsMap();
     };
 
     function refusePrivacy() {
@@ -58,10 +58,10 @@ TermsCtrl.resolve = {
         var isPrivacyAccepted = UserLocalStorage.getPrivacyAccepted();
 
         if (isPrivacyAccepted){
-            goToProposalsList();
+            goToPOIsMap();
         }
 
-        function goToProposalsList() {
+        function goToPOIsMap() {
             $timeout(function() {
                 $ionicHistory.nextViewOptions({ disableBack: true }); // Avoid back button in the next view
                 $state.go('app.map')

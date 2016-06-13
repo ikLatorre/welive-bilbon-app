@@ -1,4 +1,6 @@
 
+var bilbonAppServices = angular.module('starter.services', []);
+
 bilbonAppServices
     .factory('Login', LoginService);
 

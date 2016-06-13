@@ -9,7 +9,7 @@ AppCtrl.$inject = ['$scope', '$rootScope', '$state', '$timeout', '$translate', '
                   'UserLocalStorage', 'FilteredPOIs', 'Map', 'WELIVE_DATASET_API_URL'];
 
 /**
- * Controller - Main (menu's filter)
+ * Controller - Main (menu's filter and language selection)
  */
 function AppCtrl(
   $scope, 
@@ -85,6 +85,8 @@ function AppCtrl(
   $scope.switchLanguage = function (key) {
       $translate.use(key);
   }; 
+  // change $scope.translatedCategories to the selected language (to change combobox's results for example)
+  // this is neccesary because the language is changed with the menu opened, and some combobox'es could be seen there at the same time
   $rootScope.$on('$translateChangeEnd', function() { 
     if ($translate.use() == 'eu_ES')
       $scope.translatedCategories = $scope.basqueCategoriesArray; // change language of menu's items categories' items
@@ -98,7 +100,7 @@ function AppCtrl(
 
   // ** Configure categories for the filter **
  
-  // Configure language of categories' array to use in the corresponding combobox/lists
+  // Configure language of categories' array to use in the corresponding combobox/lists (see config/categories.js)
   $scope.translatedCategories = []; // this variable will contain categories' list in the current language (used in ng-repeat)
   $scope.spanishCategoriesArray = [];
   $scope.basqueCategoriesArray = [];

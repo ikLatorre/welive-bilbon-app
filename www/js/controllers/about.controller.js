@@ -40,7 +40,6 @@ function AboutCtrl(
             + 'pilotId=' + params.pilotId;
 
         // open a new window with the request URL
-        // window.open = cordova.InAppBrowser.open;
         var ref = window.open(requestUrl, '_blank', 'location=no');
 
         console.log('Start URL:' + requestUrl + ' FIN URL');
