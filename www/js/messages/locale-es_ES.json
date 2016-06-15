@@ -137,6 +137,7 @@
  "about.questionnaire.succesfully-submitted-label": "El cuestionario se ha enviado correctamente.",
  "about.questionnaire.submitted-error-label": "Se ha producido algún error al enviar el cuestionario. Por favor, inténtelo de nuevo más tarde.",
  "about.survey.text": "Agradeceríamos su opinión",
+ "about.survey.disabled-text": "Ya ha rellenado el cuestionairo el número máximo de veces permitido.",
  "about.survey.button": "Rellenar el formulario",
 
  "info-confirm-popup-title": "BilbOn",

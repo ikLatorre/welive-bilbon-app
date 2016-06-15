@@ -21,9 +21,10 @@
           <p>{{ 'about-page.text-4' | translate }}</p>
       </div>
 
-      <div class="datos_detalle_peticion div-questionnaire" ng-hide="!showSurvey">
-          <p>{{'about.survey.text' | translate}}</p>
-          <button class="button button-full button-assertive" ng-click="launchSurvey()">
+      <div class="datos_detalle_peticion div-questionnaire">
+          <p ng-show="showSurvey">{{'about.survey.text' | translate}}</p>
+          <p ng-hide="showSurvey">{{'about.survey.disabled-text' | translate}}</p>
+          <button class="button button-full button-assertive" ng-click="launchSurvey()" ng-disabled="!showSurvey">
             <i class="icon ion-clipboard"></i>
             {{ 'about.survey.button' | translate }}
           </button>

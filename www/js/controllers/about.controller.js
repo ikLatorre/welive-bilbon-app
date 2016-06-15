@@ -2,7 +2,7 @@
 bilbonAppControllers
     .controller('AboutCtrl', AboutCtrl);
 
-AboutCtrl.$inject = ['$scope', '$filter', '$ionicPopup', '$timeout', 'WELIVE_SERVICE_ID'];
+AboutCtrl.$inject = ['$scope', '$filter', '$ionicPopup', '$timeout', 'UserLocalStorage', 'WELIVE_SERVICE_ID'];
 
 /**
  * Controller - About
@@ -12,10 +12,19 @@ function AboutCtrl(
     $filter, 
     $ionicPopup,
     $timeout,
+    UserLocalStorage,
 	WELIVE_SERVICE_ID) {
 	
 	$scope.launchSurvey = launchSurvey;
     $scope.showSurvey = true;
+
+    // reset the questionnaire completed count (max count is 4)
+    //UserLocalStorage.removeCompletedQuestionnaireCount();
+
+    // disable survey launch button if it has been completed successfully 4 times or more
+    if(UserLocalStorage.getCompletedQuestionnaireCount() >= 4){
+        $scope.showSurvey = false;
+    }
     
 	function launchSurvey(){
 		var result;
@@ -65,8 +74,13 @@ function AboutCtrl(
 
                 // hide survey if ok
                 if(result === 'OK'){
-                	$scope.showSurvey = false;
-                    $scope.$apply();
+
+                	// disable button to launch questionnaire if the user has completed it 4 times or more
+                    UserLocalStorage.addCompletedQuestionnaireCount();
+                    if(UserLocalStorage.getCompletedQuestionnaireCount() >= 4){
+                        $scope.showSurvey = false;
+                        //$scope.$apply();
+                    }
 
                     var myPopup = $ionicPopup.show({
 						template: "<center>" + $filter('translate')('about.questionnaire.succesfully-submitted-label')

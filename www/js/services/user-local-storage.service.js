@@ -15,7 +15,10 @@ function UserLocalStorage(localStorageService){
         setUserData: setUserData,
         removeUserData: removeUserData,
         getPrivacyAccepted: getPrivacyAccepted,
-        setPrivacyAccepted: setPrivacyAccepted
+        setPrivacyAccepted: setPrivacyAccepted,
+        getCompletedQuestionnaireCount: getCompletedQuestionnaireCount,
+        addCompletedQuestionnaireCount: addCompletedQuestionnaireCount,
+        removeCompletedQuestionnaireCount: removeCompletedQuestionnaireCount
     };
     return localStorage;
 
@@ -67,6 +70,37 @@ function UserLocalStorage(localStorageService){
     function setPrivacyAccepted(isAccepted){
       localStorageService.set("isPrivacyAccepted", isAccepted); 
       //window.localStorage.setItem("isPrivacyAccepted", isAccepted);
+    };
+
+    /**
+    * Return the number of times the questionnaire has been successfully completed.
+    */
+    function getCompletedQuestionnaireCount(){
+      var count = localStorageService.get("completedQuestionnaireCount"); 
+      if(count == null) return 0;
+      else return count;
+    };
+
+    /**
+    * Add 1 to the completed questionnaire count.
+    */
+    function addCompletedQuestionnaireCount(){
+      var count = localStorageService.get("completedQuestionnaireCount"); 
+      if(count == null){
+        localStorageService.set("completedQuestionnaireCount", 1);
+        console.log('Questionnaire completed 1 time.');
+      }else{
+        count++;
+        localStorageService.set("completedQuestionnaireCount", count);
+        console.log('Questionnaire completed ' + count + ' times.');
+      }
+    };
+
+    /**
+    * Remove stored completed questionnaire count.
+    */
+    function removeCompletedQuestionnaireCount(){
+      localStorageService.remove('completedQuestionnaireCount');
     };
 
 };
