@@ -7,7 +7,7 @@
 angular.module('starter', ['ionic','ionic.service.core', 'starter.controllers', 'starter.services', 
   'bilbonApp.config', 'pascalprecht.translate', 'LocalStorageModule'])
 
-.run(function($ionicPlatform, KPI) {
+.run(function($ionicPlatform, Login, KPI) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -28,11 +28,23 @@ angular.module('starter', ['ionic','ionic.service.core', 'starter.controllers', 
       StatusBar.styleDefault();
     }
 
-    KPI.appStarted().then(function(){
-      console.log("'appStarted' KPI logged");
-    }, function(){
-      console.log("Error logging 'appStarted' KPI");
+    // get WeLive's client token 
+    Login.requestWeliveClientAppOauthToken()
+    .then(function(token){
+        KPI.setClientAppToken(token); // store app token in KPI service to enable securized logging system
+
+        // KPI when the app started
+        KPI.appStarted().then(function(successCallback){
+          console.log("'appStarted' KPI logged");
+        }, function(errorCallback){
+          console.log("Error logging 'appStarted' KPI", errorCallback);
+        });
+
+    }, function(errorCallback){
+        KPI.setClientAppToken(null); 
+        console.log("Error obtaining client app's token", errorCallback);
     });
+
   });
 })
 

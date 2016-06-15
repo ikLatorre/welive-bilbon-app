@@ -72,10 +72,11 @@ function LoginCtrl(
         function requestBasicProfileSuccessCallback(basicProfileResponse){
 
             // KPI when a user logged in
-            KPI.appUserRegistered(basicProfileResponse.data.userId).then(function(){
+            KPI.appUserRegistered(basicProfileResponse.data.userId)
+            .then(function(successCallback){
               console.log("'appUserRegistered' KPI logged");
-            }, function(){
-              console.log("Error logging 'appUserRegistered' KPI");
+            }, function(errorCallback){
+              console.log("Error logging 'appUserRegistered' KPI", errorCallback);
             });
 
             // store user's basic information
@@ -88,8 +89,6 @@ function LoginCtrl(
                 }
             };
             UserLocalStorage.setUserData(currentUserBasicProfile);
-
-            // register user's userId if neccesary
 
             $scope.loginBtnDisable = true; // disable login button while message appears before change the view (page)
             $ionicLoading.hide();

@@ -45,11 +45,11 @@ function POIDetailsCtrl(
 	console.log($scope.poiDetails);
 
 	// KPI when a POI is selected
-	KPI.POIsSelected($stateParams.poiId, $scope.poiDetails.documentName, 
-					$scope.poiDetails.latitudelongitude).then(function(){
+	KPI.POIsSelected($stateParams.poiId, $scope.poiDetails.documentName, $scope.poiDetails.latitudelongitude)
+	.then(function(successCallback){
       console.log("'POIsSelected' KPI logged");
-    }, function(){
-      console.log("Error logging 'POIsSelected' KPI");
+    }, function(errorCallback){
+      console.log("Error logging 'POIsSelected' KPI", errorCallback);
     });
 
 

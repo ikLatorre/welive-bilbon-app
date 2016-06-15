@@ -103,10 +103,11 @@ function filteredPOIs(
 		    console.log('Getting items from "' + datasetCall.params.url + '"...');
 
 		    // KPI when new POIs are searched with SQL statement
-			KPI.POIsSearched(datasetCall.params.sqlQuery).then(function(){
+			KPI.POIsSearched(datasetCall.params.sqlQuery)
+			.then(function(successCallback){
               console.log("'POIsSearched' KPI logged");
-            }, function(){
-              console.log("Error logging 'POIsSearched' KPI");
+            }, function(errorCallback){
+              console.log("Error logging 'POIsSearched' KPI", errorCallback);
             });
 
 		    // call the corresponding dataset to filter by category and, maybe, by text

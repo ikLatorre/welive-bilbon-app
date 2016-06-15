@@ -16,10 +16,12 @@ function LoginService(
     $ionicLoading) { 
 
     var login = {
+        requestWeliveClientAppOauthToken: requestWeliveClientAppOauthToken,
         requestAuthorize: requestAuthorize,
         requestOauthToken: requestOauthToken,
         requestOauthTokenSuccessCallback: requestOauthTokenSuccessCallback,
         requestBasicProfile: requestBasicProfile,
+
         params : {
             clientId:'e6ad6e82-075d-4800-85a0-95731c412c25',
             responseType:'code',
@@ -29,18 +31,63 @@ function LoginService(
             clientSecret:'2e80af33-eb3b-48d0-b16b-0face8aaee23',
             clientSecretMobile:'6e33b66a-28e8-4255-acc5-392c84677b89'
         },
+
         code: undefined,
         accessToken: undefined,
         refreshToken: undefined,
         expiresIn: undefined,
         tokenType: undefined,
-        scope: undefined
+        scope: undefined,
+
+        clientAppAccessToken: undefined,
+        clientAppExpiresIn: undefined,
+        clientAppTokenType: undefined,
+        clientAppScope: undefined
     };
 
     return login;
 
+
     /**
-     * open WeLive's login page in an inAppBrowser
+    * WeLive's OAUTH2.0 NON USER-RELATED PROTOCOL FLOW (client (app) credentials flow)
+    * Obtain the access token associated to the WeLive's client app, not to a single user.
+    */
+    function requestWeliveClientAppOauthToken(){
+        var promise;
+        promise = $q(function (resolve, reject) {
+
+            $http.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+            $http({
+                method: "post",
+                url: "https://dev.welive.eu/aac/oauth/token",
+                data: "grant_type=client_credentials"
+                    + "&client_id=" + login.params.clientId
+                    + '&client_secret=' + login.params.clientSecret
+            
+            }).then(function(clientCredentialsResponse){
+
+                if(!clientCredentialsResponse.data.exception) {
+                    login.clientAppAccessToken = clientCredentialsResponse.data.access_token;
+                    login.clientAppExpiresIn = clientCredentialsResponse.data.expires_in;
+                    login.clientAppTokenType = clientCredentialsResponse.data.token_type;
+                    login.clientAppScope = clientCredentialsResponse.data.scope;
+                    
+                    resolve(clientCredentialsResponse.data.access_token);
+                }else{
+                    reject();
+                }
+
+            }, function(errorCallback){
+                reject(errorCallback);
+            });
+        });
+        
+        return promise;
+    }
+
+    /**
+     * Start WeLive's AUTHORIZATION CODE FLOW (specific WeLive's user authorization flow)
+     * Open WeLive's login page in an inAppBrowser
      */
     function requestAuthorize() {
         var promise;
@@ -120,10 +167,10 @@ function LoginService(
             }
             else {
                 // Exception
-                alert('Exception');
-                alert(response.url);
+                console.log('Exception', response.url);
+
                 var exceptionText = '';
-                for (var exceptionKey in response.exception) {
+                for (var exceptionKey in response.data.exception) {
                     exceptionText += exceptionKey + ': ';
                     exceptionText += response.exception[exceptionKey] + '    -';
                 }

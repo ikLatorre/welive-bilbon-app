@@ -86,10 +86,11 @@ function CreatePOICtrl(
 			console.log('POI successfully submited! ', $scope.newPOI);
 
 			// KPI when a user creates a new POI
-			KPI.POIAdded('null', $scope.newPOI.documentName, $scope.newPOI.latitudelongitude).then(function(){
+			KPI.POIAdded('null', $scope.newPOI.documentName, $scope.newPOI.latitudelongitude)
+			.then(function(successCallback){
               console.log("'POIAdded' KPI logged");
-            }, function(){
-              console.log("Error logging 'POIAdded' KPI");
+            }, function(errorCallback){
+              console.log("Error logging 'POIAdded' KPI", errorCallback);
             });
 
 			$ionicLoading.hide();
