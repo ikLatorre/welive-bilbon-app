@@ -1,52 +1,39 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml version='1.0' encoding='utf-8'?>
 <widget id="es.eurohelp.welive.bilbon" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-  <name>BilbOn</name>
-  <description>
-        WeLive project app. Search and create points of interes in Bilbao.
+    <name>BilbOn</name>
+    <description>
+        WeLive project app. Search and create points of interest in Bilbao.
     </description>
-  <author email="ilatorre@euro-help.es" href="http://ionicframework.com/">
+    <author email="ilatorre@euro-help.es" href="http://ionicframework.com/">
       Ignacio Latorre
   </author>
-  <content src="index.html"/>
-  <!--<plugin name="cordova-plugin-whitelist" spec="1" />-->
-
-  <access origin="*" />
-
-  <!-- Allow links to web pages to open in a browser -->
-  <!--<allow-intent href="http://*/*" />-->
-  <!--<allow-intent href="https://*/*" />-->
-  <!--<allow-intent href="tel:*" />-->
-  <!--<allow-intent href="sms:*" />-->
-  <!--<allow-intent href="mailto:*" />-->
-  <allow-intent href="geo:*" />
-
-  <!--<allow-navigation href="http://*/*" />-->
-  <!--<allow-navigation href="https://*/*" />-->
-  <!--<allow-navigation href="data:*" />-->
-
-  <preference name="webviewbounce" value="false"/>
-  <preference name="UIWebViewBounce" value="false"/>
-  <preference name="DisallowOverscroll" value="true"/>
-  <preference name="android-minSdkVersion" value="16"/>
-  <preference name="BackupWebStorage" value="none"/>
-  <preference name="SplashScreen" value="splash"/>
-  <preference name="SplashScreenDelay" value="3000"/>
-  <feature name="StatusBar">
-    <param name="ios-package" value="CDVStatusBar" onload="true"/>
-  </feature>
-  <platform name="android">
-    <splash src="resources\android\splash\drawable-land-ldpi-screen.png" density="land-ldpi"/>
-    <splash src="resources\android\splash\drawable-land-mdpi-screen.png" density="land-mdpi"/>
-    <splash src="resources\android\splash\drawable-land-hdpi-screen.png" density="land-hdpi"/>
-    <splash src="resources\android\splash\drawable-land-xhdpi-screen.png" density="land-xhdpi"/>
-    <splash src="resources\android\splash\drawable-land-xxhdpi-screen.png" density="land-xxhdpi"/>
-    <splash src="resources\android\splash\drawable-land-xxxhdpi-screen.png" density="land-xxxhdpi"/>
-    <splash src="resources\android\splash\drawable-port-ldpi-screen.png" density="port-ldpi"/>
-    <splash src="resources\android\splash\drawable-port-mdpi-screen.png" density="port-mdpi"/>
-    <splash src="resources\android\splash\drawable-port-hdpi-screen.png" density="port-hdpi"/>
-    <splash src="resources\android\splash\drawable-port-xhdpi-screen.png" density="port-xhdpi"/>
-    <splash src="resources\android\splash\drawable-port-xxhdpi-screen.png" density="port-xxhdpi"/>
-    <splash src="resources\android\splash\drawable-port-xxxhdpi-screen.png" density="port-xxxhdpi"/>
-  </platform>
-  <icon src="resources\icon.png" />
+    <content src="index.html" />
+    <access origin="*" />
+    <allow-intent href="geo:*" />
+    <preference name="webviewbounce" value="false" />
+    <preference name="UIWebViewBounce" value="false" />
+    <preference name="DisallowOverscroll" value="true" />
+    <preference name="android-minSdkVersion" value="16" />
+    <preference name="BackupWebStorage" value="none" />
+    <preference name="SplashScreen" value="splash" />
+    <preference name="SplashScreenDelay" value="3000" />
+    <feature name="StatusBar">
+        <param name="ios-package" onload="true" value="CDVStatusBar" />
+    </feature>
+    <platform name="android">
+        <splash density="land-ldpi" src="resources\android\splash\drawable-land-ldpi-screen.png" />
+        <splash density="land-mdpi" src="resources\android\splash\drawable-land-mdpi-screen.png" />
+        <splash density="land-hdpi" src="resources\android\splash\drawable-land-hdpi-screen.png" />
+        <splash density="land-xhdpi" src="resources\android\splash\drawable-land-xhdpi-screen.png" />
+        <splash density="land-xxhdpi" src="resources\android\splash\drawable-land-xxhdpi-screen.png" />
+        <splash density="land-xxxhdpi" src="resources\android\splash\drawable-land-xxxhdpi-screen.png" />
+        <splash density="port-ldpi" src="resources\android\splash\drawable-port-ldpi-screen.png" />
+        <splash density="port-mdpi" src="resources\android\splash\drawable-port-mdpi-screen.png" />
+        <splash density="port-hdpi" src="resources\android\splash\drawable-port-hdpi-screen.png" />
+        <splash density="port-xhdpi" src="resources\android\splash\drawable-port-xhdpi-screen.png" />
+        <splash density="port-xxhdpi" src="resources\android\splash\drawable-port-xxhdpi-screen.png" />
+        <splash density="port-xxxhdpi" src="resources\android\splash\drawable-port-xxxhdpi-screen.png" />
+    </platform>
+    <icon src="resources\icon.png" />
+    <plugin name="cordova-plugin-whitelist" spec="~1.2.1" />
 </widget>

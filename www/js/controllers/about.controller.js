@@ -27,6 +27,7 @@ function AboutCtrl(
     if(UserLocalStorage.getCompletedQuestionnaireCount() >= 4){
         $scope.showSurvey = false;
     }
+
     
 	function launchSurvey(){
 		var result;
@@ -44,8 +45,6 @@ function AboutCtrl(
             $timeout(function() { myPopup.close(); }, 1800); //close the popup after 1.8 seconds 
         }
 
-        console.log(lang);
-        return;
         var params = {
             app: WELIVE_SERVICE_ID,
             callback : 'http://localhost/callback',
@@ -75,19 +74,20 @@ function AboutCtrl(
         function loadStartListener(event) {
 
             console.log('URL:' + event.url + ' FIN URL');
-
+  
             // check if the url is the same of the redirection
-            if ((event.url).startsWith('http://localhost/callback')) {
-
+            //if ((event.url).startsWith('http://localhost/callback')) { // String.prototype.startsWith() not supported by Android
+            if ((event.url).indexOf("http://localhost/callback") > -1){
+                
                 // take the result from the url
                 result = (event.url).split('questionnaire-status=')[1].split('&')[0];
-
+    
                 // close the opened window
                 ref.close();
-
+                
                 // unsuscribe event
                 ref.removeEventListener('loadstart', loadStartListener);
-
+                
                 // hide survey if ok
                 if(result === 'OK'){
 
@@ -104,7 +104,9 @@ function AboutCtrl(
 						cssClass: 'custom-class custom-class-popup'
 					});
 					$timeout(function() { myPopup.close(); }, 1800); //close the popup after 1.8 seconds 
+
 				}else if(result === 'ERROR'){
+                    
 					var myPopup = $ionicPopup.show({
 						template: "<center>" + $filter('translate')('about.questionnaire.submitted-error-label')
 								+ "</center>",
@@ -115,6 +117,7 @@ function AboutCtrl(
 				}else if(result === 'CANCEL'){
 					// close questionnaire without message
 				}
+
             }
         }
 	}

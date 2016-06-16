@@ -117,7 +117,8 @@ function LoginService(
                 console.log('URL:' + event.url + ' END URL');
 
                 // check if the url is the same of the redirection
-                if ((event.url).startsWith('http://localhost/callback')) {
+                //if ((event.url).startsWith('http://localhost/callback')) { // String.prototype.startsWith() not supported by Android
+                if ((event.url).indexOf("http://localhost/callback") > -1){
                     // take the requestToken from the url
                     login.code = (event.url).split('code=')[1].split('&')[0];
                     // close the opened window
