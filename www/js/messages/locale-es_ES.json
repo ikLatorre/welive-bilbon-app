@@ -16,7 +16,11 @@
 
  "menu.citizen-button-text": "Ver de ciudadanos",
 
- "menu.language-item": "Idioma",
+ "menu.language-item": "Cambiar idioma",
+ "menu.language-item.modal-title": "Seleccione un idioma",
+ "menu.language-item.modal-cancel-btn": "Cancelar",
+ "prueba": "castellano",
+
  "menu.exit-item": "Salir",
  "menu.exit-item-text": "Cerrando aplicación...",
 
@@ -98,7 +102,7 @@
  "poi-create-page.map-validation-required-error-labe": "¡Debe seleccionar una ubicación! Puede buscarla por texto o seleccionando un punto del mapa directamente.",
  "poi-create-page.map-validation-bounds-error-label": "¡La ubicación debe estar en la zona de Bilbao!",
  "poi-create-page.location-autocomplete-search-placeholder": "Buscar ubicación...",
- "poi-create-page.submit-button-label": "Registrar información",
+ "poi-create-page.submit-button-label": "Enviar información",
  "poi-create-page.form.advert-label": "Los campos marcados con un '*' son obligatorios.",
  "poi-create-page.info-alert-popup-label": "El punto de interés se ha registrado correctamente.",
  "poi-create-page.loading-text": "Enviando datos, por favor espere...",
@@ -126,7 +130,6 @@
  "error-alert-popup-title": "Error",
  "error-alert-popup-ok-button-label": "Cerrar",
  "info-confirm-popup-login-button-label": "Iniciar sesión",
- "info-alert-popup-logout-label": "Ha cerrado la sesión.",
 
  "about-page.title": "About",
  "about-page.subtitle": "Información y términos de uso",
@@ -134,6 +137,7 @@
  "about-page.text-2": "Además, BilbOn permite que te conviertas en creador de contenidos, pudiendo proponer nuevos puntos de interés. Dichos puntos de interés serán aprobados y publicados por el responsable correspondiente.",
  "about-page.text-3": "BilbOn ha sido creado en el marco conjunto de servicios urbanos del proyecto Europeo WeLive. El proyecto WeLive ha sido financiado dentro del programa H2020 de la Comisión Europea para la investigación, desarrollo tecnológico e innovación bajo el acuerdo Nº 645845.",
  "about-page.text-4": "Más información sobre el proyecto en http://www.welive.eu.",
+ "about.questionnaire.basque-not-supported-text": "El cuestionario no se puede mostrar en euskera.",
  "about.questionnaire.succesfully-submitted-label": "El cuestionario se ha enviado correctamente.",
  "about.questionnaire.submitted-error-label": "Se ha producido algún error al enviar el cuestionario. Por favor, inténtelo de nuevo más tarde.",
  "about.survey.text": "Agradeceríamos su opinión",

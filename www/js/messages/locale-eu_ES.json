@@ -16,7 +16,9 @@
 
  "menu.citizen-button-text": "Herritarrenak ikusi",
 
- "menu.language-item": "Hizkuntza",
+ "menu.language-item": "Hizkuntza aldatu",
+ "menu.language-item.modal-title": "Hizkuntza bat aukeratu",
+ "menu.language-item.modal-cancel-btn": "Itxi",
  "menu.exit-item": "Irten",
  "menu.exit-item-text": "Aplikazioa ixten...",
 
@@ -98,7 +100,7 @@
  "poi-create-page.map-validation-required-error-label": "Kokapen bat adierazi behar duzu! Testuz bilatu dezakezu edota mapan puntu bat adieraziz.",
  "poi-create-page.map-validation-bounds-error-label": "Bilboko zonaldeko kokapen bat aukeratu behar duzu!",
  "poi-create-page.location-autocomplete-search-placeholder": "Kokapena bilatu...",
- "poi-create-page.submit-button-label": "Informazioa erregistratu",
+ "poi-create-page.submit-button-label": "Informazioa bidali",
  "poi-create-page.form.advert-label": "'*'-rekin adierazitako atalak derrigorrezkoak dira.",
  "poi-create-page.info-alert-popup-label": "Interes puntua ongi erregistratu da.",
  "poi-create-page.loading-text": "Datuak bidaltzen, itxaron mesedez...",
@@ -126,7 +128,6 @@
  "error-alert-popup-title": "Errorea",
  "error-alert-popup-ok-button-label": "Itxi",
  "info-confirm-popup-login-button-label": "Saioa hasi",
- "info-alert-popup-logout-label": "Itxi",
 
  "about-page.title": "About",
  "about-page.subtitle": "Informazio eta erabilera-baldintzak",
@@ -134,6 +135,7 @@
  "about-page.text-2": "Gainera, BilbOn edukien sortzaile izatea ahalbidetzen dizu interes puntu berriak proposatuz. Interes puntu horiek onartuak eta argitaratuak izango dira dagokion arduradunaz.",
  "about-page.text-3": "BilbOn Europako WeLive proiektuaren hiri zerbitzuen eremuan sortu da. WeLive proiektua Europako Batzordearen ikerketarako, garapen teknologikorako eta berrikuntzarako H2020 programaren barruan finantziatu da, 645845 zenbakidun hitzarmenekoa.",
  "about-page.text-4": "Proiektuari buruzko informazio gehiago http://www.welive.eu-n aurki dezakezu.",
+ "about.questionnaire.basque-not-supported-text": "Galdeketa ez dago euskaraz azaltzerik.",
  "about.questionnaire.succesfully-submitted-label": "Galdeketa ondo bidali da.",
  "about.questionnaire.submitted-error-label": "Errore bat gertatu da galdeketa bidaltzen. Geroago berriz saiatu, mesedez.",
  "about.survey.text": "Zure iritzia eskertuko genuke",

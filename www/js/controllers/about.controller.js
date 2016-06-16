@@ -2,7 +2,8 @@
 bilbonAppControllers
     .controller('AboutCtrl', AboutCtrl);
 
-AboutCtrl.$inject = ['$scope', '$filter', '$ionicPopup', '$timeout', 'UserLocalStorage', 'WELIVE_SERVICE_ID'];
+AboutCtrl.$inject = ['$scope', '$filter', '$ionicPopup', '$timeout', '$translate',
+ 'UserLocalStorage', 'WELIVE_SERVICE_ID'];
 
 /**
  * Controller - About
@@ -12,6 +13,7 @@ function AboutCtrl(
     $filter, 
     $ionicPopup,
     $timeout,
+    $translate,
     UserLocalStorage,
 	WELIVE_SERVICE_ID) {
 	
@@ -30,10 +32,24 @@ function AboutCtrl(
 		var result;
         
 		//app: WELIVE_SERVICE_ID | 'test'
+        var lang = ($translate.use() == "en_EN")? 'EN' : 'ES'; 
+
+        // show alert message if the selected language is basque (it is not supported by WeLive's questionnaire)
+        if($translate.use() == "eu_ES"){
+             var myPopup = $ionicPopup.show({
+                template: "<center>" + $filter('translate')('about.questionnaire.basque-not-supported-text')
+                        + "</center>",
+                cssClass: 'custom-class custom-class-popup'
+            });
+            $timeout(function() { myPopup.close(); }, 1800); //close the popup after 1.8 seconds 
+        }
+
+        console.log(lang);
+        return;
         var params = {
             app: WELIVE_SERVICE_ID,
             callback : 'http://localhost/callback',
-            lang: 'ES',
+            lang: lang,
             pilotId: 'bilbao'
         };
 

@@ -115,15 +115,35 @@
 
         <div class="item item-divider"></div>
 
-        <ion-toggle ion-toggle-text ng-true-value="'EU'" ng-false-value="'ES'" toggle-class="toggle-assertive"
+        <!-- Language selection item with 'toggle-selection' (ES | EU) (see directives/lang-toggle.directive.js) -->
+        <!--<ion-toggle ion-toggle-text ng-true-value="'EU'" ng-false-value="'ES'" toggle-class="toggle-assertive"
           ng-model="textByValue" ng-model="selectedLang" ng-change="changeLang()">
           {{ 'menu.language-item' | translate }}
-        </ion-toggle>
+        </ion-toggle>-->
+        
+        <!-- cancel-button="{{ 'menu.language-item.modal-cancel-btn' | translate }}" 
+        cancel-button="{{traducir()}}"-->
+        <!-- Language selection item with 'ionic-modal-select' plugin (ES | EU | EN) -->
+        <ion-item>
+          <div id="modal-select" class="item-text-wrap" modal-select ng-model="selectedLang" options="selectableLanguages" 
+          modal-title="{{ 'menu.language-item.modal-title' | translate }}" hide-reset="true"
+          cancel-button="{{ 'menu.language-item.modal-cancel-btn' | translate }}"
+          on-select="changeLang(newValue, oldValue)" option-property="id" 
+          selected-class="active"> <!-- use Ionic's .active class for active list element -->
+            <i class="icon ion-android-globe"></i>
+            &nbsp;{{ 'menu.language-item' | translate }}
+            <div class="option">
+              {{option.label}}
+            </div>
+          </div>
+        </ion-item> 
 
+        <!-- Exit from the app element -->
         <!--<ion-item class="item-text-wrap" menu-close ng-click="exitApp()">
           <i class="icon ion-android-exit"></i>
-          {{ 'menu.exit-item' | translate }} -->
-        </ion-item>
+          {{ 'menu.exit-item' | translate }} 
+        </ion-item> -->
+
       </ion-list>
     </ion-content>
   </ion-side-menu>

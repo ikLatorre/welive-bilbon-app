@@ -6,6 +6,8 @@ bilbonAppControllers
 /**
 * @desc modify toggle element to show the texts of the two options
 * @example <ion-toggle ion-toggle-text></ion-toggle>
+*
+* Warning: Since the english language was added to the app, this directive is unused.
 */
 function ionToggleText() {
 

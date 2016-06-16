@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic','ionic.service.core', 'starter.controllers', 'starter.services', 
-  'bilbonApp.config', 'pascalprecht.translate', 'LocalStorageModule'])
+  'bilbonApp.config', 'pascalprecht.translate', 'ionic-modal-select', 'LocalStorageModule'])
 
 .run(function($ionicPlatform, Login, KPI) {
   $ionicPlatform.ready(function() {
@@ -54,7 +54,7 @@ angular.module('starter', ['ionic','ionic.service.core', 'starter.controllers', 
     prefix: 'js/messages/locale-', 
     suffix: '.json'
   });
-  $translateProvider.preferredLanguage('es_ES'); // eu-ES | es-ES
+  $translateProvider.preferredLanguage('es_ES'); // eu-ES | es-ES | en_EN
   $translateProvider.useSanitizeValueStrategy('escape'); // avoid Cross-site Scripting (XSS) attacks
 
   localStorageServiceProvider

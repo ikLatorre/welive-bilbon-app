@@ -72,27 +72,39 @@ function AppCtrl(
 
   // ** Configure language changing (UI's switch and $translate's language) **
 
-  $scope.selectedLang = false; // false: es_ES | true: eu_ES
-  $scope.changeLang = function() {
-    if($scope.selectedLang == false) {
-      $scope.selectedLang = true;
-      $scope.switchLanguage('eu_ES');   
-    } else{
-      $scope.selectedLang = false;
-      $scope.switchLanguage('es_ES');
+  // define available languages (translations stored in messages/ directory)
+  $scope.selectableLanguages = [
+    { id: "es_ES", label : "Español" },
+    { id: "eu_ES", label : "Euskara" },
+    { id: "en_EN", label : "English" }
+  ];
+  $scope.selectedLang = 'es_ES'; // enable by default Ionic's .active class to 'Español' of the language selection list
+  $scope.changeLang = function(newValue, oldValue){
+    console.log('Language changed: newValue ', newValue, ' / oldValue ', oldValue);
+    // avoid change when the selected language is the previously selected one
+    if(newValue != oldValue){
+      $translate.use(newValue); // es_ES | eu_ES | en_EN 
+
+      //document.getElementById("modal-select").setAttribute("cancel-button", 'aaa'); 
+      //$scope.$apply();
     }
-  };
-  $scope.switchLanguage = function (key) {
-      $translate.use(key);
   }; 
   // change $scope.translatedCategories to the selected language (to change combobox's results for example)
   // this is neccesary because the language is changed with the menu opened, and some combobox'es could be seen there at the same time
   $rootScope.$on('$translateChangeEnd', function() { 
-    if ($translate.use() == 'eu_ES')
-      $scope.translatedCategories = $scope.basqueCategoriesArray; // change language of menu's items categories' items
-    else
-      $scope.translatedCategories = $scope.spanishCategoriesArray;
+    if($translate.use() == "es_ES")
+      $scope.translatedCategories = $scope.spanishCategoriesArray; // change language of menu's items categories' items
+    else if($translate.use() == "eu_ES"){
+      $scope.translatedCategories = $scope.basqueCategoriesArray;
+    }else if($translate.use() == "en_EN"){
+      $scope.translatedCategories = $scope.englishCategoriesArray;
+    }
   });
+
+/*$scope.traducir = function(){
+  return $filter('translate')('prueba');
+
+}*/
 
 
 
@@ -104,6 +116,7 @@ function AppCtrl(
   $scope.translatedCategories = []; // this variable will contain categories' list in the current language (used in ng-repeat)
   $scope.spanishCategoriesArray = [];
   $scope.basqueCategoriesArray = [];
+  $scope.englishCategoriesArray = [];
 
   // Build spanish categories' array and initialize $scope.filter.selectedCategories array
   // (this array's items represents the categories, with the category name as 'label' in the corresponding
@@ -121,6 +134,13 @@ function AppCtrl(
     if(item.isOfficial){
       $scope.basqueCategoriesArray.push({id:item.id, categoryCustomNumericId:item.categoryCustomNumericId,
         datasetId:item.datasetId, jsonId:item.jsonId, label:item.eu_ES, img_src:item.img_src});  
+    }
+  });
+  // Build english categories' array
+  angular.forEach(categories, function(item){
+    if(item.isOfficial){
+      $scope.englishCategoriesArray.push({id:item.id, categoryCustomNumericId:item.categoryCustomNumericId,
+        datasetId:item.datasetId, jsonId:item.jsonId, label:item.en_EN, img_src:item.img_src});  
     }
   });
 
