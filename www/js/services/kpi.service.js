@@ -53,7 +53,7 @@ function KPIService(
                 url: requestParams.url,
                 headers: requestParams.headers,
                 data: {
-                    "msg": "BilbOn app started",
+                    "msg": "BilbOn app started [KPI.BIO.12]",
                     "appId": appId,
                     "type": "AppStarted",
                     "custom_attr": {
@@ -76,7 +76,7 @@ function KPIService(
                 url: requestParams.url,
                 headers: requestParams.headers,
                 data:{
-                    "msg": "User registered in BilbOn",
+                    "msg": "User registered in BilbOn [KPI.BIO.13]",
                     "appId": appId,
                     "type": "AppUserRegistered",
                     "custom_attr": {
@@ -100,7 +100,7 @@ function KPIService(
                 url: requestParams.url,
                 headers: requestParams.headers,
                 data:{
-                    "msg": "POI added",
+                    "msg": "POI added [KPI.BIO.14]",
                     "appId": appId,
                     "type": "POIAdded",
                     "custom_attr": {
@@ -126,7 +126,7 @@ function KPIService(
                 url: requestParams.url,
                 headers: requestParams.headers,
                 data:{
-                    "msg": "POI searched",
+                    "msg": "POI searched [KPI.BIO.15]",
                     "appId": appId,
                     "type": "POIsSearched",
                     "custom_attr": {
@@ -150,7 +150,7 @@ function KPIService(
                 url: requestParams.url,
                 headers: requestParams.headers,
                 data:{
-                    "msg": "POI selected",
+                    "msg": "POI selected [KPI.BIO.16]",
                     "appId": appId,
                     "type": "POIsSelected",
                     "custom_attr": {
