@@ -70,7 +70,7 @@ function AppCtrl(
 
 
 
-  // ** Configure language changing (UI's switch and $translate's language) **
+  // ** Configure language changing (menu's modal panel and $translate's language) **
 
   // define available languages (translations stored in messages/ directory)
   $scope.selectableLanguages = [

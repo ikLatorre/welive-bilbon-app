@@ -1,9 +1,12 @@
 # Specifies intentionally untracked files to ignore when using Git
 # http://git-scm.com/docs/gitignore
 
+# ionic 
 node_modules/
-platforms/
 plugins/
+
+platforms/
+
 .svn/
 .project
 desktop.ini

@@ -24,7 +24,7 @@ function UserLocalStorage(localStorageService){
 
 
     /**
-    * get current user id if it is logged. null otherwise.
+    * Return current user id if it is logged. null otherwise.
     */
     function getUserId(){
       var userData = localStorageService.get('userData');
@@ -33,7 +33,7 @@ function UserLocalStorage(localStorageService){
     };
 
     /**
-    * get current user's name if it is logged. null otherwise.
+    * Return current user's name if it is logged. null otherwise.
     */
     function getUserName(){
       var userData = localStorageService.get('userData');
@@ -42,14 +42,14 @@ function UserLocalStorage(localStorageService){
     };
 
     /**
-    * set current user id.
+    * Set current user's data as json (name, surname, socialId, userId).
     */
     function setUserData(userData){
       return localStorageService.set('userData', JSON.stringify(userData));
     };
 
     /**
-    * set current user name.
+    * Remove current user's data (log out).
     */
     function removeUserData(){
       return localStorageService.remove('userData');
@@ -57,28 +57,31 @@ function UserLocalStorage(localStorageService){
 
 
     /**
-    * return true if the user has accepted the privacy policy (terms)
+    * Return true if the user has accepted the privacy policy (terms). False otherwise.
     */
     function getPrivacyAccepted(){
-      localStorageService.get("isPrivacyAccepted"); 
+      var isPrivacyAccepted = localStorageService.get('isPrivacyAccepted');
+      if(isPrivacyAccepted != null) return isPrivacyAccepted;
+      else return false; 
       //window.localStorage.getItem("isPrivacyAccepted");
     };
 
     /**
-    * set if the user has accepted or not the privacy policy (terms)
+    * Set if the user has accepted or not the privacy policy (terms)
     */
     function setPrivacyAccepted(isAccepted){
       localStorageService.set("isPrivacyAccepted", isAccepted); 
       //window.localStorage.setItem("isPrivacyAccepted", isAccepted);
     };
+    
 
     /**
     * Return the number of times the questionnaire has been successfully completed.
     */
     function getCompletedQuestionnaireCount(){
       var count = localStorageService.get("completedQuestionnaireCount"); 
-      if(count == null) return 0;
-      else return count;
+      if(count != null) return count;
+      else return 0;
     };
 
     /**
