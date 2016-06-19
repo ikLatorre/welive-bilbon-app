@@ -34,8 +34,8 @@
  "menu.filter.category-search.no-category-selected-error-popup-text": "Por favor, seleccione alguna categoría para aplicar este filtro.",
 
  "menu.filter.location-search.info-popup-title": "Información",
- "menu.filter.location-search.empty-official-popup-text": "No hay datos oficiales en la localización especificada.",
- "menu.filter.location-search.empty-citizen-popup-text": "No hay datos de ciudadanos en la localización especificada.",
+ "menu.filter.location-search.empty-official-popup-text": "No hay datos oficiales cerca de la localización especificada.",
+ "menu.filter.location-search.empty-citizen-popup-text": "No hay datos de ciudadanos cerca de la localización especificada.",
  "menu.filter.location-search.alert-ok-button-label": "Cerrar",
 
  "menu.filter.location-search.unselected-autocomplete.info-popup-title": "Información",

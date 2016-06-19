@@ -34,8 +34,8 @@
  "menu.filter.category-search.no-category-selected-error-popup-text": "Mesedez, kategoria bat aukeratu filtro hau aktibatu aurretik.",
 
  "menu.filter.location-search.info-popup-title": "Informazioa",
- "menu.filter.location-search.empty-official-popup-text": "Eskatutako kokalekuan ez dira datu ofizialik aurkitu.",
- "menu.filter.location-search.empty-citizen-popup-text": "Eskatutako kokalekuan ez dira herritarren daturik aurkitu.",
+ "menu.filter.location-search.empty-official-popup-text": "Eskatutako kokalekutik hurbil ez dira datu ofizialik aurkitu.",
+ "menu.filter.location-search.empty-citizen-popup-text": "Eskatutako kokalekutik hurbil ez dira herritarren daturik aurkitu.",
  "menu.filter.location-search.alert-ok-button-label": "Itxi",
 
  "menu.filter.location-search.unselected-autocomplete.info-popup-title": "Informazioa",

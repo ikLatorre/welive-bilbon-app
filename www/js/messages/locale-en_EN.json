@@ -1,6 +1,6 @@
 {
- "terms.title": "Terms of use",
- "terms.refused-alert-text": "You must accept the terms of use to enter into Bilbozkatu",
+ "terms.title": "Terms of Use",
+ "terms.refused-alert-text": "Please, accept the terms of use before accessing Bilbozkatu",
 
  "all-menu.back-button-label": "Back", 
  "menu.title": "Menu | Filter",
@@ -34,8 +34,8 @@
  "menu.filter.category-search.no-category-selected-error-popup-text": "Please select a category to apply this filter.",
 
  "menu.filter.location-search.info-popup-title": "Information",
- "menu.filter.location-search.empty-official-popup-text": "There is no official data at the specified location.",
- "menu.filter.location-search.empty-citizen-popup-text": "There is no citizens' data at the specified location.",
+ "menu.filter.location-search.empty-official-popup-text": "There is no official data near the specified location.",
+ "menu.filter.location-search.empty-citizen-popup-text": "There is no citizens' data near the specified location.",
  "menu.filter.location-search.alert-ok-button-label": "Close",
 
  "menu.filter.location-search.unselected-autocomplete.info-popup-title": "Informatio",
@@ -75,7 +75,7 @@
  "poi-details.list.type-text": "Type:",
 
  "poi-create-page.title": "New POI",
- "poi-create-page.request-text": "Please fill out the form below to send a new point of interest:",
+ "poi-create-page.request-text": "Please, fill in next form to send a new point of interest:",
  "poi-create-page.title-label": "Name",
  "poi-create-page.title-placeholder": "e.g., Bar La Cepa",
  "poi-create-page.title-too-long-error-label": "The name is too long (300 characters at most)!",
@@ -117,7 +117,7 @@
  "login.credentials-button": "Log in",
  "login.loading": "Logging in...",
  "login.error-popup-title": "Error",
- "login.error-popup-text": "There has been a problem logging in WeLive. Please try again later.",
+ "login.error-popup-text": "There has been a problem logging in WeLive. Please, try again later.",
  "login.error-popup-button-label": "Close",
 
  "info-alert-popup-login-label-left": "You are logged in as ",
@@ -133,14 +133,14 @@
  "about-page.subtitle": "Information and terms of use",
  "about-page.text-1": "BilbOn lets you know the location of the different public services the city of Bilbao offers, such as bus stops, metro, taxi, pharmacies, public buildings, services, mailboxes, dumpsters... Bilbon offers a broad public catalog of points of interest aimed at both tourists and citizens.",
  "about-page.text-2": "In addition, BilbOn permits you to become content creator, allowing you the creation of new points of interest. These points of interest will be approved and published by the corresponding responsible.",
- "about-page.text-3": "BilbOn has been created under the umbrella of urban services of WeLive European project. The WeLive project has been funded within the European Commission's H2020 program for research, technological development and innovation under the No. 645,845 agreement.",
- "about-page.text-4": "More information about the project in http://www.welive.eu.",
+ "about-page.text-3": "BilbOn has been created in the joint framework of urban services of the European Project WeLive. The WeLive project has been funded within the H2020 Programme of the European Commission for Research, Technological Development and Innovation, under agreement number 645845",
+ "about-page.text-4": "More information about the project at http://www.welive.eu.",
  "about.questionnaire.basque-not-supported-text": "Basque is not supported by the questionnaire.",
- "about.questionnaire.succesfully-submitted-label": "The questionnaire was successfully sent.",
- "about.questionnaire.submitted-error-label": "There has been a problem sending the questionnaire. Please try again later.",
- "about.survey.text": "We would appreciate your opinion",
- "about.survey.disabled-text": "You have already sent the questionnaire the maximum number of times allowed.",
- "about.survey.button": "Complete the questionnaire",
+ "about.questionnaire.succesfully-submitted-label": "The questionnaire has been sent successfully.",
+ "about.questionnaire.submitted-error-label": "Error while sending the questionnaire. Please, try again later.",
+ "about.survey.text": "Your feedback is very valuable for us",
+ "about.survey.disabled-text": "You have already filled in the questionnaire the maximum allowed times.",
+ "about.survey.button": "Fill in the questionnaire",
 
  "info-confirm-popup-title": "BilbOn",
  "info-confirm-popup-text": "Are you sure you want to exit?",
