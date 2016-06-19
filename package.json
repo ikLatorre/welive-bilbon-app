@@ -20,7 +20,8 @@
     "cordova-plugin-splashscreen",
     "com.ionic.keyboard",
     "cordova-plugin-whitelist",
-    "cordova-plugin-inappbrowser"
+    "cordova-plugin-inappbrowser",
+    "cordova-plugin-geolocation"
   ],
   "cordovaPlatforms": [
     "android"

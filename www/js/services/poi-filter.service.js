@@ -252,7 +252,7 @@ function filteredPOIs(
 				// will execute when device is ready, or immediately if the device is already ready.
 				var options = {
 				  enableHighAccuracy: true,
-				  timeout: 5000,
+				  timeout: 7500,
 				  maximumAge: 0
 				};
 				function success(position){
