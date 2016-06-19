@@ -20,8 +20,8 @@ gulp.task('test', function(done) {
         configFile: __dirname + '/tests/my.conf.js',
         singleRun: true
     };
-    var server = new karma(config)
-    server.start()
+    var server = new karma(config);
+    server.start();
 });
 
 

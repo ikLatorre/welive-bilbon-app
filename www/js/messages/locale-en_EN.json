@@ -17,8 +17,8 @@
  "menu.citizen-button-text": "See citizens'",
 
  "menu.language-item": "Change language",
- "menu.language-item.modal-title": "Select a language",
- "menu.language-item.modal-cancel-btn": "Cancel",
+ "menu.language-item.modal-title": "BilbOn",
+ "menu.language-item.modal-cancel-btn": "Menu",
  "menu.exit-item": "Exit",
  "menu.exit-item-text": "Closing application...",
 

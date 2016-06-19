@@ -84,9 +84,6 @@ function AppCtrl(
     // avoid change when the selected language is the previously selected one
     if(newValue != oldValue){
       $translate.use(newValue); // es_ES | eu_ES | en_EN 
-
-      //document.getElementById("modal-select").setAttribute("cancel-button", 'aaa'); 
-      //$scope.$apply();
     }
   }; 
   // change $scope.translatedCategories to the selected language (to change combobox's results for example)
@@ -100,12 +97,6 @@ function AppCtrl(
       $scope.translatedCategories = $scope.englishCategoriesArray;
     }
   });
-
-/*$scope.traducir = function(){
-  return $filter('translate')('prueba');
-
-}*/
-
 
 
 
