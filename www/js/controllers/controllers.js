@@ -444,6 +444,9 @@ function AppCtrl(
   }
 
   function showGpsLocationErrorAlert(){
+    // disable gps location filter to avoid this error to repeat with each selected category (both official and citizen)
+    $scope.filter.selectedLocation['device-gps'] = false;
+
     $ionicPopup.alert({
         title: $filter('translate')('menu.filter.location-search.error-popup-title'),
         template: $filter('translate')('menu.filter.location-search.error-popup-text'),
@@ -506,7 +509,8 @@ function AppCtrl(
           }, 
           function(errorType){ // FilteredPOIs.callSelectedLocationFilter's promise rejected
             // reject this function's promise (errorType: 'gps-error' or 'bounds-error')
-            // 'gps-error': couldn't get device's location; 'bounds-error': couldn't check some POIs
+            // 'bounds-error': could not get specific category array to apply the location filter
+            // 'gps-error': could not get device location to try to apply the location filter
             reject(errorType);
           });
       } 
@@ -546,8 +550,10 @@ function AppCtrl(
                   }
                   resolve(); 
               }, function(errorType){ // promise rejected ('errorType': 'gps-error' or 'bounds-error')
+                  // 'bounds-error': could not get specific category array to apply the location filter
+                  // 'gps-error': could not get device location to try to apply the location filter
                   if(errorType == 'gps-error'){ showGpsLocationErrorAlert(); }
-                  //else if(errorType == 'bounds-error'){} // array of POIs to filter is null
+                  //else if(errorType == 'bounds-error'){} 
                   resolve();
               });
             }else{
@@ -614,7 +620,10 @@ function AppCtrl(
           }
           resolve(); 
       }, function(errorType){ // promise rejected ('errorType': 'gps-error' or 'bounds-error')
+          // 'bounds-error': could not get specific category array to apply the location filter
+          // 'gps-error': could not get device location to try to apply the location filter
           if(errorType == 'gps-error'){ showGpsLocationErrorAlert(); }
+          //else if(errorType == 'bounds-error'){} 
           resolve();
       });
 
@@ -632,7 +641,7 @@ function AppCtrl(
       .then(function(){ 
           getPOIsWithLocationFilter(categoryCustomNumericId, false)
           .then(function(){
-              callback();
+              callback(); // go to the next loop
           });
       });
   };

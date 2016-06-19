@@ -278,7 +278,7 @@ function filteredPOIs(
     }
 
     // Used in callSelectedLocationFilter(...) function to apply location filter to specific category array. 
-    // It overrides the corresponding POIs' array removing the POI that are not near de selected location. Returns a promise.
+    // It overrides the corresponding POIs' array removing the POI that is not near de selected location. Returns a promise.
     function applyLocationFilter(categoryCustomNumericId, isOfficial, lat, lng){
     	var promise;
     	promise = $q(function (resolve, reject) {
@@ -295,7 +295,10 @@ function filteredPOIs(
 				var bounds = new google.maps.LatLngBounds(sw, ne); // set bounds (more or less 500m of radius)
 				
 				var previousPOICount = datasetResults.rows.length;
+
+				// remove from the corresponding POIs array that ones that are not near the selected location
 				datasetResults.rows = datasetResults.rows.filter(poiIsContained, bounds);
+
 				var removedPOIsCount = previousPOICount - datasetResults.rows.length;
 				console.log('Finished location filter with ' + datasetResults.rows.length + ' POIs '
 					+ '(removed ' + removedPOIsCount + '/' + previousPOICount + ' POIs)');

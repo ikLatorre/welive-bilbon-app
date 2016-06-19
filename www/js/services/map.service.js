@@ -39,42 +39,48 @@ function mapService(
     };
     return mapFunctions;
 
+    // get main google.maps.Map object
     function getMap(){
     	return map.mapObj;
     };
 
+    // set main google.maps.Map object
     function setMap(mapObj){
     	map.mapObj = mapObj;
     };
 
+    // get loaded Google Autocomplete's object
     function getAutocomplete(){
     	return map.googlePlacesAutocompleteObj;
     };
 
+    // set loaded Google Autocomplete's object
     function setAutocomplete(googlePlacesAutocompleteObj){
 
     	map.googlePlacesAutocompleteObj = googlePlacesAutocompleteObj;
     };
 
-    // manage selected location
+    // get text from the selected location of Google Autocomplete's object
     function getGPlacesLocationToSearch(){
     	return map.selectedLocationInput;
     };
 
+    // set text from the selected location of Google Autocomplete's object
     function setGPlacesLocationToSearch(locationInputText){
     	map.selectedLocationInput = locationInputText;
     };
 
-    // manage searched text
+    // manage searched text of the filter
     function getTextToSearch(){
     	return map.searchedTextInput;
     };
 
+    // manage searched text of the filter
     function setTextToSearch(searchedTextInput){
     	map.searchedTextInput = searchedTextInput;
     };
 
-    // reload existing POIs' markers in the map
+    // reload existing POIs' markers in the map (officials' and citizens')
     // Returns a promise that is resolved when markers are reloaded in the map.
     function reloadMarkers(){
     	console.log('Reloading markers... ');

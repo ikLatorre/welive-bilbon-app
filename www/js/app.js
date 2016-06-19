@@ -54,7 +54,7 @@ angular.module('starter', ['ionic','ionic.service.core', 'starter.controllers', 
     prefix: 'js/messages/locale-', 
     suffix: '.json'
   });
-  $translateProvider.preferredLanguage('es_ES'); // eu-ES | es-ES | en_EN
+  $translateProvider.preferredLanguage('es_ES'); // es_ES | eu_ES | en_EN
   $translateProvider.useSanitizeValueStrategy('escape'); // avoid Cross-site Scripting (XSS) attacks
 
   localStorageServiceProvider

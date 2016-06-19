@@ -22,8 +22,7 @@ function KPIService(
         url: "https://dev.welive.eu/dev/api/log/" + appId,
         headers: {  
             'Content-Type': 'application/json',
-            'Authorization': undefined  
-        }
+        } //'Authorization': undefined  
     };
 
     var kpi = {
@@ -40,7 +39,7 @@ function KPIService(
     // set 'Authorization' header's content with the obtained token in 'Login' service (called in app.js)
     function setClientAppToken(token){
         if(token != null){
-            requestParams.headers['Authorization'] = 'Bearer ' + token;
+            //requestParams.headers['Authorization'] = 'Bearer ' + token;
             isTokenRequest = true;
         }
     };

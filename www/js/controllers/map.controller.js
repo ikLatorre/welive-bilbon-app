@@ -2,17 +2,19 @@
 bilbonAppControllers
     .controller('MapCtrl', MapCtrl);
 
-MapCtrl.$inject = ['$scope', '$state', '$ionicPopup', '$window', '$filter', 'Map', 'UserLocalStorage'];
+MapCtrl.$inject = ['$scope', '$rootScope', '$state', '$ionicPopup', '$window', '$filter', '$timeout', 'Map', 'UserLocalStorage'];
 
 /**
  * Controller - Main page (map)
  */
 function MapCtrl(
-	$scope, 
+	$scope,
+	$rootScope, 
 	$state, 
 	$ionicPopup,  
 	$window, 
-	$filter,  
+	$filter,
+	$timeout,  
 	Map,
 	UserLocalStorage) {
 
@@ -44,5 +46,16 @@ function MapCtrl(
 			$state.go('app.create'); // go to form's page
 		}
 	}
+
+	// when this view is opened, resize map to avoid 'grey' parts on in (it failed on return from '$state.go(app.map)')
+	$rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){ 
+		if(toState.name == 'app.map'){
+			 $timeout(function() { 
+            	google.maps.event.trigger(Map.getMap(), 'resize');
+				Map.getMap().setCenter(Map.getMap().getCenter());
+            }, 1850);  
+			
+		}
+	});
 
 }
