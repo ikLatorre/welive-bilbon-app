@@ -22,7 +22,8 @@ function KPIService(
         url: "https://dev.welive.eu/dev/api/log/" + appId,
         headers: {  
             'Content-Type': 'application/json',
-        } //'Authorization': undefined  
+            'Authentication': undefined  
+        } // using 'Authorization' the response is 'HTTP Status 403, Access to the specified resource has been forbidden'
     };
 
     var kpi = {
@@ -36,10 +37,10 @@ function KPIService(
     return kpi;
 
 
-    // set 'Authorization' header's content with the obtained token in 'Login' service (called in app.js)
+    // set 'Authentication' header's content with the obtained token in 'Login' service (called in app.js)
     function setClientAppToken(token){
         if(token != null){
-            //requestParams.headers['Authorization'] = 'Bearer ' + token;
+            requestParams.headers['Authentication'] = 'Bearer ' + token;
             isTokenRequest = true;
         }
     };
