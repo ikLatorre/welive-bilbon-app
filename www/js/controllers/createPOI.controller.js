@@ -231,7 +231,7 @@ function CreatePOICtrl(
 		var datasetCall = {
 	        params : {
 	            method: 'POST',
-	            url: WELIVE_DATASET_API_URL + datasetID + '/resource/' + jsonID + '/query',
+	            url: WELIVE_DATASET_API_URL + datasetID + '/resource/' + jsonID + '/update',
 	            headers: {	'Content-Type': 'text/plain',
 			    			'Accept': 'application/json',
 			    			'Authorization':'Bearer ' + Login.accessToken  },

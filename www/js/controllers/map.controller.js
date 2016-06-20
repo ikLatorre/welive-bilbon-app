@@ -47,12 +47,15 @@ function MapCtrl(
 		}
 	}
 
-	// when this view is opened, resize map to avoid 'grey' parts on in (it failed on return from '$state.go(app.map)')
+	// when this view is opened, resize map to avoid 'grey' parts on in 
+	// (it failed on return from '$state.go(app.map)' for example)
 	$rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){ 
 		if(toState.name == 'app.map'){
 			 $timeout(function() { 
+			 	Map.closeAndRemoveInfoWindow();
+			 	var center = Map.getMap().getCenter();
             	google.maps.event.trigger(Map.getMap(), 'resize');
-				Map.getMap().setCenter(Map.getMap().getCenter());
+				Map.getMap().setCenter(center);
             }, 1850);  
 			
 		}

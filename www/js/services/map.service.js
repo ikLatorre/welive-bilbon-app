@@ -28,6 +28,7 @@ function mapService(
 	var mapFunctions = {
 		getMap: getMap,
 		setMap: setMap,
+		closeAndRemoveInfoWindow: closeAndRemoveInfoWindow,
 		getAutocomplete: getAutocomplete,
 		setAutocomplete: setAutocomplete,
 		getGPlacesLocationToSearch: getGPlacesLocationToSearch,
@@ -48,6 +49,14 @@ function mapService(
     function setMap(mapObj){
     	map.mapObj = mapObj;
     };
+
+    // initialize Google Maps' 'infoWindow' object
+    function closeAndRemoveInfoWindow(){
+    	if(map.infoWindow != null){
+    		map.infoWindow.close();
+    		map.infoWindow = new google.maps.InfoWindow();
+    	}
+    }
 
     // get loaded Google Autocomplete's object
     function getAutocomplete(){
