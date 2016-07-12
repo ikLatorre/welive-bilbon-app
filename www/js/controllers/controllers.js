@@ -59,8 +59,9 @@ function AppCtrl(
 
   // ** Configure user's login **
 
-  // initialize form data for the login modal
-  UserLocalStorage.removeUserData(); 
+  // Uncomment below to force 'Log out' when the app is started
+  // UserLocalStorage.removeUserData(); 
+  // UserLocalStorage.removeOAuthData(); 
 
   // Define function to show or hide menu's login item or to know if user has logged in
   $scope.getCurrentUserId = function (){

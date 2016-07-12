@@ -3,7 +3,7 @@ bilbonAppControllers
     .controller('CreatePOICtrl', CreatePOICtrl);
 
 CreatePOICtrl.$inject = ['$scope', '$state', '$stateParams', '$filter', '$timeout', '$ionicLoading', 
-						'$http', '$ionicHistory', '$ionicPopup', 'Login', 'WELIVE_DATASET_API_URL', 'KPI'];
+						'$http', '$ionicHistory', '$ionicPopup', 'WELIVE_DATASET_API_URL', 'UserLocalStorage', 'KPI'];
 
 /**
  * Controller - Create new POI 
@@ -18,8 +18,8 @@ function CreatePOICtrl(
 	$http, 
 	$ionicHistory, 
     $ionicPopup,
-    Login,
     WELIVE_DATASET_API_URL,
+    UserLocalStorage,
     KPI) {
 
 	// the categories' combobox uses '$scope.translatedCategories', definied in controllers.js (its $scope is inherited 
@@ -234,7 +234,7 @@ function CreatePOICtrl(
 	            url: WELIVE_DATASET_API_URL + datasetID + '/resource/' + jsonID + '/update',
 	            headers: {	'Content-Type': 'text/plain',
 			    			'Accept': 'application/json',
-			    			'Authorization':'Bearer ' + Login.accessToken  },
+			    			'Authorization':'Bearer ' + UserLocalStorage.getAccessToken()  },
 	            sqlStatement: "INSERT INTO POIS (id, documentName, documentDescription, web, email, phoneNumber,"
 	            			+ " latitudelongitude, category, municipalityCode, municipality, historicTerritoryCode,"
 	            			+ " historicTerritory, country, territory) VALUES"

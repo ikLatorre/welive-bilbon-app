@@ -16,7 +16,7 @@ function KPIService(
     var isTokenRequest = false; // control if WeLive's client app token has been obtained (if not, avoid KPI calls)
 
     var appId = WELIVE_SERVICE_ID;      // 'bilbon'
-    var appName = WELIVE_SERVICE_NAME;  // the name of the app (don't use 'es.eurohelp.welive.bilbon', only 'bilbon')
+    var appName = WELIVE_SERVICE_NAME;  // the name of the app (don't use 'es.eurohelp.welive.bilbon', only 'Bilbon')
     var requestParams = {
         method: "POST",
         url: "https://dev.welive.eu/dev/api/log/" + appId,

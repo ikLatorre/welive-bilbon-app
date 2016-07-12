@@ -9,4 +9,5 @@ platforms/
 
 .svn/
 .project
+.bash_profile
 desktop.ini

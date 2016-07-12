@@ -81,12 +81,10 @@ function LoginCtrl(
 
             // store user's basic information
             var currentUserBasicProfile = {
-                currentUser: {
-                  name: basicProfileResponse.data.name,
-                  surname: basicProfileResponse.data.surname,
-                  socialId: basicProfileResponse.data.socialId,
-                  userId: basicProfileResponse.data.userId
-                }
+                name: basicProfileResponse.data.name,
+                surname: basicProfileResponse.data.surname,
+                socialId: basicProfileResponse.data.socialId,
+                userId: basicProfileResponse.data.userId
             };
             UserLocalStorage.setUserData(currentUserBasicProfile);
 
@@ -106,7 +104,7 @@ function LoginCtrl(
                 $ionicHistory.nextViewOptions({ disableBack: true }); // Avoid back button in the next view
                 $state.go('app.map');
                 //$ionicHistory.clearCache().then(function(){ $state.go('app.map')});
-                //alert(Login.code, Login.accessToken);
+
             }, 1600); //close the popup after 1.6 seconds 
 
         };

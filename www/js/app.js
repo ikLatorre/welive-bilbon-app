@@ -7,7 +7,7 @@
 angular.module('starter', ['ionic','ionic.service.core', 'starter.controllers', 'starter.services', 
   'bilbonApp.config', 'pascalprecht.translate', 'ionic-modal-select', 'LocalStorageModule'])
 
-.run(function($ionicPlatform, Login, KPI) {
+.run(function($ionicPlatform, Login, UserLocalStorage, KPI) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -26,6 +26,20 @@ angular.module('starter', ['ionic','ionic.service.core', 'starter.controllers', 
       // Set the statusbar to use the default style, tweak this to
       // remove the status bar on iOS or change it to use white instead of dark colors.
       StatusBar.styleDefault();
+    }
+
+    // refresh current user's access token in order to create new POIs (the user login is persistent)
+    if(UserLocalStorage.getUserId() != null){ 
+      // the user is previously logged in the app
+      Login.refreshOauthToken()
+      .then(function(token){
+          // token refreshed and stored in local storage, avoid 'log out'
+      }, function(errorCallback){ 
+          console.log("Error refreshing the user's access token", errorCallback);
+          // force 'log out'
+          UserLocalStorage.removeUserData(); // remove 'name', 'surname', 'socialId', 'userId'
+          UserLocalStorage.removeOAuthData(); // remove 'accessToken', 'refreshToken', 'expiresIn', 'tokenType', 'scope'
+      });
     }
 
     // get WeLive's client token 

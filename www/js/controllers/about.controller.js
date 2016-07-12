@@ -53,7 +53,7 @@ function AboutCtrl(
         };
 
         // generate the request URL
-        var requestUrl = 'https://in-app.welive.smartcommunitylab.it/html/index.html'
+        var requestUrl = 'https://in-app.cloudfoundry.welive.eu/html/index.html'
             + '?'
             + 'app=' + params.app
             + '&'

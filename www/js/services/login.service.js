@@ -4,7 +4,7 @@ var bilbonAppServices = angular.module('starter.services', []);
 bilbonAppServices
     .factory('Login', LoginService);
 
-LoginService.$inject = ['$http', '$state', '$q', '$ionicLoading']; 
+LoginService.$inject = ['$http', '$state', '$q', '$ionicLoading', 'UserLocalStorage']; 
 
 /**
  * @desc Manage WeLive's login system
@@ -13,10 +13,12 @@ function LoginService(
     $http, 
     $state, 
     $q, 
-    $ionicLoading) { 
+    $ionicLoading,
+    UserLocalStorage) { 
 
     var login = {
         requestWeliveClientAppOauthToken: requestWeliveClientAppOauthToken,
+        refreshOauthToken: refreshOauthToken,
         requestAuthorize: requestAuthorize,
         requestOauthToken: requestOauthToken,
         requestOauthTokenSuccessCallback: requestOauthTokenSuccessCallback,
@@ -32,24 +34,24 @@ function LoginService(
             clientSecretMobile:'6e33b66a-28e8-4255-acc5-392c84677b89'
         },
 
+        clientAppAccessToken: undefined,
+        clientAppExpiresIn: undefined,
+        clientAppTokenType: undefined,
+        clientAppScope: undefined,
+
         code: undefined,
         accessToken: undefined,
         refreshToken: undefined,
         expiresIn: undefined,
         tokenType: undefined,
-        scope: undefined,
-
-        clientAppAccessToken: undefined,
-        clientAppExpiresIn: undefined,
-        clientAppTokenType: undefined,
-        clientAppScope: undefined
+        scope: undefined
     };
 
     return login;
 
 
     /**
-    * WeLive's OAUTH2.0 NON USER-RELATED PROTOCOL FLOW (client (app) credentials flow)
+    * @desc WeLive's OAUTH2.0 NON USER-RELATED PROTOCOL FLOW (client (app) credentials flow)
     * Obtain the access token associated to the WeLive's client app, not to a single user.
     */
     function requestWeliveClientAppOauthToken(){
@@ -58,11 +60,13 @@ function LoginService(
 
             $http.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
             $http({
-                method: "post",
-                url: "https://dev.welive.eu/aac/oauth/token",
-                data: "grant_type=client_credentials"
-                    + "&client_id=" + login.params.clientId
-                    + '&client_secret=' + login.params.clientSecret
+                method: 'POST',
+                url: 'https://dev.welive.eu/aac/oauth/token',
+                data: 'client_id=' + login.params.clientId
+                    + '&'
+                    + 'client_secret=' + login.params.clientSecret
+                    + '&'
+                    + 'grant_type=client_credentials'
             
             }).then(function(clientCredentialsResponse){
 
@@ -86,8 +90,55 @@ function LoginService(
     }
 
     /**
-     * Start WeLive's AUTHORIZATION CODE FLOW (specific WeLive's user authorization flow)
-     * Open WeLive's login page in an inAppBrowser
+    * @desc Used when app starts if the user has logged in (see app.js). Refresh the user's access token because there is no 'Log out' and
+    * if it expires is not possible to create new POIs.
+    */
+    function refreshOauthToken(){
+        var promise;
+        promise = $q(function (resolve, reject) {
+
+            $http.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+            $http({
+                method: 'POST',
+                url: 'https://dev.welive.eu/aac/oauth/token',
+                data: 'client_id=' + login.params.clientId
+                    + '&'
+                    + 'client_secret=' + login.params.clientSecret
+                    + '&'
+                    + 'refresh_token=' + UserLocalStorage.getRefreshToken()
+                    + '&'
+                    + 'grant_type=refresh_token'
+                    // '&client_secret_mobile=' + login.params.clientSecretMobile // '401: Unauthorized' error (Bad client credentials)
+            
+            }).then(function(response){
+
+                if(!response.data.exception) {
+                    login.accessToken = response.data.access_token;
+                    login.refreshToken = response.data.refresh_token;
+                    login.expiresIn = response.data.expires_in;
+                    login.tokenType = response.data.token_type;
+                    login.scope = response.data.scope;
+
+                    storeTokenData(); // store new token data in local storage
+                    
+                    resolve(response.data.access_token);
+                }else{
+                    reject();
+                }
+
+            }, function(errorCallback){
+                reject(errorCallback);
+            });
+        });
+        
+        return promise;
+    }
+
+    /**
+     * @desc Start WeLive's AUTHORIZATION CODE FLOW (specific WeLive's user authorization flow)
+     * Open WeLive's login page in an inAppBrowser (Web View)
+     * Flow: authorization request + user login and consent --> obtain code --> token request + code --> obtain token
+     * (and then resource request + token). The protected resource could be the user's basic profile, or the citizen's dataset.
      */
     function requestAuthorize() {
         var promise;
@@ -135,23 +186,27 @@ function LoginService(
     }
 
     /**
-     * (token generation) request the oauth token to get permission to other requests of WeLive's APIs
+     * @desc (token generation) Request the OAuth token to get permission to other requests of WeLive's APIs
      */
     function requestOauthToken() {
         $http.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
         return $http({
-            method: "post",
-            url: "https://dev.welive.eu/aac/oauth/token",
-            data: "grant_type=authorization_code"
-                + "&client_id=" + login.params.clientId
-                + '&client_secret=' + login.params.clientSecret
-                + "&redirect_uri=" + login.params.redirectUri
-                + "&code=" + login.code
+            method: 'POST',
+            url: 'https://dev.welive.eu/aac/oauth/token',
+            data: 'client_id=' + login.params.clientId
+                + '&'
+                + 'client_secret=' + login.params.clientSecret
+                + '&'
+                + 'code=' + login.code
+                + '&'
+                + 'redirect_uri=' + login.params.redirectUri
+                + '&'
+                + 'grant_type=authorization_code'
         })
     }
 
     /**
-     * manage the success of the request oauth
+     * @desc Manage the success of the request oauth
      * @param response: the response from the request
      */
     function requestOauthTokenSuccessCallback(response) {
@@ -163,6 +218,8 @@ function LoginService(
                 login.expiresIn = response.data.expires_in;
                 login.tokenType = response.data.token_type;
                 login.scope = response.data.scope;
+
+                storeTokenData();
 
                 resolve(login.accessToken);
             }
@@ -185,15 +242,29 @@ function LoginService(
     }
 
     /**
-     * get current user's basic profile (name, surname, socialId and userId)
+     * @desc Get current user's basic profile (name, surname, socialId and userId)
      * @param token: previously generated token (resolved by 'requestOauthTokenSuccessCallback()')
      */
     function requestBasicProfile(token){
         return $http.get('https://dev.welive.eu/aac/basicprofile/me', {
             headers:{
-                'Authorization':'Bearer ' + token
+                'Authorization': 'Bearer ' + token
             }
         });
+    }
+
+    /**
+    * @desc Store in localStorage the OAuth's token request response (in order to refresh the token the next time)
+    */
+    function storeTokenData(){
+        var oauthData = {
+            accessToken:  login.accessToken,
+            refreshToken: login.refreshToken,
+            expiresIn: login.expiresIn,
+            tokenType: login.tokenType,
+            scope: login.scope
+        };
+        UserLocalStorage.setOAuthData(oauthData);
     }
 
 }

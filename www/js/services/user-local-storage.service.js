@@ -14,8 +14,15 @@ function UserLocalStorage(localStorageService){
         getUserName: getUserName,
         setUserData: setUserData,
         removeUserData: removeUserData,
+
+        getAccessToken: getAccessToken,
+        getRefreshToken: getRefreshToken,
+        setOAuthData: setOAuthData,
+        removeOAuthData: removeOAuthData,
+
         getPrivacyAccepted: getPrivacyAccepted,
         setPrivacyAccepted: setPrivacyAccepted,
+
         getCompletedQuestionnaireCount: getCompletedQuestionnaireCount,
         addCompletedQuestionnaireCount: addCompletedQuestionnaireCount,
         removeCompletedQuestionnaireCount: removeCompletedQuestionnaireCount
@@ -24,11 +31,11 @@ function UserLocalStorage(localStorageService){
 
 
     /**
-    * Return current user id if it is logged. null otherwise.
+    * Return current user's id if it is logged. null otherwise.
     */
     function getUserId(){
       var userData = localStorageService.get('userData');
-      if(userData != null) return JSON.parse(userData).currentUser.userId;
+      if(userData != null) return JSON.parse(userData).userId;
       else return null;
     };
 
@@ -37,12 +44,12 @@ function UserLocalStorage(localStorageService){
     */
     function getUserName(){
       var userData = localStorageService.get('userData');
-      if(userData != null) return JSON.parse(userData).currentUser.name;
+      if(userData != null) return JSON.parse(userData).name;
       else return null;
     };
 
     /**
-    * Set current user's data as json (name, surname, socialId, userId).
+    * Set current user's data as json (name, surname, socialId, userId) .
     */
     function setUserData(userData){
       return localStorageService.set('userData', JSON.stringify(userData));
@@ -54,6 +61,41 @@ function UserLocalStorage(localStorageService){
     function removeUserData(){
       return localStorageService.remove('userData');
     };
+
+
+
+    /**
+    * Return OAuth's access token if it has been obtained. null otherwise.
+    */
+    function getAccessToken(){
+      var oauthData = localStorageService.get('oauthData');
+      if(oauthData != null) return JSON.parse(oauthData).accessToken;
+      else return null;
+    }
+
+    /**
+    * Return OAuth's access token if it has been obtained. null otherwise.
+    */
+    function getRefreshToken(){
+      var oauthData = localStorageService.get('oauthData');
+      if(oauthData != null) return JSON.parse(oauthData).refreshToken;
+      else return null;
+    }
+
+    /**
+    * Set OAuth's token generation response data as json (accessToken, refreshToken, expiresIn, tokenType, scope).
+    */
+    function setOAuthData(oauthData){
+      return localStorageService.set('oauthData', JSON.stringify(oauthData));
+    }
+
+    /**
+    * Remove OAuth's token generation response data.
+    */
+    function removeOAuthData(){
+      return localStorageService.remove('oauthData');
+    }
+
 
 
     /**
@@ -74,6 +116,7 @@ function UserLocalStorage(localStorageService){
       //window.localStorage.setItem("isPrivacyAccepted", isAccepted);
     };
     
+
 
     /**
     * Return the number of times the questionnaire has been successfully completed.
