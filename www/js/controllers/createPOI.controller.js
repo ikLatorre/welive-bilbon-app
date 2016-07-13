@@ -1,14 +1,16 @@
 
-bilbonAppControllers
-    .controller('CreatePOICtrl', CreatePOICtrl);
 
-CreatePOICtrl.$inject = ['$scope', '$state', '$stateParams', '$filter', '$timeout', '$ionicLoading', 
+angular
+    .module('bilbonApp.controllers')
+    .controller('CreatePOICtrl', CreatePOIController);
+
+CreatePOIController.$inject = ['$scope', '$state', '$stateParams', '$filter', '$timeout', '$ionicLoading', 
 						'$http', '$ionicHistory', '$ionicPopup', 'WELIVE_DATASET_API_URL', 'UserLocalStorage', 'KPI'];
 
 /**
  * Controller - Create new POI 
  */
-function CreatePOICtrl(
+function CreatePOIController(
 	$scope, 
 	$state, 
 	$stateParams, 

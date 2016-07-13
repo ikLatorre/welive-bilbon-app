@@ -1,14 +1,16 @@
 
-bilbonAppControllers
-    .controller('AboutCtrl', AboutCtrl);
 
-AboutCtrl.$inject = ['$scope', '$filter', '$ionicPopup', '$timeout', '$translate',
+angular
+    .module('bilbonApp.controllers')
+    .controller('AboutCtrl', AboutController);
+
+AboutController.$inject = ['$scope', '$filter', '$ionicPopup', '$timeout', '$translate',
  'UserLocalStorage', 'WELIVE_SERVICE_ID'];
 
 /**
  * Controller - About
  */
-function AboutCtrl(
+function AboutController(
     $scope, 
     $filter, 
     $ionicPopup,
@@ -32,10 +34,9 @@ function AboutCtrl(
 	function launchSurvey(){
 		var result;
         
-		//app: WELIVE_SERVICE_ID | 'test'
         var lang = ($translate.use() == "en_EN")? 'EN' : 'ES'; 
 
-        // show alert message if the selected language is basque (it is not supported by WeLive's questionnaire)
+        // show alert message if the selected language is basque (it is not supported by WeLive's questionnaire BB)
         if($translate.use() == "eu_ES"){
              var myPopup = $ionicPopup.show({
                 template: "<center>" + $filter('translate')('about.questionnaire.basque-not-supported-text')

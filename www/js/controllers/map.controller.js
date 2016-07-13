@@ -1,13 +1,15 @@
 
-bilbonAppControllers
-    .controller('MapCtrl', MapCtrl);
 
-MapCtrl.$inject = ['$scope', '$rootScope', '$state', '$ionicPopup', '$window', '$filter', '$timeout', 'Map', 'UserLocalStorage'];
+angular
+    .module('bilbonApp.controllers')
+    .controller('MapCtrl', MapController);
+
+MapController.$inject = ['$scope', '$rootScope', '$state', '$ionicPopup', '$window', '$filter', '$timeout', 'Map', 'UserLocalStorage'];
 
 /**
  * Controller - Main page (map)
  */
-function MapCtrl(
+function MapController(
 	$scope,
 	$rootScope, 
 	$state, 

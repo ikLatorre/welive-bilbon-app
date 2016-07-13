@@ -1,17 +1,17 @@
 
-var bilbonAppControllers = angular.module('starter.controllers', []);
 
-bilbonAppControllers
-    .controller('AppCtrl', AppCtrl);
+angular
+      .module('bilbonApp.controllers')
+      .controller('AppCtrl', AppController);
 
-AppCtrl.$inject = ['$scope', '$rootScope', '$state', '$timeout', '$translate', '$ionicHistory', '$ionicPopup', 
+AppController.$inject = ['$scope', '$rootScope', '$state', '$timeout', '$translate', '$ionicHistory', '$ionicPopup', 
                   '$filter', '$http', '$q', '$ionicPlatform', '$ionicLoading', '$ionicModal', 
                   'UserLocalStorage', 'FilteredPOIs', 'Map', 'WELIVE_DATASET_API_URL'];
 
 /**
  * Controller - Main (menu's filter and language selection)
  */
-function AppCtrl(
+function AppController(
   $scope, 
   $rootScope, 
   $state, 
@@ -60,8 +60,10 @@ function AppCtrl(
   // ** Configure user's login **
 
   // Uncomment below to force 'Log out' when the app is started
-  // UserLocalStorage.removeUserData(); 
-  // UserLocalStorage.removeOAuthData(); 
+  /*
+    UserLocalStorage.removeUserData(); 
+    UserLocalStorage.removeOAuthData(); 
+  */
 
   // Define function to show or hide menu's login item or to know if user has logged in
   $scope.getCurrentUserId = function (){

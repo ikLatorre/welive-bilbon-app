@@ -1,14 +1,16 @@
 
-bilbonAppControllers
-    .controller('TermsCtrl', TermsCtrl);
 
-TermsCtrl.$inject = ['$scope', '$ionicHistory', '$state', '$filter', '$ionicPopup', 
+angular
+    .module('bilbonApp.controllers')
+    .controller('TermsCtrl', TermsController);
+
+TermsController.$inject = ['$scope', '$ionicHistory', '$state', '$filter', '$ionicPopup', 
                     '$timeout', '$ionicSideMenuDelegate', 'UserLocalStorage'];
 
 /**
  * Controller - Privacy policy
  */
-function TermsCtrl(
+function TermsController(
     $scope,
     $ionicHistory,
     $state,
@@ -53,7 +55,7 @@ function TermsCtrl(
 /**
  * Code to be executed before route change goes here (/app/terms)
  */
-TermsCtrl.resolve = {
+TermsController.resolve = {
     checkBeforeDraw: function (UserLocalStorage, $ionicHistory, $state, $timeout, $q) {
         var isPrivacyAccepted = UserLocalStorage.getPrivacyAccepted();
 

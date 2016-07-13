@@ -1,13 +1,59 @@
 # Specifies intentionally untracked files to ignore when using Git
 # http://git-scm.com/docs/gitignore
 
-# ionic 
+######################
+# Node 
+######################
 node_modules/
-plugins/
 
+######################
+# Cordova (and Ionic) 
+######################
+plugins/
 platforms/
 
-.svn/
+######################
+# Eclipse
+######################
+*.pydevproject
 .project
-.bash_profile
+.metadata
+/bin/**
+/tmp/**
+/tmp/**/*
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.classpath
+.settings/**
+.loadpath
+/src/main/resources/rebel.xml
+
+# External tool builders
+.externalToolBuilders/**
+
+# Locally stored "Eclipse launch configurations"
+*.launch
+
+# CDT-specific
+.cproject
+
+# PDT-specific
+.buildpath
+
+######################
+# Windows
+######################
+# Windows image file caches
+Thumbs.db
+
+# Folder config file
 desktop.ini
+
+######################
+# Mac OSX
+######################
+.DS_Store
+.svn/

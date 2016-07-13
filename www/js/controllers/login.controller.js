@@ -1,14 +1,16 @@
 
-bilbonAppControllers
-    .controller('LoginCtrl', LoginCtrl);
 
-LoginCtrl.$inject = ['$scope', '$state', '$ionicLoading', '$ionicPopup', '$filter', '$ionicHistory',
+angular
+    .module('bilbonApp.controllers')
+    .controller('LoginCtrl', LoginController);
+
+LoginController.$inject = ['$scope', '$state', '$ionicLoading', '$ionicPopup', '$filter', '$ionicHistory',
                     '$timeout', 'Login', 'UserLocalStorage', 'KPI'];
 
 /**
  * Controller - Use WeLve's AAC
  */
-function LoginCtrl(
+function LoginController(
     $scope, 
     $state, 
     $ionicLoading, 

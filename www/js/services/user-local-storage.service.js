@@ -1,13 +1,16 @@
 
-bilbonAppServices
-    .factory('UserLocalStorage', UserLocalStorage);
 
-UserLocalStorage.$inject = ['localStorageService'];
+angular
+      .module('bilbonApp.services')
+      .factory('UserLocalStorage', UserLocalStorageService);
+
+UserLocalStorageService.$inject = ['localStorageService'];
 
 /**
-* @desc Get and set user's data using local storage
+* @desc Manage user's data (login, acceptance of the terms of use and the number of times the questionnaire
+* have been filled in) using local storage.
 */
-function UserLocalStorage(localStorageService){
+function UserLocalStorageService(localStorageService){
 
     var localStorage = {
         getUserId: getUserId,
@@ -31,7 +34,7 @@ function UserLocalStorage(localStorageService){
 
 
     /**
-    * Return current user's id if it is logged. null otherwise.
+    * Returns current user's id if it is logged. null otherwise.
     */
     function getUserId(){
       var userData = localStorageService.get('userData');
@@ -40,7 +43,7 @@ function UserLocalStorage(localStorageService){
     };
 
     /**
-    * Return current user's name if it is logged. null otherwise.
+    * Returns current user's name if it is logged. null otherwise.
     */
     function getUserName(){
       var userData = localStorageService.get('userData');
@@ -49,14 +52,14 @@ function UserLocalStorage(localStorageService){
     };
 
     /**
-    * Set current user's data as json (name, surname, socialId, userId) .
+    * Sets current user's data as json (name, surname, socialId, userId) .
     */
     function setUserData(userData){
       return localStorageService.set('userData', JSON.stringify(userData));
     };
 
     /**
-    * Remove current user's data (log out).
+    * Removes current user's data (log out).
     */
     function removeUserData(){
       return localStorageService.remove('userData');
@@ -65,7 +68,7 @@ function UserLocalStorage(localStorageService){
 
 
     /**
-    * Return OAuth's access token if it has been obtained. null otherwise.
+    * Returns OAuth's access token if it has been obtained. null otherwise.
     */
     function getAccessToken(){
       var oauthData = localStorageService.get('oauthData');
@@ -74,7 +77,7 @@ function UserLocalStorage(localStorageService){
     }
 
     /**
-    * Return OAuth's access token if it has been obtained. null otherwise.
+    * Returns OAuth's access token if it has been obtained. null otherwise.
     */
     function getRefreshToken(){
       var oauthData = localStorageService.get('oauthData');
@@ -83,14 +86,14 @@ function UserLocalStorage(localStorageService){
     }
 
     /**
-    * Set OAuth's token generation response data as json (accessToken, refreshToken, expiresIn, tokenType, scope).
+    * Sets OAuth's token generation response data as json (accessToken, refreshToken, expiresIn, tokenType, scope).
     */
     function setOAuthData(oauthData){
       return localStorageService.set('oauthData', JSON.stringify(oauthData));
     }
 
     /**
-    * Remove OAuth's token generation response data.
+    * Removes OAuth's token generation response data.
     */
     function removeOAuthData(){
       return localStorageService.remove('oauthData');
@@ -99,7 +102,7 @@ function UserLocalStorage(localStorageService){
 
 
     /**
-    * Return true if the user has accepted the privacy policy (terms). False otherwise.
+    * Returns true if the user has accepted the privacy policy (terms). False otherwise.
     */
     function getPrivacyAccepted(){
       var isPrivacyAccepted = localStorageService.get('isPrivacyAccepted');
@@ -109,7 +112,7 @@ function UserLocalStorage(localStorageService){
     };
 
     /**
-    * Set if the user has accepted or not the privacy policy (terms)
+    * Sets if the user has accepted or not the privacy policy (terms).
     */
     function setPrivacyAccepted(isAccepted){
       localStorageService.set("isPrivacyAccepted", isAccepted); 
@@ -119,7 +122,7 @@ function UserLocalStorage(localStorageService){
 
 
     /**
-    * Return the number of times the questionnaire has been successfully completed.
+    * Returns the number of times the questionnaire has been successfully completed.
     */
     function getCompletedQuestionnaireCount(){
       var count = localStorageService.get("completedQuestionnaireCount"); 
@@ -128,7 +131,7 @@ function UserLocalStorage(localStorageService){
     };
 
     /**
-    * Add 1 to the completed questionnaire count.
+    * Adds 1 to the completed questionnaire count.
     */
     function addCompletedQuestionnaireCount(){
       var count = localStorageService.get("completedQuestionnaireCount"); 
@@ -143,7 +146,7 @@ function UserLocalStorage(localStorageService){
     };
 
     /**
-    * Remove stored completed questionnaire count.
+    * Removes stored completed questionnaire count.
     */
     function removeCompletedQuestionnaireCount(){
       localStorageService.remove('completedQuestionnaireCount');

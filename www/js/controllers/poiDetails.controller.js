@@ -1,13 +1,15 @@
 
-bilbonAppControllers
-    .controller('POIDetailsCtrl', POIDetailsCtrl);
 
-POIDetailsCtrl.$inject = ['$scope', '$state', '$filter', '$ionicPopup', '$stateParams', 'FilteredPOIs', 'KPI'];
+angular
+    .module('bilbonApp.controllers')
+    .controller('POIDetailsCtrl', POIDetailsController);
+
+POIDetailsController.$inject = ['$scope', '$state', '$filter', '$ionicPopup', '$stateParams', 'FilteredPOIs', 'KPI'];
 
 /**
  * Controller - Details of a POI (Point of interest)
  */
-function POIDetailsCtrl(
+function POIDetailsController(
 	$scope, 
 	$state, 
 	$filter, 

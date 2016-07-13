@@ -1,8 +1,8 @@
 
-var bilbonAppServices = angular.module('starter.services', []);
 
-bilbonAppServices
-    .factory('Login', LoginService);
+angular
+      .module('bilbonApp.services')
+      .factory('Login', LoginService);
 
 LoginService.$inject = ['$http', '$state', '$q', '$ionicLoading', 'UserLocalStorage']; 
 
@@ -51,9 +51,9 @@ function LoginService(
 
 
     /**
-    * @desc WeLive's OAUTH2.0 NON USER-RELATED PROTOCOL FLOW (client (app) credentials flow)
-    * Obtain the access token associated to the WeLive's client app, not to a single user.
-    */
+     * @desc WeLive's OAUTH2.0 NON USER-RELATED PROTOCOL FLOW (client (app) credentials flow)
+     * Obtain the access token associated to the WeLive's client app, not to a single user.
+     */
     function requestWeliveClientAppOauthToken(){
         var promise;
         promise = $q(function (resolve, reject) {
@@ -90,9 +90,9 @@ function LoginService(
     }
 
     /**
-    * @desc Used when app starts if the user has logged in (see app.js). Refresh the user's access token because there is no 'Log out' and
-    * if it expires is not possible to create new POIs.
-    */
+     * @desc Used when app starts if the user has logged in (see app.js). Refresh the user's access token because 
+     * there is no 'Log out' and if it expires is not possible to create new POIs.
+     */
     function refreshOauthToken(){
         var promise;
         promise = $q(function (resolve, reject) {
@@ -254,8 +254,8 @@ function LoginService(
     }
 
     /**
-    * @desc Store in localStorage the OAuth's token request response (in order to refresh the token the next time)
-    */
+     * @desc Store in localStorage the OAuth's token request response (in order to refresh the token the next time)
+     */
     function storeTokenData(){
         var oauthData = {
             accessToken:  login.accessToken,

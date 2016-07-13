@@ -23,7 +23,9 @@
     <link href="css/ionic.app.css" rel="stylesheet">
     -->
 
-    <!-- ionic/angularjs js -->
+    <!-- build:js app/app.js  -->
+    <!-- inject:js -->
+    <!-- ionic/angularjs libraries/plugins -->
     <script src="lib/ionic/js/ionic.bundle.js"></script>
     <script src="lib/ionic-platform-web-client/dist/ionic.io.bundle.min.js"></script>
     <script src="lib/angular-local-storage/dist/angular-local-storage.min.js"></script>
@@ -32,10 +34,10 @@
     <script src="lib/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js"></script>
 
     <!-- your app's js -->
-    <script type="text/javascript" src="js/config/config.js"></script>
-    <script type="text/javascript" src="js/config/categories.js"></script>
+    <script src="js/app.module.js"></script>
+    <script src="js/app.constants.js"></script>
+    <script src="js/app.state.js"></script>
 
-    <script src="js/app.js"></script>
     <script src="js/controllers/controllers.js"></script>
     <script src="js/controllers/terms.controller.js"></script>
     <script src="js/controllers/login.controller.js"></script>
@@ -52,14 +54,18 @@
 
     <script src="js/directives/lang-toggle.directive.js"></script>
     <script src="js/directives/http-prefix.directive.js"></script>
+
+    <script src="js/config/categories.js"></script>
     <script type="text/javascript" src="js/map.js"></script>
+    <!-- endinject -->
+    <!-- endbuild -->
     
     <!-- cordova script (this will be a 404 during development) -->
     <!-- Cordova is bootstrapped by ionic-platform-web-client, uncomment this if you remove ionic-platform-web-client... -->
     <!-- <script src="cordova.js"></script> -->
   </head>
 
-  <body ng-app="starter">
+  <body ng-app="bilbonApp">
 
     <!-- Comment below to disable splash screen -->
     <div id="splash" class="animated fadeOutUp">

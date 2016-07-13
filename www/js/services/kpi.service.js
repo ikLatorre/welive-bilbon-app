@@ -1,6 +1,8 @@
 
-bilbonAppServices
-    .factory('KPI', KPIService);
+
+angular
+      .module('bilbonApp.services')
+      .factory('KPI', KPIService);
 
 KPIService.$inject = ['$http', 'WELIVE_SERVICE_ID', 'WELIVE_SERVICE_NAME'];
 
@@ -12,7 +14,7 @@ function KPIService(
     WELIVE_SERVICE_ID,
     WELIVE_SERVICE_NAME) {
 
-    var enabled = true;        // enable or disable KPI service
+    var enabled = true;         // enable or disable KPI service
     var isTokenRequest = false; // control if WeLive's client app token has been obtained (if not, avoid KPI calls)
 
     var appId = WELIVE_SERVICE_ID;      // 'bilbon'

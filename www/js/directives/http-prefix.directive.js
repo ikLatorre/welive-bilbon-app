@@ -1,13 +1,16 @@
 
-bilbonAppControllers
-    .directive('httpPrefix', httpPrefix);
 
+angular
+      .module('bilbonApp.directives')
+      .directive('httpPrefix', HttpPrefixDirective);
+
+// HttpPrefixDirective.$inject = [];
 
 /**
 * @desc add 'http://' for url inputs in order to avoid the neccesity to write the protocol in angular's url validation
 * @example <input type="url" name="field1" ng-model="field1" http-prefix>
 */
-function httpPrefix() {
+function HttpPrefixDirective() {
 
 	return {
         restrict: 'A',

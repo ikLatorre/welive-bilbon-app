@@ -1,15 +1,17 @@
 
-bilbonAppServices
-    .factory('Map', mapService);
 
-mapService.$inject = ['FilteredPOIs', '$q']; 
+angular
+      .module('bilbonApp.services')
+      .factory('Map', MapService);
+
+MapService.$inject = ['FilteredPOIs', '$q']; 
 
 /**
 * @desc Manage map, Google Autocomplete's objects and markers.
 */
-function mapService(
+function MapService(
 	FilteredPOIs, 
-	$q){
+	$q) {
 	
 	var map = {};
 	map.mapObj = null;

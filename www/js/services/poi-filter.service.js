@@ -1,13 +1,15 @@
 
-bilbonAppServices
-    .factory('FilteredPOIs', filteredPOIs);
 
-filteredPOIs.$inject = ['$http', '$state', '$q', '$ionicLoading', 'WELIVE_DATASET_API_URL', 'KPI']; 
+angular
+      .module('bilbonApp.services')
+      .factory('FilteredPOIs', FilteredPOIs);
+
+FilteredPOIs.$inject = ['$http', '$state', '$q', '$ionicLoading', 'WELIVE_DATASET_API_URL', 'KPI']; 
 
 /**
  * @desc Store searched POIs and manage the filtering 
  */
-function filteredPOIs(
+function FilteredPOIs(
 	$http, 
 	$state, 
 	$q, 
