@@ -4,16 +4,16 @@
   </ion-nav-title>
   <ion-content>
 
-    <img ng-src="img/about_image.jpg" class="imagen_peticion"/> 
+    <img ng-src="img/about_image.jpg" class="imagen_superior"/> 
     
     <a class="card app-version">
-      <div class="item header_peticion app-version-div">
+      <div class="item header_about app-version-div">
         <p>BilbOn 1.0</p>
       </div>
     </a>
 
     <div class="movement slideInUp animated">
-      <div class="datos_detalle_peticion titulo slideInLeft animated2 app-description">
+      <div class="datos_detalle_about titulo slideInLeft animated2 app-description">
           <h2>{{ 'about-page.subtitle' | translate }}</h2>    
           <p>{{ 'about-page.text-1' | translate }}</p>
           <p>{{ 'about-page.text-2' | translate }}</p>
@@ -21,7 +21,7 @@
           <p>{{ 'about-page.text-4' | translate }}</p>
       </div>
 
-      <div class="datos_detalle_peticion div-questionnaire">
+      <div class="datos_detalle_about div-questionnaire">
           <p ng-show="showSurvey">{{'about.survey.text' | translate}}</p>
           <p ng-hide="showSurvey">{{'about.survey.disabled-text' | translate}}</p>
           <button class="button button-full button-assertive" ng-click="launchSurvey()" ng-disabled="!showSurvey">

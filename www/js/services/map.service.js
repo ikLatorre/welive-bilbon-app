@@ -19,6 +19,10 @@ function MapService(
 	map.selectedLocationInput = ''; // used for Google Places' input element
 	map.searchedTextInput = ''; // used for text's filter
 
+	map.locationFilterPos = {} // define object to manage user filtered location marker (gps | google places)
+	map.locationFilterPos.marker = null; // user position marker of selected location filter
+	map.locationFilterPos.latlng = null; // user position object (gps' or G. Autocomplete's coordinates) of 'google.maps.LatLng' type
+
 	// define markers' model like POIs array's model of 'poi-filter.service.js'
 	map.officialMarkers = [];
 	map.citizenMarkers = [];
@@ -31,10 +35,15 @@ function MapService(
 		getMap: getMap,
 		setMap: setMap,
 		closeAndRemoveInfoWindow: closeAndRemoveInfoWindow,
+
+		showLocationMarker: showLocationMarker,
+		hideLocationMarker: hideLocationMarker,
+
 		getAutocomplete: getAutocomplete,
 		setAutocomplete: setAutocomplete,
 		getGPlacesLocationToSearch: getGPlacesLocationToSearch,
 		setGPlacesLocationToSearch: setGPlacesLocationToSearch,
+
 		getTextToSearch: getTextToSearch,
 		setTextToSearch: setTextToSearch,
 
@@ -58,6 +67,39 @@ function MapService(
     		map.infoWindow.close();
     		map.infoWindow = new google.maps.InfoWindow();
     	}
+    }
+
+    // create the location marker with the obtained 'gps/google places' location. 
+    // returns true if success (coordinates are stored in 'FilteredPOIs' service); false otherwise. 
+    // this function is called from the 'finishFilterAndReloadMarkers()' of AppController, so is executed 
+    // after the location filter has been applied (and the coordinates are already stored in 'FilteredPOIs')
+    function showLocationMarker(){
+    	var coords = FilteredPOIs.getPositionFilterCoords();
+		if(coords.lat != null && coords.lng != null){
+			// create and show the marker
+			map.locationFilterPos.marker = new google.maps.Marker({
+				position: new google.maps.LatLng(coords.lat, coords.lng),
+				map: getMap(),
+				icon: 'img/location_icon.png'
+			});
+			// center the map in the location marker
+			getMap().setCenter(map.locationFilterPos.marker.getPosition());
+			console.log('Location marker showing in ', coords);
+			return true;
+		}
+    	return false;
+    }
+
+    // remove location marker from the map and from 'map.locationFilterPos' object. 
+    // returns true if success (it is defined); false otherwise.
+    function hideLocationMarker(){
+    	if(map.locationFilterPos.marker != null){
+    		map.locationFilterPos.marker.setMap(null);
+    		map.locationFilterPos.marker = null;
+    		map.locationFilterPos.latlng = null;
+    		return true;
+    	}
+    	return false;
     }
 
     // get loaded Google Autocomplete's object
@@ -105,23 +147,30 @@ function MapService(
 	    	console.log('Filtered official POIs:', officialPOIs, 'Filtered citizen POIs:', citizenPOIs);
 
 	    	// create markers and add them to the map and to the corresponding arrays
+	    	var markersCount = 0;
 	    	var bounds = new google.maps.LatLngBounds();
+
 	    	createCategoryMarkers(officialPOIs, true, bounds)
 	    	.then(function(officialMarkersCount){
+
 	    		createCategoryMarkers(citizenPOIs, false, bounds)
 	    		.then(function(citizensMarkersCount){
-	    			var markersCount = officialMarkersCount + citizensMarkersCount;
+
+	    			markersCount = officialMarkersCount + citizensMarkersCount;
 	    			// fit map to cover all visible markers if there are no so much
 	    			if(markersCount > 30 || markersCount == 0){
 	    				getMap().setZoom(14);
     					getMap().setCenter(new google.maps.LatLng(43.263606, -2.935214)); // Plaza de Don Federico Moyúa, Bilbao
 	    			}else{
-	    				getMap().fitBounds(bounds); 
+	    				getMap().fitBounds(bounds); // set the viewport to contain the given bounds
 	    			}
-	    		});
-	    	});
 
-	    	resolve();
+	    		}).then(function(){
+	    			resolve(markersCount);
+	    		});
+	    		
+	    	});
+	    	
 	    });
 
     	return promise;
@@ -157,7 +206,7 @@ function MapService(
     // set 'map' parameter to all stored markers (set 'null' to remove markers from the map)
     // ('item' parameter is not used because it is passed by value and is neccesary to modify the item by reference). 
     function setMapOnAllMarkers(mapToSet){
-    	console.log('Setting "map" on all markers...', mapToSet);
+    	console.log('Setting "map" on all markers... (null to remove)', mapToSet);
     	if(map != null && map.hasOwnProperty("officialMarkers") && map.officialMarkers != null){
     		angular.forEach(map.officialMarkers, function(item, categoryKey){
 	    		angular.forEach(map.officialMarkers[categoryKey], function(marker, markerKey){

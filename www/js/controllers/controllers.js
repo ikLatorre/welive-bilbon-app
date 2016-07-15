@@ -37,11 +37,16 @@ function AppController(
   //$scope.$on('$ionicView.enter', function(e) {
   //});
 
+  // enable/disable 'empty results message' for each category
+  var showCategoryEmptyResultsError = false; // (Note: the 'empty results' message for all categories in 
+                                  // altogether is always enabled (see 'finishFilterAndReloadMarkers()'))
+
   // ** define filter's model **
 
   $scope.filter = {}; 
-  // store selection's values of categories (true|false), identified by 'id' attribute of categories.js:
-  $scope.filter.selectedCategories = []; 
+  // store selection's values of categories (true|false), identified by 'id' attribute of categories.js
+  // (this 'id' corresponds to the official items of config/categories.js, so the range is '0..number of categories-1'):
+  $scope.filter.selectedCategories = [];
   $scope.filter.areCategoriesShown = false; // control whether the sublist of categories is displayed or not
   // store selection's values of location modes (true|false), identified by google-places' and 'device-gps':
   $scope.filter.selectedLocation = []; 
@@ -53,6 +58,7 @@ function AppController(
   $scope.filter.textFilterInput = null;
   // store selection's values of 'only no official (only citizen's POIs) POIs's checkbox (true|false):
   $scope.filter.selectedCitizensPOIs = false;
+
 
 
 
@@ -207,7 +213,6 @@ function AppController(
   $scope.locationSelectionChanged = function(locationMode, otherLocationMode) {
     if(locationMode == 'google-places' && $scope.filter.selectedLocation['google-places']){
       // the Google Places' checkbox has been activated, check if a location has been previously selected
-      console.log('aqui');
       if(Map.getGPlacesLocationToSearch() == ''){
         // (the user has not selected a location from the suggestin list or there was an error in
         // 'place_changed' event getting it)
@@ -292,6 +297,7 @@ function AppController(
   $scope.searchByText = function() {
     if($scope.filter.textFilterInput == null || $scope.filter.textFilterInput == ''){
       console.log('Introduce a text to search, please.');
+      $scope.filter.selectedText = false; // disable checkbox
       $ionicPopup.alert({
           title: $filter('translate')('menu.filter.location-search.text-empty.info-popup-title'),
           template: $filter('translate')('menu.filter.location-search.text-empty.info-popup-text'),
@@ -299,7 +305,7 @@ function AppController(
           okType: 'button-assertive' 
       });
     }else{
-      $scope.filter.selectedText = true;
+      $scope.filter.selectedText = true; // enable checkbox if the user has clicked the button
       Map.setTextToSearch($scope.filter.textFilterInput);
       $scope.callTextFilter($scope.filter.textFilterInput);
     }
@@ -362,10 +368,26 @@ function AppController(
   function finishFilterAndReloadMarkers(){
     $ionicLoading.hide();
     // with the filter's errors if all the categories' checkboxes are programatically disabled, disable too other filters
-    // (in this case the errors cause alert panels, so is not neccesary to check if checkboxes are disabled or not)
+    // (in this case the errors cause alert panels, so it is not neccesary to check if checkboxes are disabled or not)
 
     Map.reloadMarkers()
-    .then(function(){
+    .then(function(markersCount){
+
+      // show message if there are no POIs with the specified parameters (filter)
+      if(markersCount == 0){
+        var myPopup = $ionicPopup.show({
+          template: "<center>" + $filter('translate')('menu.filter.empty-results-info-alert-popup-label') + "</center>",
+          cssClass: 'custom-class custom-class-popup'
+        });
+        $timeout(function() { myPopup.close(); }, 1850); //close the popup after 1.85 seconds  
+      }
+
+      // show selected location if this filter has been activated
+      if($scope.filter.selectedLocation['google-places'] || $scope.filter.selectedLocation['device-gps']){
+        Map.showLocationMarker(); // the marker coordinates have been stored during the process of the location filter
+        // (see 'applyLocationFilter()' function of 'FilteredPOIs' service)
+      } // the marker is removed in '$scope.disableLocationFilter()'
+
       console.log('All markers have been reloaded.');
       console.log();
     });
@@ -374,20 +396,24 @@ function AppController(
   // show category empty alert based on category and type (official or citizen)
   // if 'categoryName' parameter is null, get it from 'categoryCustomNumericId' parameter
   function showCategoryEmptyAlert(isOfficial, categoryName, categoryCustomNumericId){
-    var templateTextlanguageId;
-    if(isOfficial) templateTextlanguageId = 'menu.filter.category-search.empty-official-popup-text';
-    else templateTextlanguageId = 'menu.filter.category-search.empty-citizen-popup-text';
-    
-    // get the name of the category
-    var categoryNameText = categoryName; 
-    if(categoryName == null) categoryNameText = getCategoryTranslatedName(categoryCustomNumericId);
 
-    $ionicPopup.alert({
-        title: $filter('translate')('menu.filter.category-search.info-popup-title'),
-        template: '(' + categoryNameText + ') ' + $filter('translate')(templateTextlanguageId),
-        okText: $filter('translate')('menu.filter.category-search.alert-ok-button-label'),
-        okType: 'button-assertive' 
-    });
+    if(showCategoryEmptyResultsError){
+        var templateTextlanguageId;
+        if(isOfficial) templateTextlanguageId = 'menu.filter.category-search.empty-official-popup-text';
+        else templateTextlanguageId = 'menu.filter.category-search.empty-citizen-popup-text';
+        
+        // get the name of the category
+        var categoryNameText = categoryName; 
+        if(categoryName == null) categoryNameText = getCategoryTranslatedName(categoryCustomNumericId);
+
+        $ionicPopup.alert({
+            title: $filter('translate')('menu.filter.category-search.info-popup-title'),
+            template: '(' + categoryNameText + ') ' + $filter('translate')(templateTextlanguageId),
+            okText: $filter('translate')('menu.filter.category-search.alert-ok-button-label'),
+            okType: 'button-assertive' 
+        });
+    }
+    
   }
 
   // show category error alert based on category and type (official or citizen)
@@ -421,20 +447,24 @@ function AppController(
   // show array of POIs empty alert because of location based on category and type (official or citizen)
   // if 'categoryName' parameter is null, get it from 'categoryCustomNumericId' parameter
   function showLocationEmptyAlert(isOfficial, categoryName, categoryCustomNumericId){
-    var templateTextlanguageId;
-    if(isOfficial) templateTextlanguageId = 'menu.filter.location-search.empty-official-popup-text';
-    else templateTextlanguageId = 'menu.filter.location-search.empty-citizen-popup-text';
-    
-    // get the name of the category
-    var categoryNameText = categoryName; 
-    if(categoryName == null) categoryNameText = getCategoryTranslatedName(categoryCustomNumericId);
 
-    $ionicPopup.alert({
-        title: $filter('translate')('menu.filter.location-search.info-popup-title'),
-        template: '(' + categoryNameText + ') ' + $filter('translate')(templateTextlanguageId),
-        okText: $filter('translate')('menu.filter.location-search.alert-ok-button-label'),
-        okType: 'button-assertive' 
-    });
+    if(showCategoryEmptyResultsError){
+        var templateTextlanguageId;
+        if(isOfficial) templateTextlanguageId = 'menu.filter.location-search.empty-official-popup-text';
+        else templateTextlanguageId = 'menu.filter.location-search.empty-citizen-popup-text';
+        
+        // get the name of the category
+        var categoryNameText = categoryName; 
+        if(categoryName == null) categoryNameText = getCategoryTranslatedName(categoryCustomNumericId);
+
+        $ionicPopup.alert({
+            title: $filter('translate')('menu.filter.location-search.info-popup-title'),
+            template: '(' + categoryNameText + ') ' + $filter('translate')(templateTextlanguageId),
+            okText: $filter('translate')('menu.filter.location-search.alert-ok-button-label'),
+            okType: 'button-assertive' 
+        });
+    }
+    
   }
 
   function showGpsLocationErrorAlert(){
@@ -557,7 +587,17 @@ function AppController(
               resolve();
             }
 
-        }, function(){ // promise rejected, couldn't get POIs 
+        }, function(){ // promise rejected, couldn't get POIs (datasets' API error)
+            // disable the category checkbox that hasn't been possible to get data from the API 
+            // (when getting official or citizens data).
+            // each 'selectedCategories' array item (where the selection of categories are stored)
+            // are identified by 'id' attribute of categories.js
+            var categoryInfo = categories.filter( function(item){
+              return (item.categoryCustomNumericId == categoryCustomNumericId && item.isOfficial == isOfficial); 
+            });
+            if(categoryInfo != null) $scope.filter.selectedCategories[categoryInfo[0]['id']] = false; 
+
+            // show error alert of the corresponding category (dataset)
             if(categoryTranslatedName == null) showCategoryErrorAlert(isOfficial, null, categoryCustomNumericId);
             else showCategoryErrorAlert(isOfficial, categoryTranslatedName, null);
             resolve();
@@ -569,7 +609,7 @@ function AppController(
   }
 
   // function to run in every loop of the async cycle to apply enabled filters for all selected categories
-  // see 'asyncLoopForCategoriesFilter(...)', used for asynchronous for cycle
+  // see 'asyncLoopForCategoriesFilter(...)', used 'for' asynchronous for cycle
   function filterCategoryLoopFunction(categoryCustomNumericId, categoryTranslatedName, iterationIndex, callback) {
       console.log('Starting iteration ', iterationIndex); 
       // get category official POIs and filter by text and location if neccesary; repeat for citizens' POIs
@@ -584,7 +624,7 @@ function AppController(
   };
 
   // function to run in every loop of the async cycle to apply enabled filters for all selected categories
-  // see 'asyncLoopForCategoriesFilter(...)', used for asynchronous for cycle
+  // see 'asyncLoopForCategoriesFilter(...)' in '$scope.callAlsoCitizensFilter', used for asynchronous 'for' cycle
   function filterCategoryCitizenLoopFunction(categoryCustomNumericId, iterationIndex, callback) {
       console.log('Starting iteration ', iterationIndex); 
       // get category citizens' POIs and filter by text and location if neccesary
@@ -790,7 +830,7 @@ function AppController(
         // number of iterations 
         activatedCategoriesArray.length, 
 
-        // apply location filter if enabled (official and, if selected, citizns' POIs)
+        // apply location filter if enabled (official and, if selected, citizens' POIs)
         function(loop) { 
           filterLocationLoopFunction(
               activatedCategoriesArray[loop.iteration()], loop.iteration(),
@@ -818,6 +858,8 @@ function AppController(
     $ionicLoading.show({ template: '<ion-spinner icon="bubbles"></ion-spinner><br/>'
                         + $filter('translate')('menu.filter.search.loading-text')
     });
+
+    Map.hideLocationMarker(); // remove the position marker if exists
 
     if(!isLocationSwitched){
       // remove filter not to be switched by another one, so reload all POIs again
@@ -980,7 +1022,8 @@ function AppController(
 
 
 
-  /*$scope.exitApp = function(){
+  /* uncomment below (and the menu 'exit' item) to enable a button to exit the app
+  $scope.exitApp = function(){
     // confirm if user wants to exit the app
     $ionicPopup.confirm({
         title: $filter('translate')('info-confirm-popup-title'),
@@ -1003,7 +1046,8 @@ function AppController(
         }, 1800);
       } 
     });
-  }*/
+  }
+  */
 
 
 }

@@ -1,6 +1,11 @@
 {
  "terms.title": "Erabilera-baldintzak",
- "terms.refused-alert-text": "Bilbozkatu aplikazioan sartzeko erabilera-baldintzak onartu itzazu",
+ "terms.refused-alert-text": "BilbOn aplikazioan sartzeko erabilera-baldintzak onartu itzazu",
+
+ "info-alert-popup-title": "Bilbon",
+ "info-alert-popup-ok-button-label": "Ados",
+ "error-alert-popup-title": "Errorea",
+ "error-alert-popup-ok-button-label": "Itxi",
  
  "all-menu.back-button-label": "Atzera", 
  "menu.title": "Menua | Filtratu ",
@@ -19,8 +24,13 @@
  "menu.language-item": "Hizkuntza aldatu",
  "menu.language-item.modal-title": "BilbOn",
  "menu.language-item.modal-cancel-btn": "Menu",
+
  "menu.exit-item": "Irten",
  "menu.exit-item-text": "Aplikazioa ixten...",
+ "info-confirm-popup-title": "BilbOn",
+ "info-confirm-popup-text": "Ziur zaude atera nahi duzula?",
+ "info-confirm-popup-exit-accept-button-label": "Bai",
+ "info-confirm-popup-exit-cancel-button-label": "Ez",
 
  "menu.filter.search.loading-text": "Informazioa filtratzen, itxaron mesedez...",
  "menu.filter.category-search.remove-text": "Kategoria kentzen, itxaron mesedez...",
@@ -32,6 +42,7 @@
  "menu.filter.category-search.empty-citizen-popup-text": "Eskatutako parametroekin ez dira herritarren daturik aurkitu.",
  "menu.filter.category-search.alert-ok-button-label": "Itxi",
  "menu.filter.category-search.no-category-selected-error-popup-text": "Mesedez, kategoria bat aukeratu filtro hau aktibatu aurretik.",
+ "menu.filter.empty-results-info-alert-popup-label": "Eskatutako parametroekin ez dira interes punturik aurkitu.",
 
  "menu.filter.location-search.info-popup-title": "Informazioa",
  "menu.filter.location-search.empty-official-popup-text": "Eskatutako kokalekutik hurbil ez dira datu ofizialik aurkitu.",
@@ -102,7 +113,9 @@
  "poi-create-page.location-autocomplete-search-placeholder": "Kokapena bilatu...",
  "poi-create-page.submit-button-label": "Informazioa bidali",
  "poi-create-page.form.advert-label": "'*'-rekin adierazitako atalak derrigorrezkoak dira.",
+ "poi-create-page.form.info-citizens-filter-label": "Herritarren interes puntuak ikusteko filtroa automatikoki aktibatuko da berria bidaltzean.",
  "poi-create-page.info-alert-popup-label": "Interes puntua ongi erregistratu da.",
+ "poi-create-page.info-alert-popup-label-no-category": "Interes puntua ongi erregistratu da (sortutako interes puntuaren kategoria aktibatu ikusi ahal izateko).",
  "poi-create-page.loading-text": "Datuak bidaltzen, itxaron mesedez...",
 
  "poi-create-page.location-gmaps-error-popup-title": "Errorea",
@@ -119,15 +132,10 @@
  "login.error-popup-title": "Errorea",
  "login.error-popup-text": "WeLive-en saioa hasten errore bat gertatu da. Mesedez, geroago berriz saiatu.",
  "login.error-popup-button-label": "Itxi",
+ "info-confirm-popup-login-button-label": "Saioa hasi",
 
  "info-alert-popup-login-label-left": "",
  "info-alert-popup-login-label-right": " bezala saioa ireki duzu.",
-
- "info-alert-popup-title": "Bilbon",
- "info-alert-popup-ok-button-label": "Ados",
- "error-alert-popup-title": "Errorea",
- "error-alert-popup-ok-button-label": "Itxi",
- "info-confirm-popup-login-button-label": "Saioa hasi",
 
  "about-page.title": "About",
  "about-page.subtitle": "Informazio eta erabilera-baldintzak",
@@ -140,11 +148,6 @@
  "about.questionnaire.submitted-error-label": "Errore bat gertatu da galdeketa bidaltzen. Geroago berriz saiatu, mesedez.",
  "about.survey.text": "Zure iritzia eskertuko genuke",
  "about.survey.disabled-text": "Dagoeneko galdeketa bete daitekeen gehienezko kopurura iritsi zara.",
- "about.survey.button": "Formularioa bete",
-
- "info-confirm-popup-title": "BilbOn",
- "info-confirm-popup-text": "Ziur zaude atera nahi duzula?",
- "info-confirm-popup-exit-accept-button-label": "Bai",
- "info-confirm-popup-exit-cancel-button-label": "Ez"
+ "about.survey.button": "Formularioa bete"
  
 }

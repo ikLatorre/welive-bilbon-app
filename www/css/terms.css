@@ -1,107 +1,154 @@
-#policy_screen{
+
+#policy_screen {
 	background-color: rgba(00, 00, 00, 0.8);
 	color: rgba(00, 00, 00, 0.7);
-	position:absolute;
-	width:100%;
-	height:100%;
-	overflow:auto;
-	padding-bottom:10px;
-	top:0;
-	z-index:3000;
-	color:#FFF;
-	font-family:Open Sans;}
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	padding-bottom: 10px;
+	top: 0;
+	z-index: 3000;
+	color: #FFF;
+	font-family: Open Sans;
+}
 	
-	
-	
-#delete_screen{
+#delete_screen {
 	background-color: rgba(00, 00, 00, 0.6);
 	color: rgba(00, 00, 00, 0.7);
-	position:absolute;
-	width:100%;
-	height:100%;
-	top:0;
-	z-index:3000;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	z-index: 3000;
+	font-family: Open Sans;}
 	
-	font-family:Open Sans;}
-	
-.delete_box{ background: none repeat scroll 0 0 #FFFFFF;
+.delete_box { 
+    background: none repeat scroll 0 0 #FFFFFF;
     border-radius: 10px;
     box-shadow: 0 0 10px #FFFFFF;
     margin-left: 6%;
     margin-top: 50%;
     padding: 7% 4%;
     text-align: center;
-    width: 78%;}
+    width: 78%;
+}
     
- .delete_box .new_poi_buttons{width:100%!important;}
-.map_to_delete{font-weight: bold;
+.delete_box .new_poi_buttons {
+    width: 100%!important;
+}
+
+.map_to_delete {
+    font-weight: bold;
     margin-top: 15px;
-    padding-bottom: 10px;}
-#start_screen{
+    padding-bottom: 10px;
+}
+
+#start_screen {
 	background-color: rgba(00, 00, 00, 0.8);
 	color: rgba(00, 00, 00, 0.7);
 	position:absolute;
-	width:100%;
-	height:100%;
-	top:0;
-	z-index:3000;
-	color:#FFF;
-	font-family:Open Sans;}
+	width: 100%;
+	height: 100%;
+	top: 0;
+	z-index: 3000;
+	color: #FFF;
+	font-family: Open Sans;
+}
 
-
-.help_box{border-top: 1px solid #aaa;
+.help_box {
+    border-top: 1px solid #aaa;
     margin-left: 5%;
-   padding-bottom: 20px;
+    padding-bottom: 20px;
     padding-top: 15px;
     width: 90%;
-    float:left;}
+    float: left;
+}
     
- .policy_box{border-top: 1px solid #aaa;
+ .policy_box {
+    border-top: 1px solid #aaa;
     margin-left: 5%;
-   padding-bottom: 20px;
+    padding-bottom: 20px;
     padding-top: 15px;
     width: 90%;
-   }
+}
     
-.help_title{ font-size: 20px;
+.help_title {
+    font-size: 20px;
     font-weight: bold;
     margin-bottom: 1em;
     margin-left: 5%;
     /*margin-top: 1em;*/
-    margin-top:60px; /* avoid navbar to hide title of the policy */
+    margin-top: 60px; /* avoid navbar to hide title of the policy */
     text-align: center;
-    width: 90%;}    
-.start_title{ font-size: 45px;
+    width: 90%;
+}  
+
+.start_title { 
+    font-size: 45px;
     font-weight: bold;
     margin-left: 5%;
     margin-top: 2em;
     text-align: center;
-    width: 90%;}  
+    width: 90%;
+}  
     
-.start_subtitle{ font-size: 20px;
+.start_subtitle {
+    font-size: 20px;
     font-weight: bold;
     margin-bottom: 1.8em;
     margin-left: 5%;
     margin-top: 2em;
     text-align: center;
-    width: 90%;}   
+    width: 90%;
+}   
  
-.tips{ line-height: 24px;
+.tips {
+    line-height: 24px;
     margin-bottom: 1em;
     margin-left: 5%;
     text-align: center;
-    width: 90%;}
+    width: 90%;
+}
 
-.tool_title{font-weight:bold; margin-bottom:10px;}
-.tool_desc{font-size: 13px;
-    line-height: 18px;}
-.help_icon{ float:left;width:20%; text-align:center;}
-.help_text{ float:left; width:77%;}
-.policy_text{float:left; width:98%; }
-.policy_text p {margin-bottom:10px; text-align:justify;}
-.policy_text ul li {font-size:11px; margin-bottom:5px;}
+.tool_title {
+    font-weight: bold; 
+    margin-bottom: 10px;
+}
 
-.start{background: none repeat scroll 0 0 #C63E28;
+.tool_desc{
+    font-size: 13px;
+    line-height: 18px;
+}
+
+.help_icon{ 
+    float: left; 
+    width: 20%; 
+    text-align: center;
+}
+
+.help_text { 
+    float: left; 
+    width: 77%;
+}
+
+.policy_text {
+    float: left; 
+    width: 98%; 
+}
+
+.policy_text p {
+    margin-bottom: 10px; 
+    text-align:justify;
+}
+
+.policy_text ul li {
+    font-size: 11px; 
+    margin-bottom: 5px;
+}
+
+.start{
+    background: none repeat scroll 0 0 #C63E28;
     color: #FFFFFF;
     float: left;
     font-weight: bold;
@@ -110,9 +157,11 @@
     padding: 5%;
     text-align: center;
     width: 50%;
-    border-radius:5px;}
+    border-radius:5px;
+}
     
- .refuse{background: none repeat scroll 0 0 #666;
+ .refuse{
+    background: none repeat scroll 0 0 #666;
     color: #FFFFFF;
     float: left;
     font-weight: bold;
@@ -121,5 +170,6 @@
     padding: 5%;
     text-align: center;
     width: 50%;
-    margin-bottom:16px;
-    border-radius:5px;}
+    margin-bottom: 16px;
+    border-radius: 5px;
+}

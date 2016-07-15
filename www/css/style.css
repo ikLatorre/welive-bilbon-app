@@ -1,5 +1,7 @@
+
 /* Empty. Add your own CSS if you like */
-.bar{background:#DD0407!important; 
+.bar{
+    background:#DD0407!important; 
 } 
 
 .bar.bar-stable .title {
@@ -7,9 +9,9 @@
 }
 
 .card{
-  border-radius:0px;     
-  margin: 14px 10px; 
-  box-shadow:none;
+    border-radius:0px;     
+    margin: 14px 10px; 
+    box-shadow:none;
 }
 
 .card .item:first-child, .list-inset .item:first-child, .padding > .list .item:first-child {
@@ -30,11 +32,217 @@
     padding: 5px 5px 5px 5px;
 }
 
-.datos_peticion{background:#FFF; border-top: 1px dotted #ccc; padding-left:8px; }
+.bar .title {
+    color:#FFF;
+}
 
-.datos_peticion img{margin-top:-5px; }
+.custom-close{
+    color: #FFF;
+    font-size: 26px;
+    padding: 4px 12px;
+}
 
-.header_peticion {
+.fondo{
+    background-color:#eee;
+}
+
+.gray-bg{
+    background:#eee;
+}
+
+a.card{
+    text-decoration:none; 
+    background:transparent; 
+    display:block;
+}
+	
+	
+@-webkit-keyframes slideInUp {
+      from {
+        -webkit-transform: translate3d(0, 100%, 0);
+        transform: translate3d(0, 100%, 0);
+        visibility: visible;
+      }
+
+      to {
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+      }
+}
+
+@keyframes slideInUp {
+      from {
+        -webkit-transform: translate3d(0, 100%, 0);
+        transform: translate3d(0, 100%, 0);
+        visibility: visible;
+      }
+
+      to {
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+      }
+}
+
+.slideInUp {
+      -webkit-animation-name: slideInUp;
+      animation-name: slideInUp;
+}
+
+.animated {
+      -webkit-animation-duration: 0.4s;
+      animation-duration: 0.4s;
+      -webkit-animation-fill-mode: both;
+      animation-fill-mode: both;
+}
+
+@-webkit-keyframes zoomIn {
+      from {
+        opacity: 0;
+        -webkit-transform: scale3d(.3, .3, .3);
+        transform: scale3d(.3, .3, .3);
+      }
+
+      50% {
+        opacity: 1;
+      }
+}
+
+@keyframes zoomIn {
+      from {
+        opacity: 0;
+        -webkit-transform: scale3d(.3, .3, .3);
+        transform: scale3d(.3, .3, .3);
+      }
+
+      50% {
+        opacity: 1;
+      }
+}
+
+.zoomIn {
+      -webkit-animation-name: zoomIn;
+      animation-name: zoomIn;
+}
+
+.animated2 {
+      -webkit-animation-duration: 0.5s;
+      animation-duration: 0.5s;
+      -webkit-animation-fill-mode: both;
+      animation-fill-mode: both;
+      animation-delay:0.4s;
+      -webkit-animation-delay:0.4s;
+}
+
+.imagen_superior{
+    width:100%; 
+    height:auto;
+}
+
+.titulo {
+    padding-top: 10px;
+}
+
+
+@-webkit-keyframes slideInLeft {
+      from {
+        -webkit-transform: translate3d(-100%, 0, 0);
+        transform: translate3d(-100%, 0, 0);
+        visibility: visible;
+      }
+
+      to {
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+      }
+}
+
+@keyframes slideInLeft {
+      from {
+        -webkit-transform: translate3d(-100%, 0, 0);
+        transform: translate3d(-100%, 0, 0);
+        visibility: visible;
+      }
+
+      to {
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+      }
+}
+
+.slideInLeft {
+  -webkit-animation-name: slideInLeft;
+  animation-name: slideInLeft;
+}
+
+.cuerpo-pantalla{
+	 padding: 3%;
+}
+
+
+/* ** NOTE: Unused because the 'language toggle switch' control has been replaced ** */
+/* Language toggle switch */
+.toggle-text > .track {
+    width: auto;
+    padding-left: 25px;
+    padding-right: 25px;
+}
+
+.toggle-text .handle {
+    left: 7px;
+}
+
+.toggle-text .handle-text {
+    font-size: 20px;
+    /*color: white;*/
+    position: absolute;
+    top: -1px;
+}
+
+.toggle-text .handle-text-false {
+  left: 36px;
+}
+
+.toggle-text input[type="checkbox"]:checked + .track .handle {
+    -webkit-transform: none;
+    -moz-transform: none;
+    transform: none;
+    left: calc(100% - 34px);
+/*  -webkit-transform: translate3d(0, 0,0);*/
+}
+
+.handle .handle-text-true {
+    color: white;
+}
+
+input[type="checkbox"]:checked + .track .handle .handle-text-false {
+    color: white;
+}
+
+input[type="checkbox"] + .track .handle .handle-text-false {
+    color: #444;
+}
+
+.track-text {
+    line-height: 26px;
+    color: white;
+    font-size: 24px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+/* /Language toggle switch */
+
+  
+/* Remove 'title' area from ionicPopups */
+.custom-class .popup-head {
+    display: none;
+}
+
+.custom-class-popup > .popup { 
+    border-radius: 15px !important; 
+}
+
+/* About page */
+.header_about {
     background: #FFF;
     color: #820205!important;
     white-space: normal;
@@ -48,248 +256,9 @@
     padding-left: 15px;
 }
 
-.cuerpo_peticion{border:none!important; font-size:13px; padding-top: 0px;     padding-bottom: 5px;}
+.datos_detalle_about{}
 
-.valoracion_general {
-    color: #999;
-    font-size: 13px;
-    background-image: url(../img/star_main.png);
-    background-repeat: no-repeat;
-    background-position: left center;
-    padding-left: 22px;
-    float: left;
-}
-
-.votos_general {float:right;}
-
-.votos_up_empty {
-    background-image: url(../img/thumb_up_mini.png);
-    background-repeat: no-repeat;
-    padding-left: 28px;
-    display:inline-block;
-    color:#8BC20A;
-}
-.votos_up_filled {
-    background-image: url(../img/thumb_up_filled_mini.png);
-    background-repeat: no-repeat;
-    padding-left: 28px;
-    display:inline-block;
-    color:#8BC20A;
-}
-.votos_down_empty {
-    background-image: url(../img/thumb_down_mini.png);
-    background-repeat: no-repeat;
-    padding-left: 28px;
-	  display:inline-block;
-	  margin-left: 12px;
-    margin-right: 6px;
-	  color:#DD0407;
-}
-.votos_down_filled {
-    background-image: url(../img/thumb_down_filled_mini.png);
-    background-repeat: no-repeat;
-    padding-left: 28px;
-    display:inline-block;
-    margin-left: 12px;
-    margin-right: 6px;
-    color:#DD0407;
-}
-
-.estado_peticion {
-    text-align: center;
-    text-transform: uppercase;
-    color: #fff;
-    font-size: 11px;
-    padding: 2px 8px;
-    border-radius: 100px;
-}
-
-.aprobada {background-color:#8BC20A;}
-
-.bar .title {color:#FFF;}
-
-.custom-close{color: #FFF;
-    font-size: 26px;
-    padding: 4px 12px;
-}
-
-.fondo{background-color:#eee;}
-
-.buscador_general{
-    width: 94%;
-    margin-left: 3%;
-    border: none;
-    margin-top: 15px;
-	transition:0.5s ease;
-}
-
-.buscador_general:focus  {background:#FFFFCC!important}
-
-
-.login_form_box {
-    width: 90%;
-    margin-left: 5%;
-    margin-top: 15%;
-    padding: 18px;
-    border-top: 14px solid #DD0407;
-    background: #FFF;
-    border-radius: 5px;
-    box-shadow: 10px 10px 12px #ccc;
-}
-
-.login_form_box .item{    border-bottom: 2px solid #ccc!important; border-top:none; border-left:none; border-right:none;}
-
-.boton-login {
-    background: #DD0407!important;
-    border: none;
-    color: #FFF;
-    font-size: 19px;
-    margin-top: 50px!important;
-}
-
-.titulo_login {
-    font-size: 16px;
-    width: 90%;
-    margin-left: 3%;
-    margin-top: 10px!important;
-    color: #333;
-    background-image: url(../img/login_icon.png);
-    background-repeat: no-repeat;
-    background-position: left;
-    padding-left: 40px;
-    margin-bottom: 8px;
-}
-
-.gray-bg{background:#eee;}
-
-a.card{text-decoration:none; background:transparent; display:block;}
-
-.filters_show{color: #FFF;
-    font-size: 33px;
-    padding: 0px 12px;}
-	
-	
-@-webkit-keyframes slideInUp {
-  from {
-    -webkit-transform: translate3d(0, 100%, 0);
-    transform: translate3d(0, 100%, 0);
-    visibility: visible;
-  }
-
-  to {
-    -webkit-transform: translate3d(0, 0, 0);
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-@keyframes slideInUp {
-  from {
-    -webkit-transform: translate3d(0, 100%, 0);
-    transform: translate3d(0, 100%, 0);
-    visibility: visible;
-  }
-
-  to {
-    -webkit-transform: translate3d(0, 0, 0);
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-.slideInUp {
-  -webkit-animation-name: slideInUp;
-  animation-name: slideInUp;
-}
-
-.animated {
-  -webkit-animation-duration: 0.4s;
-  animation-duration: 0.4s;
-  -webkit-animation-fill-mode: both;
-  animation-fill-mode: both;
-}
-
-@-webkit-keyframes zoomIn {
-  from {
-    opacity: 0;
-    -webkit-transform: scale3d(.3, .3, .3);
-    transform: scale3d(.3, .3, .3);
-  }
-
-  50% {
-    opacity: 1;
-  }
-}
-
-@keyframes zoomIn {
-  from {
-    opacity: 0;
-    -webkit-transform: scale3d(.3, .3, .3);
-    transform: scale3d(.3, .3, .3);
-  }
-
-  50% {
-    opacity: 1;
-  }
-}
-
-.zoomIn {
-  -webkit-animation-name: zoomIn;
-  animation-name: zoomIn;
-}
-
-.animated2 {
-  -webkit-animation-duration: 0.5s;
-  animation-duration: 0.5s;
-  -webkit-animation-fill-mode: both;
-  animation-fill-mode: both;
-  animation-delay:0.4s;
-  -webkit-animation-delay:0.4s;
-}
-
-.imagen_peticion{width:100%; height:auto;}
-
-.peticion_barrio {
-    background-image: url(../img/location_mini.png);
-    background-repeat: no-repeat;
-    background-position: 8px 5px;
-    padding-left: 25px;
-    color: #666;
-    background-color: white;
-    width: 50%;
-    display: inline-block;
-    padding-top: 2px;
-}
-
-.peticion_barrio div{margin-top:2px; font-weight:bold;}
-
-.peticion_estado {
-    background-image: url(../img/card_breaker.png);
-    background-repeat: no-repeat;
-    background-position: left;
-    padding-left: 25px;
-    padding-top: 4px;
-    color: #fff;
-    background-color: #8BC20A;
-    width: 35%;
-    display: inline-block;
-    margin-left: -5px;
-}
-
-.peticion_estado_cerrado {
-    background-image: url(../img/card_breaker_red.png);
-    background-repeat: no-repeat;
-    background-position: left;
-    padding-left: 25px;
-    padding-top: 4px;
-    color: #fff;
-    background-color: #DD0407; 
-    width: 35%;
-    display: inline-block;
-    margin-left: -5px;
-}
-
-.datos_detalle_peticion{}
-
-.datos_detalle_peticion h2 {
+.datos_detalle_about h2 {
     color: #820205!important;
     font-size: 20px;
     padding-left: 10px;
@@ -297,24 +266,7 @@ a.card{text-decoration:none; background:transparent; display:block;}
     font-weight: bold;
 }
 
-.titulo {
-    padding-top: 10px;
-}
-
-.detalle_comentarios_titulo {
-    padding-top: 0px;
-}
-
-.detalle_estadisticas_div {
-  height:30px; 
-  padding-right: 10px;
-}
-
-.detalle_estadisticas_btn {
-  float: right;
-}
-
-.datos_detalle_peticion p {
+.datos_detalle_about p {
     padding-left: 15px;
     padding-right: 10px;
     color: #666;
@@ -322,169 +274,10 @@ a.card{text-decoration:none; background:transparent; display:block;}
     font-size: 14px;
 }
 
-.movement .peticion_pre{margin-top:-29px; }
-
-.movement .datos_peticion {
-    background: #eee;
-    border-top: none;
-    padding-left: 8px;
-    margin-top: 10px;
-    border-bottom: none;
-    margin-bottom: 10px;
-    width: 96%;
-    margin-left: 2%;
-    border: none!important;
-    border-radius: 4px;
+.div-questionnaire {
+    text-align: center;
 }
 
-@-webkit-keyframes slideInLeft {
-  from {
-    -webkit-transform: translate3d(-100%, 0, 0);
-    transform: translate3d(-100%, 0, 0);
-    visibility: visible;
-  }
-
-  to {
-    -webkit-transform: translate3d(0, 0, 0);
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-@keyframes slideInLeft {
-  from {
-    -webkit-transform: translate3d(-100%, 0, 0);
-    transform: translate3d(-100%, 0, 0);
-    visibility: visible;
-  }
-
-  to {
-    -webkit-transform: translate3d(0, 0, 0);
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-.slideInLeft {
-  -webkit-animation-name: slideInLeft;
-  animation-name: slideInLeft;
-}
-.cuerposearch{
-	padding:3%;
-}
-.colortitulomapa{
-	color:#666;
-	font-size:20px;
-}
-#mapa{
-	width:100%;
-  /* height: 470px; Recalculate based on screen's height when loading MapCtrl */
-}
-
-
-
-/* Language toggle switch */
-.toggle-text > .track {
-  width: auto;
-  padding-left: 25px;
-  padding-right: 25px;
-}
-
-.toggle-text .handle {
-  left: 7px;
-}
-
-.toggle-text .handle-text {
-  font-size: 20px;
-  /*color: white;*/
-  position: absolute;
-  top: -1px;
-}
-
-.toggle-text .handle-text-false {
-  left: 36px;
-}
-
-.toggle-text input[type="checkbox"]:checked + .track .handle {
-  -webkit-transform: none;
-  -moz-transform: none;
-  transform: none;
-  left: calc(100% - 34px);
-/*  -webkit-transform: translate3d(0, 0,0);*/
-}
-
-.handle .handle-text-true {
-  color: white;
-}
-
-input[type="checkbox"]:checked + .track .handle .handle-text-false {
-  color: white;
-}
-
-input[type="checkbox"] + .track .handle .handle-text-false {
-  color: #444;
-}
-
-.track-text {
-  line-height: 26px;
-  color: white;
-  font-size: 24px;
-  padding-left: 10px;
-  padding-right: 10px;
-}
-/* /Language toggle switch */
-
-/* Feedbacks style */
-.feedback-card{
-  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-}
-
-.feedback-header-title {
-  float: left;
-}
-
-.feedback-header-date {
-  float: right;
-}
-
-.feedback-send-button {
-  float: left;
-}
-
-.feedback-footer {
-  padding: 6px 0px 20px 0px;
-}
-
-.feedback-text {
-  color: #666; 
-  line-height: 20px; 
-  font-size: 14px;
-}
-
-.feedback-rating {
-  float: right;
-  margin-top: 3px;
-}
-
-.feedback-rating-img {
-    background-image: url("../img/star_main.png");
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 21px;
-    height: 20px;
-    float: right;
-}
-
-.statistics-rating-left {
-    float:left;
-}
-
-.statistics-rating-right {
-    float:right;
-}
-
-.ionic_ratings .icon {
-    font-size: 25px;
-  }
-  
 .about_logos {
     width: 80%;
     margin-left: 10%;
@@ -495,33 +288,6 @@ input[type="checkbox"] + .track .handle .handle-text-false {
     background-position: top center;
 }
 
-/* /Feedbacks style */
-
-.list-sorting-popover {
-  margin-bottom: 0px !important;
-}
-
-.statistics-chart {
-  padding-bottom: 11px;
-}
-
-.statistics-feedback-rating {
-  float: left; 
-  padding-right: 3px;
-}
-
-/* Remove 'title' area from ionicPopups */
-.custom-class .popup-head {
-  display: none;
-}
-.custom-class-popup > .popup { 
-  border-radius: 15px !important; 
-}
-
-/* About page */
-.div-questionnaire {
-  text-align: center;
-}
 .app-description {
     background: #FFF;
     /*color: #820205 !important;*/
@@ -535,81 +301,86 @@ input[type="checkbox"] + .track .handle .handle-text-false {
     padding-bottom: 8px;
     padding-left: 5px;
 }
+
 .app-version {
-  margin-bottom: 10px; 
-  margin-top: 10px;
+    margin-bottom: 10px; 
+    margin-top: 10px;
 }
 .app-version-div {
-  padding-left: 5px;
+    padding-left: 5px;
 }
-/*.questionnaire-select-input {
-  padding-top: 4px; 
-  padding-bottom: 3px; 
-  padding-right: 8px;
-}*/
+/* /About page */
 
 
 
-/* Bilbon */
+/* BilbOn specific classes */
+
+/* Map */
+.colortitulomapa{
+    color: #666;
+    font-size: 20px;
+}
+
+#mapa{
+    width: 100%;
+  /* height: 470px; Recalculate based on screen's height when loading MapCtrl */
+}
+/* /Map */
 
 /* Menu. Categories' list */
 .list .item.item-accordion {
-  line-height: 38px;
-  padding-top: 0;
-  padding-bottom: 0;
-  /*transition: 0.09s all linear;*/
-  transition: none; /* Avoid to load all items in ng-repeat before showing the selected ones when language is changed*/
+    line-height: 38px;
+    padding-top: 0;
+    padding-bottom: 0;
+    /*transition: 0.09s all linear;*/
+    transition: none; /* Avoid to load all items in ng-repeat before showing the selected ones when language is changed*/
 }
+
 .list .item.item-accordion.ng-hide {
-  line-height: 0px;
+    line-height: 0px;
 }
+
 .list .item.item-accordion.ng-hide-add,
 .list .item.item-accordion.ng-hide-remove {
-  display: block !important;
+    display: block !important;
 }
 /* /Menu. Categories' list */
 
 /* New POI button */
 /*$assertive :#ef473a;*/
 .button-float{
-  background: #DD0407 !important;
-  color:white !important;
-  z-index: 12 !important;
-  /*position: absolute !important;*/
-  /* bottom: 10px !important;*/
-  /*right: 10px !important;*/
-  border-radius: 50% !important;
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26) !important;
- /* -webkit-transform: translate3d(0, 0, 0) !important;
-  transform: translate3d(0, 0, 0) !important;
-  -webkit-transition: 0.2s linear !important;
-  transition: 0.2s linear !important;
-  -webkit-transition-property: -webkit-transform, all !important;
-  transition-property: transform, all !important;*/
+    background: #DD0407 !important;
+    color:white !important;
+    z-index: 12 !important;
+    /*position: absolute !important;*/
+    /* bottom: 10px !important;*/
+    /*right: 10px !important;*/
+    border-radius: 50% !important;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26) !important;
+   /* -webkit-transform: translate3d(0, 0, 0) !important;
+    transform: translate3d(0, 0, 0) !important;
+    -webkit-transition: 0.2s linear !important;
+    transition: 0.2s linear !important;
+    -webkit-transition-property: -webkit-transform, all !important;
+    transition-property: transform, all !important;*/
 
 }
 .button-float:hover{
-  /*-webkit-transform: translate3d(0, -1px, 0)  !important;
-  transform: translate3d(0, -1px, 0) !important;*/
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4) !important;
-  background: darken(#DD0407, 10%) !important;
+    /*-webkit-transform: translate3d(0, -1px, 0)  !important;
+    transform: translate3d(0, -1px, 0) !important;*/
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4) !important;
+    background: darken(#DD0407, 10%) !important;
 }
-/*#container {
-  width: 100px;
-  height: 100px;
-  position: relative;
-}*/
+
 #mapa-new-button {
-  /*width: 100%;*/
-  /*height: 100%;*/
-  /*width: 50vw;
-  height: 50vw;*/
-  position: absolute;
-  top: 9%;
-  right: 1%;
-}
-#mapa-new-button {
-  z-index: 10;
+    /*width: 100%;*/
+    /*height: 100%;*/
+    /*width: 50vw;
+    height: 50vw;*/
+    position: absolute;
+    top: 9%;
+    right: 1%;
+    z-index: 10;
 }
 /* /New POI button */
 
@@ -617,31 +388,31 @@ input[type="checkbox"] + .track .handle .handle-text-false {
 /* Menu's location items */
 /* Enable clicking inside checkbox element */
 .item-checkbox .checkbox {
-  z-index: -1 !important;
+    z-index: -1 !important;
 }
 .location-inline-item {
-  display: inline-block;
+    display: inline-block;
 }
 .location-autocomplete-div {
-  padding: 0px; 
-  border: 0px;
+    padding: 0px; 
+    border: 0px;
 }
 .location-autocomplete-search-img {
-  padding-right: 2px;
+    padding-right: 2px;
 }
 .location-autocomplete-input-div {
-  border-bottom: 1px solid #cccccc;
+    border-bottom: 1px solid #cccccc;
 }
 .location-autocomplete-input {
-  max-width: 93%;
+    max-width: 93%;
 }
 .text-search-input {
-  max-width: 80%;
+    max-width: 80%;
 }
 .location-gpslocation-div {
-  padding: 0px; 
-  border:0px; 
-  background-color: transparent !important; /* avoid 'activated' class when clicking "My location" text */
+    padding: 0px; 
+    border:0px; 
+    background-color: transparent !important; /* avoid 'activated' class when clicking "My location" text */
 }
 /* /Menu's location items */
 
@@ -653,23 +424,24 @@ input[type="checkbox"] + .track .handle .handle-text-false {
 }
 
 .map-div {
-  border-radius:6px;
-  box-shadow:0 0 9px rgba(0,0,0,0.8);
+    border-radius:6px;
+    box-shadow:0 0 9px rgba(0,0,0,0.8);
 }
 
 .poi-creation-map-div {
-  width:95%; 
-  height: 300px;
-  margin-top: 10px;
+    width:95%; 
+    height: 300px;
+    margin-top: 10px;
 }
 
 .create-form-autocomplete-input-div {
-  width: 95%;
+    width: 95%;
 }
 
 .create-form-autocomplete-div {
-  margin-right: 10px;
+    margin-right: 10px;
 }
+/* /Google Places' autocomplete container */
 
 /* Login page */
 .div-login {
@@ -679,3 +451,4 @@ input[type="checkbox"] + .track .handle .handle-text-false {
     margin: 20px;
     font-size: large;
 }
+/* /Login page */

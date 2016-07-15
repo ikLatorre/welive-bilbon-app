@@ -49,8 +49,14 @@ function CreatePOIController(
 	// pattern: 9 digits with, maybe, some spaces between them; optionally preceded by country code with these formats: '+34' or '0034'
 	$scope.phoneREGEXP = /^\s*(\+\d{2}|00\d{2})?(\s*\d\s*\d\s*\d\s*){3}$/i;
 
-	// define variables to manage location and the marker
+	// define variable to manage location and the marker
 	var currentMarker = null;
+
+	// define variable to store the category info of the new POI (this info is obtained from config/categories.js
+	// of the official items which id range is from 0 to 'number of categories-1')
+	// initialized in 'sendPOItoCitizensDataset()' and used in '$scope.submitPOI()' to show the corresponding
+	// alert message if the new POI's category is disabled in the filter
+	var createdPOIcategoryInfo = null;
 
 	// define object to manage location (text input and error messages)
 	$scope.location = {};  //only do this if $scope.course has not already been declared
@@ -95,19 +101,59 @@ function CreatePOIController(
               console.log("Error logging 'POIAdded' KPI", errorCallback);
             });
 
-			$ionicLoading.hide();
-			// show success message and return to main map's page
+			$ionicLoading.hide();			
+
+
+
+			/*// show login message
             var myPopup = $ionicPopup.show({
-                template: "<center>" + $filter('translate')('poi-create-page.info-alert-popup-label') + "</center>",
+                template: "<center>" + $filter('translate')('info-alert-popup-login-label-left') + "'" 
+                  + UserLocalStorage.getUserName() + "'" + $filter('translate')('info-alert-popup-login-label-right') + "</center>",
                 cssClass: 'custom-class custom-class-popup'
             });
             $timeout(function() { 
+                myPopup.close();
+
+                // go to map's page
+                $ionicHistory.nextViewOptions({ disableBack: true }); // Avoid back button in the next view
+                $state.go('app.map');
+                //$ionicHistory.clearCache().then(function(){ $state.go('app.map')});
+
+            }, 1600); //close the popup after 1.6 seconds */
+
+
+			var myPopup; // used to show an alert message 2 secs
+
+			// check if the new POI's category is enabled in the filter, and show the corresponding alert message
+            if($scope.filter.selectedCategories[createdPOIcategoryInfo['id']] == true){
+            	myPopup = $ionicPopup.show({
+					template: "<center>" + $filter('translate')('poi-create-page.info-alert-popup-label') + "</center>",
+					cssClass: 'custom-class custom-class-popup'
+				});
+            }else{
+            	myPopup = $ionicPopup.show({
+					template: "<center>" + $filter('translate')('poi-create-page.info-alert-popup-label-no-category') + "</center>",
+					cssClass: 'custom-class custom-class-popup'
+				});
+            }
+
+            $timeout(function() { 
+
+                //return to main map's page
                 $ionicHistory.nextViewOptions({ disableBack: true }); // Avoid back button in the next view
                 $state.go('app.map'); //$ionicHistory.clearCache().then(function(){ $state.go('app.map')});
-            }, 1600).then(function(){ myPopup.close(); }); //close the popup after 1.6 seconds 
+
+            	myPopup.close(); //close the popup after 2 seconds 
+
+            }, 2500).then(function(){ 
+            	// enable "also citizens' POIs filter" to search the created one 
+                // if the corresponding category is selected, otherwise the rest of the enabled categories
+                $scope.filter.selectedCitizensPOIs = true; // enable filter checkbox
+                $scope.citizenPOIsSelectionChanged(); // activate filter, or force a reload of it
+            }); 
 
 		}, function(error){
-			console.log('Error sending new OPI information.');
+			console.log('Error sending new POI information.');
 			$ionicLoading.hide();
 			$ionicPopup.alert({
 	            title: $filter('translate')('poi-create-page.error-popup-title'),
@@ -139,7 +185,8 @@ function CreatePOIController(
 		}else{
 			currentMarker = new google.maps.Marker({
 				position: location,
-				map: map
+				map: map,
+				icon: 'img/location_icon.png'
 			});
 		}
 		map.setCenter(location);
@@ -209,7 +256,7 @@ function CreatePOIController(
 		$ionicLoading.show({ template: '<ion-spinner icon="bubbles"></ion-spinner><br/>'
                                     + $filter('translate')('poi-create-page.loading-text')
    		});
-
+		
    		var datasetID = null;
    		var jsonID = null;
 
@@ -218,7 +265,10 @@ function CreatePOIController(
    		var categoryInfo = categories.filter( function(item){ // (see config/categories.js)
 	      return (item.datasetId == $scope.newPOI.category && item.isOfficial == true); 
 	    });
-   		if(categoryInfo != null){ categoryCustomNumericId = categoryInfo[0]['categoryCustomNumericId']; }
+   		if(categoryInfo != null){ 
+   			createdPOIcategoryInfo = categoryInfo[0];
+   			categoryCustomNumericId = categoryInfo[0]['categoryCustomNumericId']; 
+   		}
 
    		// use 'categoryCustomNumericId' to get citizen datasetID+jsonID to the selected category
    		categoryInfo = categories.filter( function(item){

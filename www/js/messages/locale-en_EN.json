@@ -1,6 +1,11 @@
 {
  "terms.title": "Terms of Use",
- "terms.refused-alert-text": "Please, accept the terms of use before accessing Bilbozkatu",
+ "terms.refused-alert-text": "Please, accept the terms of use before accessing BilbOn",
+
+ "info-alert-popup-title": "BilbOn",
+ "info-alert-popup-ok-button-label": "Accept",
+ "error-alert-popup-title": "Error",
+ "error-alert-popup-ok-button-label": "Close",
 
  "all-menu.back-button-label": "Back", 
  "menu.title": "Menu | Filter",
@@ -19,8 +24,13 @@
  "menu.language-item": "Change language",
  "menu.language-item.modal-title": "BilbOn",
  "menu.language-item.modal-cancel-btn": "Menu",
+
  "menu.exit-item": "Exit",
  "menu.exit-item-text": "Closing application...",
+ "info-confirm-popup-title": "BilbOn",
+ "info-confirm-popup-text": "Are you sure you want to exit?",
+ "info-confirm-popup-exit-accept-button-label": "Yes",
+ "info-confirm-popup-exit-cancel-button-label": "No",
 
  "menu.filter.search.loading-text": "Filtering information, please wait...",
  "menu.filter.category-search.remove-text": "Removing category, please wait...",
@@ -32,6 +42,7 @@
  "menu.filter.category-search.empty-citizen-popup-text": "There is no citizens' data with the specified parameters.",
  "menu.filter.category-search.alert-ok-button-label": "Close",
  "menu.filter.category-search.no-category-selected-error-popup-text": "Please select a category to apply this filter.",
+ "menu.filter.empty-results-info-alert-popup-label": "There are no points of interest with the specified parameters.",
 
  "menu.filter.location-search.info-popup-title": "Information",
  "menu.filter.location-search.empty-official-popup-text": "There is no official data near the specified location.",
@@ -102,7 +113,9 @@
  "poi-create-page.location-autocomplete-search-placeholder": "Search location...",
  "poi-create-page.submit-button-label": "Send information",
  "poi-create-page.form.advert-label": "The fields marked with an '*' are required.",
+ "poi-create-page.form.info-citizens-filter-label": "The filter to see citizens' POI will be activated automatically when sending a new one.",
  "poi-create-page.info-alert-popup-label": "The point of interest has been successfully registered.",
+ "poi-create-page.info-alert-popup-label-no-category": "The point of interest has been successfully registered (select the appropriate category to see the created point).",
  "poi-create-page.loading-text": "Sending data, please wait...",
 
  "poi-create-page.location-gmaps-error-popup-title": "Error",
@@ -119,15 +132,10 @@
  "login.error-popup-title": "Error",
  "login.error-popup-text": "There has been a problem logging in WeLive. Please, try again later.",
  "login.error-popup-button-label": "Close",
+ "info-confirm-popup-login-button-label": "Log in",
 
  "info-alert-popup-login-label-left": "You are logged in as ",
  "info-alert-popup-login-label-right": ".",
-
- "info-alert-popup-title": "BilbOn",
- "info-alert-popup-ok-button-label": "Accept",
- "error-alert-popup-title": "Error",
- "error-alert-popup-ok-button-label": "Close",
- "info-confirm-popup-login-button-label": "Log in",
 
  "about-page.title": "About",
  "about-page.subtitle": "Information and terms of use",
@@ -140,11 +148,6 @@
  "about.questionnaire.submitted-error-label": "Error while sending the questionnaire. Please, try again later.",
  "about.survey.text": "Your feedback is very valuable for us",
  "about.survey.disabled-text": "You have already filled in the questionnaire the maximum allowed times.",
- "about.survey.button": "Fill in the questionnaire",
-
- "info-confirm-popup-title": "BilbOn",
- "info-confirm-popup-text": "Are you sure you want to exit?",
- "info-confirm-popup-exit-accept-button-label": "Yes",
- "info-confirm-popup-exit-cancel-button-label": "No"
+ "about.survey.button": "Fill in the questionnaire"
  
 }

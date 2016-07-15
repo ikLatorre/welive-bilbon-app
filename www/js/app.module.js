@@ -56,7 +56,10 @@ angular
         Login.refreshOauthToken()
         .then(function(token){ // token refreshed and stored in local storage, avoid 'log out'
         }, function(errorCallback){ 
-            console.log("Error refreshing the user's access token", errorCallback);
+            if(errorCallback == 'isAlreadyLogout')
+              console.log("Is not necessary to refresh the access token, the user is not logged");
+            else
+              console.log("Error refreshing the user's access token", errorCallback);
             // force 'log out'
             UserLocalStorage.removeUserData(); // remove 'name', 'surname', 'socialId', 'userId'
             UserLocalStorage.removeOAuthData(); // remove 'accessToken', 'refreshToken', 'expiresIn', 'tokenType', 'scope'

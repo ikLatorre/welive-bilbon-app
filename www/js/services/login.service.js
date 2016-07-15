@@ -97,6 +97,12 @@ function LoginService(
         var promise;
         promise = $q(function (resolve, reject) {
 
+            // avoid token refresh if the 'refresh token' is not available (probably because
+            // the user is not logged in, and there is no OAuth data stored in localStorage)
+            if(UserLocalStorage.getRefreshToken() == null){
+                reject('isAlreadyLogout');
+            }
+
             $http.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
             $http({
                 method: 'POST',

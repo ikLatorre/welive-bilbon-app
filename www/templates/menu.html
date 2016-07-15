@@ -122,10 +122,15 @@
         </ion-toggle>-->
         
         <!-- Language selection item with 'ionic-modal-select' plugin (ES | EU | EN) -->
+        <!-- the text of the 'title' and 'cancel' button of the 'modal-select' item that is rendered once (when the 
+             app starts) can not be translated, because the code of the language modal is created dynamically and does
+             not allow a reload. So, instead of use the Angular's translate service, the text is the same in all languages.
+             [ modal-title="{{ 'menu.language-item.modal-title' | translate }}" ]
+             [ cancel-button="{{ 'menu.language-item.modal-cancel-btn' | translate }}" ]
+        -->
         <ion-item>
           <div id="modal-select" class="item-text-wrap" modal-select ng-model="selectedLang" options="selectableLanguages" 
-          modal-title="{{ 'menu.language-item.modal-title' | translate }}" hide-reset="true"
-          cancel-button="{{ 'menu.language-item.modal-cancel-btn' | translate }}"
+          hide-reset="true" modal-title="BilbOn" cancel-button="Menu"
           on-select="changeLang(newValue, oldValue)" option-property="id" 
           selected-class="active"> <!-- use Ionic's .active class for active list element -->
             <i class="icon ion-android-globe"></i>

@@ -1,6 +1,11 @@
 {
  "terms.title": "Términos de uso",
- "terms.refused-alert-text": "Acepte los términos de uso para acceder a Bilbozkatu",
+ "terms.refused-alert-text": "Acepte los términos de uso para acceder a BilbOn",
+
+ "info-alert-popup-title": "Bilbon",
+ "info-alert-popup-ok-button-label": "Aceptar",
+ "error-alert-popup-title": "Error",
+ "error-alert-popup-ok-button-label": "Cerrar",
 
  "all-menu.back-button-label": "Atrás", 
  "menu.title": "Menú | Filtrar",
@@ -19,8 +24,13 @@
  "menu.language-item": "Cambiar idioma",
  "menu.language-item.modal-title": "BilbOn",
  "menu.language-item.modal-cancel-btn": "Menu",
+
  "menu.exit-item": "Salir",
  "menu.exit-item-text": "Cerrando aplicación...",
+ "info-confirm-popup-title": "BilbOn",
+ "info-confirm-popup-text": "¿Está seguro de que desea salir?",
+ "info-confirm-popup-exit-accept-button-label": "Sí",
+ "info-confirm-popup-exit-cancel-button-label": "No",
 
  "menu.filter.search.loading-text": "Filtrando información, por favor espere...",
  "menu.filter.category-search.remove-text": "Eliminando categoría, por favor espere...",
@@ -32,6 +42,7 @@
  "menu.filter.category-search.empty-citizen-popup-text": "No hay datos de ciudadanos con los parámetros especificados.",
  "menu.filter.category-search.alert-ok-button-label": "Cerrar",
  "menu.filter.category-search.no-category-selected-error-popup-text": "Por favor, seleccione alguna categoría para aplicar este filtro.",
+ "menu.filter.empty-results-info-alert-popup-label": "No hay puntos de interés con los parámetros especificados.",
 
  "menu.filter.location-search.info-popup-title": "Información",
  "menu.filter.location-search.empty-official-popup-text": "No hay datos oficiales cerca de la localización especificada.",
@@ -102,7 +113,9 @@
  "poi-create-page.location-autocomplete-search-placeholder": "Buscar ubicación...",
  "poi-create-page.submit-button-label": "Enviar información",
  "poi-create-page.form.advert-label": "Los campos marcados con un '*' son obligatorios.",
+ "poi-create-page.form.info-citizens-filter-label": "El filtro para ver los de ciudadanos se activará automáticamente al crear uno nuevo.",
  "poi-create-page.info-alert-popup-label": "El punto de interés se ha registrado correctamente.",
+ "poi-create-page.info-alert-popup-label-no-category": "El punto de interés se ha registrado correctamente (active la categoría correspondiente para ver el punto creado).",
  "poi-create-page.loading-text": "Enviando datos, por favor espere...",
 
  "poi-create-page.location-gmaps-error-popup-title": "Error",
@@ -119,15 +132,10 @@
  "login.error-popup-title": "Error",
  "login.error-popup-text": "Ha habido un error al iniciar sesión en WeLive. Por favor, inténtelo de nuevo más tarde.",
  "login.error-popup-button-label": "Cerrar",
+ "info-confirm-popup-login-button-label": "Iniciar sesión",
 
  "info-alert-popup-login-label-left": "Ha iniciado sesión como ",
  "info-alert-popup-login-label-right": ".",
-
- "info-alert-popup-title": "Bilbon",
- "info-alert-popup-ok-button-label": "Aceptar",
- "error-alert-popup-title": "Error",
- "error-alert-popup-ok-button-label": "Cerrar",
- "info-confirm-popup-login-button-label": "Iniciar sesión",
 
  "about-page.title": "About",
  "about-page.subtitle": "Información y términos de uso",
@@ -140,11 +148,6 @@
  "about.questionnaire.submitted-error-label": "Se ha producido algún error al enviar el cuestionario. Por favor, inténtelo de nuevo más tarde.",
  "about.survey.text": "Agradeceríamos su opinión",
  "about.survey.disabled-text": "Ya ha rellenado el cuestionairo el número máximo de veces permitido.",
- "about.survey.button": "Rellenar el formulario",
-
- "info-confirm-popup-title": "BilbOn",
- "info-confirm-popup-text": "¿Está seguro de que desea salir?",
- "info-confirm-popup-exit-accept-button-label": "Sí",
- "info-confirm-popup-exit-cancel-button-label": "No"
+ "about.survey.button": "Rellenar el formulario"
  
 }

@@ -23,6 +23,10 @@ function FilteredPOIs(
 	var officialPOIs = [];
 	var citizenPOIs = [];
 
+	var locationFilterCoords = {}; // google.maps.LatLng object to store location filter's position (used in Map service to show the marker)
+	locationFilterCoords.lat = null;
+	locationFilterCoords.lng = null;
+
 	initializePOIs();
 
 	// define service's methods
@@ -33,7 +37,8 @@ function FilteredPOIs(
 		getCitizensFilteredPOIs: getCitizensFilteredPOIs,
 		getPOI: getPOI,
 		initializePOIs: initializePOIs,
-		removeCategoryPOIs: removeCategoryPOIs
+		removeCategoryPOIs: removeCategoryPOIs,
+		getPositionFilterCoords: getPositionFilterCoords
     };
     return filter;
 
@@ -176,10 +181,12 @@ function FilteredPOIs(
     	return promise;
     };
     
+    // return the official POIs array
     function getOfficialFilteredPOIs() {
     	return officialPOIs;
     };
 
+    // return the citizens' POIs array
     function getCitizensFilteredPOIs() {
     	return citizenPOIs;
     };
@@ -225,6 +232,11 @@ function FilteredPOIs(
     	}else{
     		citizenPOIs[categoryCustomNumericId] = {};
     	}
+    }
+
+    // returns a google.maps.LatLng object representing the coordinates of the selected location filter position. null otherwise.
+    function getPositionFilterCoords(){
+    	return locationFilterCoords;
     }
 
 
@@ -282,6 +294,13 @@ function FilteredPOIs(
     // Used in callSelectedLocationFilter(...) function to apply location filter to specific category array. 
     // It overrides the corresponding POIs' array removing the POI that is not near de selected location. Returns a promise.
     function applyLocationFilter(categoryCustomNumericId, isOfficial, lat, lng){
+
+    	// in this point 'lat' and 'lng' parameters refers to the selected coordinates of location filter (gps|google places)
+    	// store the coordinates to show the selected position as a marker in the map 
+    	// (see 'Map' service using this service's 'getPositionFilterLatLng()')
+    	locationFilterCoords.lat = lat;
+    	locationFilterCoords.lng = lng;
+
     	var promise;
     	promise = $q(function (resolve, reject) {
     		var datasetResults = null;
