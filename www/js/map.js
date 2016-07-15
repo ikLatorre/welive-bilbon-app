@@ -55,7 +55,8 @@ function loadGooglePlacesAutocompleteFeature(domInputElement, MapFactory, $ionic
             console.log('"place_changed" event fired.');
             
             // If the user press 'enter' with the sidebar's searcher, but without selecting an item from the list
-            if(//MapFactory.getGPlacesLocation() == '' //domInputElement.value == '' 
+            // (but in this case there is no the 'enter' button, is a mobile app)
+            if( //MapFactory.getGPlacesLocation() == '' //domInputElement.value == '' 
                 // first time the place is not defined:
                 autocompleteObj.getPlace() == null 
                 // enter pressed without selecting or error getting the place:
@@ -63,9 +64,24 @@ function loadGooglePlacesAutocompleteFeature(domInputElement, MapFactory, $ionic
 
                     MapFactory.setGPlacesLocationToSearch('');
             }else{
+                    // place changed successfully with Google Places
+
                     // store 'domInputElement' value, because the user written text ($scope.filter.autocompleteLocation)
                     // is not the entire location (e.g. use 'Caso Viejo,...' instead of 'casc')
                     MapFactory.setGPlacesLocationToSearch(domInputElement.value);
+
+                    // if the loaction filter is enabled with the Google Places option, reload the filter
+                    // because of the place changing. Is necessary to pass 'true' in the 'isLocationSwitched'
+                    // parameter to force a full reload, otherwise it just applies the location filter to loaded POIs.
+                    // this 'controllerScope' refers to AppController's '$scope', so is neccesary to acces if
+                    // from outside og the Angular's context (this 'map.js' is just a JavaScript file) 
+                    var appElement = document.querySelector('[ng-app=bilbonApp]');
+                    var bilbonAppScope = angular.element(appElement).scope();
+                    var bilbonAppControllerScope = bilbonAppScope.$$childHead; // access AppCtrl's $scope
+
+                    if(bilbonAppControllerScope.filter.selectedLocation['google-places']){ 
+                        bilbonAppControllerScope.callLocationFilter('google-places', true);
+                    }
             }
 
             return;

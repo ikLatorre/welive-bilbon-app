@@ -74,6 +74,14 @@ function MapService(
     // this function is called from the 'finishFilterAndReloadMarkers()' of AppController, so is executed 
     // after the location filter has been applied (and the coordinates are already stored in 'FilteredPOIs')
     function showLocationMarker(){
+
+    	// if previously the location marker is being shown, remove it
+    	// (it will happen if another marker must be displayed because of the changing Google Places location )
+    	if(map.locationFilterPos.marker != null){
+    		map.locationFilterPos.marker.setMap(null);
+    	}
+
+    	// get location coords from 'FilteredPOIs' service
     	var coords = FilteredPOIs.getPositionFilterCoords();
 		if(coords.lat != null && coords.lng != null){
 			// create and show the marker
