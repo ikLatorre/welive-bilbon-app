@@ -34,10 +34,11 @@ function LoginService(
             clientSecretMobile:'6e33b66a-28e8-4255-acc5-392c84677b89'
         },
 
-        clientAppAccessToken: undefined,
+        getAppAccessTokenFromAACTokenAPI: false,
+        clientAppAccessToken: '7c79ec5a-2e5c-4ed5-bc71-44e93d8353a2',
         clientAppExpiresIn: undefined,
-        clientAppTokenType: undefined,
-        clientAppScope: undefined,
+        clientAppTokenType: 'Bearer',
+        clientAppScope: 'profile.basicprofile.me',
 
         code: undefined,
         accessToken: undefined,
@@ -52,38 +53,58 @@ function LoginService(
 
     /**
      * @desc WeLive's OAUTH2.0 NON USER-RELATED PROTOCOL FLOW (client (app) credentials flow)
-     * Obtain the access token associated to the WeLive's client app, not to a single user.
+     * Obtain the access token associated to the WeLive's client app, not to a single user,
+     * for logging (to execute the logging API calls, it is necessary to provide the OAuth 2.0 access token).
+     * Depending on the 'login.getAppAccessTokenFromAACTokenAPI' variable defined in this service,
+     * the returned access token has been obtained from AAC token API or from the AAC client app
+     * management console (in this case the access token, which doesn't expire, is in 'login.clientAppAccessToken')
+     * If success, resolve's the access 'token' (it will be stored in 'KPI' service when the app starts (see app.module.js)).
      */
     function requestWeliveClientAppOauthToken(){
         var promise;
         promise = $q(function (resolve, reject) {
 
-            $http.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-            $http({
-                method: 'POST',
-                url: 'https://dev.welive.eu/aac/oauth/token',
-                data: 'client_id=' + login.params.clientId
-                    + '&'
-                    + 'client_secret=' + login.params.clientSecret
-                    + '&'
-                    + 'grant_type=client_credentials'
-            
-            }).then(function(clientCredentialsResponse){
+            // The access token may be obtained either directly from the AAC client app management console 
+            // or through AAC token API (does not expire).
+            // below is used the first form for speed reasons, but the other way to get the access token
+            // is implemented (commented, unused)
 
-                if(!clientCredentialsResponse.data.exception) {
-                    login.clientAppAccessToken = clientCredentialsResponse.data.access_token;
-                    login.clientAppExpiresIn = clientCredentialsResponse.data.expires_in;
-                    login.clientAppTokenType = clientCredentialsResponse.data.token_type;
-                    login.clientAppScope = clientCredentialsResponse.data.scope;
-                    
-                    resolve(clientCredentialsResponse.data.access_token);
-                }else{
-                    reject();
-                }
+            if(login.getAppAccessTokenFromAACTokenAPI){
 
-            }, function(errorCallback){
-                reject(errorCallback);
-            });
+                // get the access token through AAC token API
+                $http.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+                $http({
+                    method: 'POST',
+                    url: 'https://dev.welive.eu/aac/oauth/token',
+                    data: 'client_id=' + login.params.clientId
+                        + '&'
+                        + 'client_secret=' + login.params.clientSecret
+                        + '&'
+                        + 'grant_type=client_credentials'
+                
+                }).then(function(clientCredentialsResponse){
+
+                    if(!clientCredentialsResponse.data.exception) {
+                        login.clientAppAccessToken = clientCredentialsResponse.data.access_token;
+                        login.clientAppExpiresIn = clientCredentialsResponse.data.expires_in;
+                        login.clientAppTokenType = clientCredentialsResponse.data.token_type;
+                        login.clientAppScope = clientCredentialsResponse.data.scope;
+                        
+                        resolve(clientCredentialsResponse.data.access_token);
+                    }else{
+                        reject();
+                    }
+
+                }, function(errorCallback){
+                    reject(errorCallback);
+                });
+
+            }else{
+                // set the access token obtained from the AAC client app management console
+                // (defined in the 'login' variable)
+                resolve(login.clientAppAccessToken);
+            }
+
         });
         
         return promise;

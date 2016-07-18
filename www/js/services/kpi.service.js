@@ -15,16 +15,17 @@ function KPIService(
     WELIVE_SERVICE_NAME) {
 
     var enabled = true;         // enable or disable KPI service
-    var isTokenRequest = false; // control if WeLive's client app token has been obtained (if not, avoid KPI calls)
-
+    
+    var isTokenRequest = false; // (don't edit) control if WeLive's client app token has been obtained (if not, avoid KPI calls)
     var appId = WELIVE_SERVICE_ID;      // 'bilbon'
     var appName = WELIVE_SERVICE_NAME;  // the name of the app (don't use 'es.eurohelp.welive.bilbon', only 'Bilbon')
     var requestParams = {
         method: "POST",
-        url: "https://dev.welive.eu/dev/api/log/" + appId,
+        url: "https://dev.welive.eu/welive.logging/log/" + appId,
         headers: {  
+            'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authentication': undefined  
+            'Authorization': undefined  
         } // using 'Authorization' the response is 'HTTP Status 403, Access to the specified resource has been forbidden'
     };
 
@@ -42,7 +43,7 @@ function KPIService(
     // set 'Authentication' header's content with the obtained token in 'Login' service (called in app.js)
     function setClientAppToken(token){
         if(token != null){
-            requestParams.headers['Authentication'] = 'Bearer ' + token;
+            requestParams.headers['Authorization'] = 'Bearer ' + token;
             isTokenRequest = true;
         }
     };
