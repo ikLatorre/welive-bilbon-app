@@ -12,6 +12,15 @@
       </div>
     </a>
 
+    <div class="datos_detalle_about div-questionnaire">
+        <p ng-show="showSurvey">{{'about.survey.text' | translate}}</p>
+        <p ng-hide="showSurvey">{{'about.survey.disabled-text' | translate}}</p>
+        <button class="button button-full button-assertive" ng-click="launchSurvey()" ng-disabled="!showSurvey">
+          <i class="icon ion-clipboard"></i>
+          {{ 'about.survey.button' | translate }}
+        </button>
+    </div>
+
     <div class="movement slideInUp animated">
       <div class="datos_detalle_about titulo slideInLeft animated2 app-description">
           <h2>{{ 'about-page.subtitle' | translate }}</h2>    
@@ -19,15 +28,6 @@
           <p>{{ 'about-page.text-2' | translate }}</p>
           <p>{{ 'about-page.text-3' | translate }}</p>
           <p>{{ 'about-page.text-4' | translate }}</p>
-      </div>
-
-      <div class="datos_detalle_about div-questionnaire">
-          <p ng-show="showSurvey">{{'about.survey.text' | translate}}</p>
-          <p ng-hide="showSurvey">{{'about.survey.disabled-text' | translate}}</p>
-          <button class="button button-full button-assertive" ng-click="launchSurvey()" ng-disabled="!showSurvey">
-            <i class="icon ion-clipboard"></i>
-            {{ 'about.survey.button' | translate }}
-          </button>
       </div>
 
       <div class="about_logos"></div>

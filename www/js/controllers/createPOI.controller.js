@@ -286,7 +286,7 @@ function CreatePOIController(
 	            url: WELIVE_DATASET_API_URL + datasetID + '/resource/' + jsonID + '/update',
 	            headers: {	'Content-Type': 'text/plain',
 			    			'Accept': 'application/json',
-			    			'Authorization':'Bearer ' + UserLocalStorage.getAccessToken()  },
+			    			'Authorization':'Bearer 7c79ec5a-2e5c-4ed5-bc71-44e93d8353a2'},// + UserLocalStorage.getAccessToken()  },
 	            sqlStatement: "INSERT INTO POIS (id, documentName, documentDescription, web, email, phoneNumber,"
 	            			+ " latitudelongitude, category, municipalityCode, municipality, historicTerritoryCode,"
 	            			+ " historicTerritory, country, territory) VALUES"

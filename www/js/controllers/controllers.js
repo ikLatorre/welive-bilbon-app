@@ -1020,6 +1020,12 @@ function AppController(
 
 
 
+  // Enable the first category by default when the page loads (see config/categories.js).
+  // In this case loads the 'restaurantes-sidrerias-y-bodegas-de-euskadi' category (of a official dataset)
+  $scope.filter.selectedCategories[0] = true; // enable category checkbox
+  $scope.callDatasetCategoriesFilter(0);      // apply the filter
+
+
 
 
   /* uncomment below (and the menu 'exit' item) to enable a button to exit the app
