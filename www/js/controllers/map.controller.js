@@ -4,7 +4,8 @@ angular
     .module('bilbonApp.controllers')
     .controller('MapCtrl', MapController);
 
-MapController.$inject = ['$scope', '$rootScope', '$state', '$ionicPopup', '$window', '$filter', '$timeout', 'Map', 'UserLocalStorage'];
+MapController.$inject = ['$scope', '$rootScope', '$state', '$ionicPlatform', '$ionicPopup', '$window', '$filter', 
+						'$timeout', 'Map', 'UserLocalStorage'];
 
 /**
  * Controller - Main page (map)
@@ -13,6 +14,7 @@ function MapController(
 	$scope,
 	$rootScope, 
 	$state, 
+	$ionicPlatform,
 	$ionicPopup,  
 	$window, 
 	$filter,
@@ -31,6 +33,19 @@ function MapController(
 
 	var autocomplete = loadGooglePlacesAutocompleteFeature(document.getElementById('location-input'), Map, $ionicPopup);
 	Map.setAutocomplete(autocomplete);
+
+	// load default filter when the app starts and shows the first page (the map)
+	$ionicPlatform.ready(function() {
+		// Enable the first category by default when the page loads (see config/categories.js).
+		// In this case loads the 'restaurantes-sidrerias-y-bodegas-de-euskadi' category (of a official dataset)
+		$scope.filter.selectedCategories[0] = true; // enable category's checkbox
+		$scope.callDatasetCategoriesFilter(0);      // apply the filter
+
+		// Enable "also citizens' POIs filter" by default to search the created one when the page loads 
+		// (in this case of 'restaurantes-sidrerias-y-bodegas-de-euskadi' category)
+		$scope.filter.selectedCitizensPOIs = true; // enable filter's checkbox
+		$scope.citizenPOIsSelectionChanged();      // apply the filter
+	});
 
 	// run when map's red button is clicked 
 	$scope.createPOI = function(){
@@ -62,5 +77,18 @@ function MapController(
 			
 		}
 	});
+
+	// Do logout. Clean login local data (user profile and OAuth data)
+	$scope.doLogout = function(){
+		UserLocalStorage.removeUserData(); // remove user profile data if it is already stored (name, surname, socialId, userId)
+		UserLocalStorage.removeOAuthData(); // remove user's OAuth session data (accessToken, refreshToken, expiresIn, tokenType, scope)
+
+		// show logout message
+		var myPopup = $ionicPopup.show({
+			template: "<center>" + $filter('translate')('info-alert-popup-logout-label') + "</center>",
+			cssClass: 'custom-class custom-class-popup'
+		});
+		$timeout(function() { myPopup.close(); }, 1600); //close the popup after 1.6 seconds 
+	};
 
 }

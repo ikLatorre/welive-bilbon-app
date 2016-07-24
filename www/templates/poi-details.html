@@ -24,7 +24,12 @@
           {{ 'poi-details.list.other-data-divider-text' | translate }}
         </div>
         <div class="item item-text-wrap">
-          <b>{{ 'poi-details.list.web-text' | translate }}</b> {{poiDetails.web}}
+          <b>{{ 'poi-details.list.web-text' | translate }}</b>
+          <!-- show the web page as link if the datum exists -->
+          <a ng-if="poiDetails.web != '-'" href="#" ng-click="goToWebPage()">
+            {{poiDetails.web}}
+          </a>
+          <span ng-if="poiDetails.web == '-'">{{poiDetails.web}}</span>
         </div>
         <div class="item item-text-wrap">
           <b>{{ 'poi-details.list.email-text' | translate }}</b> {{poiDetails.email}}

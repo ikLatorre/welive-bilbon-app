@@ -31,7 +31,12 @@ function LoginController(
     */
     function credentialsLogin() {
 
-        // Oauth authentication
+        // Oauth authentication flow: get the code --> request token with the code --> get the user token --> request user profile.
+        // If one of the step fails, the error will be propagated through the promises' chain (the second argument of each promise response
+        // handlers a rejected promise, but the chain will continue). In this case the error will continue the chain until the first 
+        // error handler (second argument) in the chain, that is only defined in the last step of it. 
+        // That is to say, if an error occurs in a chain's step, the 'Login' service's corresponding function will return a
+        // 'rejected' status, and the chain will continue until the las step, where 'showAACerrorMsg()' function is called.
         Login.requestAuthorize()
             .then(function(){
                 $ionicLoading.show({
@@ -40,16 +45,16 @@ function LoginController(
                 });
                 return Login.requestOauthToken();
             })
-            .then(Login.requestOauthTokenSuccessCallback, requestOauthTokenErrorCallback)
+            .then(Login.requestOauthTokenSuccessCallback)
             .then(Login.requestBasicProfile)
-            .then(requestBasicProfileSuccessCallback, requestBasicProfileErrorCallback);
+            .then(requestBasicProfileSuccessCallback, showAACerrorMsg);
 
         
         /**
-        * manage the error of the post request
-        * @param response: the error from the request
+        * Manage an error in the promises' chain (login flow). Stop the 'loading' panel and show an error message.
+        * @param callbackResponse: the error callback from the AAC API
         */
-        function requestOauthTokenErrorCallback(response){
+        function showAACerrorMsg(response){
             var promise;
             promise = $q(function(resolve, reject) {
                 console.log("ERROR: " + response.data.toString());
@@ -60,6 +65,11 @@ function LoginController(
                     okText: $filter('translate')('login.error-popup-button-label'),
                     okType: 'button-assertive' 
                 });
+
+                // clean login local data (user profile and OAuth data) if the chain failed when some data was already getted
+                UserLocalStorage.removeUserData(); // remove user profile data if it is already stored (name, surname, socialId, userId)
+                UserLocalStorage.removeOAuthData(); // remove user's OAuth session data (accessToken, refreshToken, expiresIn, tokenType, scope)
+                
                 reject();
             });
 
@@ -111,26 +121,5 @@ function LoginController(
 
         };
 
-
-        /**
-        * manage the error of the get request
-        * @param response: the error from the request
-        */
-        function requestBasicProfileErrorCallback(response){
-            var promise;
-            promise = $q(function(resolve, reject) {
-                console.log("ERROR: " + response.data.toString());
-                $ionicLoading.hide();
-                $ionicPopup.alert({
-                    title: $filter('translate')('login.error-popup-title'),
-                    template: $filter('translate')('login.error-popup-text'),
-                    okText: $filter('translate')('login.error-popup-button-label'),
-                    okType: 'button-assertive' 
-                });
-                reject();
-            });
-
-            return promise;
-        };
     }
 }

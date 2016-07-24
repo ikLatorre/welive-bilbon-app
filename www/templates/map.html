@@ -4,7 +4,9 @@
   </ion-nav-title>
   <ion-nav-buttons side="right">
       <button class="button button-icon button-clear ion-log-in" 
-        ui-sref="app.login" ng-show="getCurrentUserId() == null"></button>
+        ng-show="getCurrentUserId() == null" ui-sref="app.login" ></button>
+      <button class="button button-icon button-clear ion-log-out" 
+        ng-hide="getCurrentUserId() == null" ng-click="doLogout()"></button>
       
       <button class="button button-icon button-clear ion-ios-information-outline" ui-sref="app.about"></button>
   </ion-nav-buttons>

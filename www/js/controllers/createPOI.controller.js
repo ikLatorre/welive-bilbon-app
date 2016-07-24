@@ -101,28 +101,9 @@ function CreatePOIController(
               console.log("Error logging 'POIAdded' KPI", errorCallback);
             });
 
-			$ionicLoading.hide();			
+			$ionicLoading.hide();		
 
-
-
-			/*// show login message
-            var myPopup = $ionicPopup.show({
-                template: "<center>" + $filter('translate')('info-alert-popup-login-label-left') + "'" 
-                  + UserLocalStorage.getUserName() + "'" + $filter('translate')('info-alert-popup-login-label-right') + "</center>",
-                cssClass: 'custom-class custom-class-popup'
-            });
-            $timeout(function() { 
-                myPopup.close();
-
-                // go to map's page
-                $ionicHistory.nextViewOptions({ disableBack: true }); // Avoid back button in the next view
-                $state.go('app.map');
-                //$ionicHistory.clearCache().then(function(){ $state.go('app.map')});
-
-            }, 1600); //close the popup after 1.6 seconds */
-
-
-			var myPopup; // used to show an alert message 2 secs
+			var myPopup; // used to show an alert message 2.5 secs
 
 			// check if the new POI's category is enabled in the filter, and show the corresponding alert message
             if($scope.filter.selectedCategories[createdPOIcategoryInfo['id']] == true){
@@ -280,13 +261,14 @@ function CreatePOIController(
 	    	jsonID = categoryInfo[0]['jsonId'];
 	    } 
 
+	    // 'transaction' parameter of the URL: enable transaction mode for multiple update execution
 		var datasetCall = {
 	        params : {
 	            method: 'POST',
-	            url: WELIVE_DATASET_API_URL + datasetID + '/resource/' + jsonID + '/update',
+	            url: WELIVE_DATASET_API_URL + datasetID + '/resource/' + jsonID + '/update?transaction=false',
 	            headers: {	'Content-Type': 'text/plain',
 			    			'Accept': 'application/json',
-			    			'Authorization':'Bearer 7c79ec5a-2e5c-4ed5-bc71-44e93d8353a2'},// + UserLocalStorage.getAccessToken()  },
+			    			'Authorization': 'Bearer ' + UserLocalStorage.getAccessToken()  },
 	            sqlStatement: "INSERT INTO POIS (id, documentName, documentDescription, web, email, phoneNumber,"
 	            			+ " latitudelongitude, category, municipalityCode, municipality, historicTerritoryCode,"
 	            			+ " historicTerritory, country, territory) VALUES"

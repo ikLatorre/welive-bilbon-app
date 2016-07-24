@@ -94,4 +94,9 @@ function POIDetailsController(
 		}
 	*/
 
+	// used for 'web page' datum if exists, opens it in the system's web browser
+	$scope.goToWebPage = function(){
+		window.open($scope.poiDetails.web, '_system', 'location=no,clearcache=yes');
+	}
+	
 }

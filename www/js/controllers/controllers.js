@@ -65,13 +65,7 @@ function AppController(
 
   // ** Configure user's login **
 
-  // Uncomment below to force 'Log out' when the app is started
-  /*
-    UserLocalStorage.removeUserData(); 
-    UserLocalStorage.removeOAuthData(); 
-  */
-
-  // Define function to show or hide menu's login item or to know if user has logged in
+  // Define function to show or hide menu's login and logout items or to know if the user is logged in in other controllers
   $scope.getCurrentUserId = function (){
       return UserLocalStorage.getUserId();
   }
@@ -1016,14 +1010,6 @@ function AppController(
     // hide loading panel and reload the map's markers
     finishFilterAndReloadMarkers();
   };
-
-
-
-
-  // Enable the first category by default when the page loads (see config/categories.js).
-  // In this case loads the 'restaurantes-sidrerias-y-bodegas-de-euskadi' category (of a official dataset)
-  $scope.filter.selectedCategories[0] = true; // enable category checkbox
-  $scope.callDatasetCategoriesFilter(0);      // apply the filter
 
 
 
