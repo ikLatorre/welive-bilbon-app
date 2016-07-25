@@ -137,6 +137,7 @@
 
  "info-alert-popup-login-label-left": "Ha iniciado sesión como ",
  "info-alert-popup-login-label-right": ".",
+ "info-alert-popup-logout-label": "Ha cerrado la sesión satisfactoriamente.",
 
  "about-page.title": "About",
  "about-page.subtitle": "Información y términos de uso",

@@ -137,6 +137,7 @@
 
  "info-alert-popup-login-label-left": "You are logged in as ",
  "info-alert-popup-login-label-right": ".",
+ "info-alert-popup-logout-label": "You've been logged out successfully.",
 
  "about-page.title": "About",
  "about-page.subtitle": "Information and terms of use",
