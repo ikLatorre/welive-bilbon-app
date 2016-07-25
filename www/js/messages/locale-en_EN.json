@@ -77,6 +77,7 @@
  "poi-details.list.poi-divider-text": "Point of interest",
  "poi-details.list.name-text": "Name:",
  "poi-details.list.description-text": "Description:",
+ "poi-details.list.category-text": "Category:",
  "poi-details.list.other-data-divider-text": "Other data",
  "poi-details.list.web-text": "Web page:",
  "poi-details.list.email-text": "Email:",

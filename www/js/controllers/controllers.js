@@ -347,7 +347,7 @@ function AppController(
 
   
   // returns an array of integers of selected 'categoryCustomNumericId', or an empty array otherwise
-  // (e.g. [1,3]: selected 1 and 3 categories (see 'config/categories.js'))
+  // (e.g. [1,3]: selected 1 and 3 categories (categoryCustomNumericId) (see 'config/categories.js'))
   function getSelectedCategories(){
     var selectedCategories = [];
     angular.forEach($scope.translatedCategories, function(item, key){ //iterate over existing categories
@@ -501,7 +501,7 @@ function AppController(
   }
 
   // apply location filter (override stored POIs' array) to specific category and type (official or not)
-  // Returns a promise: resolved with 'filteredArray' parameter (null if it isn't neccesary to apply this filter) 
+  // Returns a promise: resolved with 'filteredArray' parameter (null if it isn't necessary to apply this filter) 
   // or rejected with 'errorType': 'gps-error' (couldn't get device's location) or 'bounds-error' (apply to null POIs array)
   function applyLocationFilter(categoryCustomNumericId, isOfficial){
     var promise;
@@ -548,8 +548,20 @@ function AppController(
     var promise;
     promise = $q(function (resolve, reject) {
 
+        // avoid aplying this category filter for citizens' POIs if 'Also citizens'' filter is disabled)
         if(!isOfficial && !$scope.filter.selectedCitizensPOIs){ 
           resolve(); // citizen POIs' filter is disabled, don't check them
+          return;
+        }
+
+        // avoid aplying this category filter for official POIs if the category is defined only for citizens
+        // (the official dataset of this category doesn't exist in the ODS, and the 'jsonId' is 'null')
+        var categoryInfo = categories.filter( function(item){
+          return (item.categoryCustomNumericId == categoryCustomNumericId && item.isOfficial == true); 
+        });
+        var jsonId = (categoryInfo != null)? categoryInfo[0]['jsonId'] : null;
+        if(isOfficial && jsonId == null){
+          resolve();
           return;
         }
 
@@ -603,7 +615,7 @@ function AppController(
   }
 
   // function to run in every loop of the async cycle to apply enabled filters for all selected categories
-  // see 'asyncLoopForCategoriesFilter(...)', used 'for' asynchronous for cycle
+  // see 'asyncLoopForCategoriesFilter(...)', used for asynchronous 'for' cycle
   function filterCategoryLoopFunction(categoryCustomNumericId, categoryTranslatedName, iterationIndex, callback) {
       console.log('Starting iteration ', iterationIndex); 
       // get category official POIs and filter by text and location if neccesary; repeat for citizens' POIs

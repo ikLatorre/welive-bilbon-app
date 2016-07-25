@@ -231,7 +231,7 @@ function CreatePOIController(
 	    );
 	};
 
-	// send POI informatio to citizen's dataset
+	// send POI's information to citizen's dataset
 	// Returns a promise: if success, the api's response; otherwise error.
 	function sendPOItoCitizensDataset(){
 		$ionicLoading.show({ template: '<ion-spinner icon="bubbles"></ion-spinner><br/>'
@@ -251,7 +251,7 @@ function CreatePOIController(
    			categoryCustomNumericId = categoryInfo[0]['categoryCustomNumericId']; 
    		}
 
-   		// use 'categoryCustomNumericId' to get citizen datasetID+jsonID to the selected category
+   		// use 'categoryCustomNumericId' to get citizen's datasetID+jsonID to the selected category
    		categoryInfo = categories.filter( function(item){
 	      return (item.categoryCustomNumericId == categoryCustomNumericId && item.isOfficial == false); 
 	    });

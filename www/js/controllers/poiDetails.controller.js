@@ -4,7 +4,8 @@ angular
     .module('bilbonApp.controllers')
     .controller('POIDetailsCtrl', POIDetailsController);
 
-POIDetailsController.$inject = ['$scope', '$state', '$filter', '$ionicPopup', '$stateParams', 'FilteredPOIs', 'KPI'];
+POIDetailsController.$inject = ['$scope', '$state', '$filter', '$ionicPopup', '$ionicHistory', '$translate', 
+								'$stateParams', 'FilteredPOIs', 'KPI'];
 
 /**
  * Controller - Details of a POI (Point of interest)
@@ -14,6 +15,8 @@ function POIDetailsController(
 	$state, 
 	$filter, 
 	$ionicPopup, 
+	$ionicHistory,
+	$translate,
 	$stateParams,
 	FilteredPOIs,
 	KPI){
@@ -28,23 +31,30 @@ function POIDetailsController(
 		isOfficial = false;
 	}
 
-	// get poi's details from stored POIs arrays
+	// get POI's details from stored POIs arrays
 	$scope.poiDetails = FilteredPOIs.getPOI(isOfficial, $stateParams.categoryCustomNumericId, $stateParams.poiId);
 
-	if(isOfficial) $scope.poiDetails.type = $filter('translate')('poi-details.official-type-text');
-	else $scope.poiDetails.type = $filter('translate')('poi-details.citizen-type-text');
-
 	if($scope.poiDetails == null){
-		// couldn't get poi details
+		// couldn't get POI details
 		$ionicPopup.alert({
             title: $filter('translate')('poi-details.error-popup-title'),
             template: $filter('translate')('poi-details.error-popup-text'),
             okText: $filter('translate')('poi-details.error-ok-button-label'),
             okType: 'button-assertive' 
         });
-		$state.go('app.map');
+		$ionicHistory.goBack(); // go back to the 'Map' page
 	}
+
+	// set POI type
+	if(isOfficial) $scope.poiDetails.type = $filter('translate')('poi-details.official-type-text');
+	else $scope.poiDetails.type = $filter('translate')('poi-details.citizen-type-text');
 	console.log($scope.poiDetails);
+
+	// set POI category
+	var categoryInfo = categories.filter( function(item){
+      return (item.categoryCustomNumericId == $stateParams.categoryCustomNumericId && item.isOfficial == true); 
+    });
+    $scope.poiDetails.categoryName = (categoryInfo != null)? categoryInfo[0][$translate.use()] : '-';
 
 	// KPI when a POI is selected
 	KPI.POIsSelected($stateParams.poiId, $scope.poiDetails.documentName, $scope.poiDetails.latitudelongitude)
