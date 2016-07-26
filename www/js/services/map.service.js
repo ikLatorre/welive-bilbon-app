@@ -19,9 +19,7 @@ function MapService(
 	map.selectedLocationInput = ''; // used for Google Places' input element
 	map.searchedTextInput = ''; // used for text's filter
 
-	map.locationFilterPos = {} // define object to manage user filtered location marker (gps | google places)
-	map.locationFilterPos.marker = null; // user position marker of selected location filter
-	map.locationFilterPos.latlng = null; // user position object (gps' or G. Autocomplete's coordinates) of 'google.maps.LatLng' type
+	map.locationFilterPosMarker = null; // define object to manage user filtered location marker (gps | google places)
 
 	// define markers' model like POIs array's model of 'poi-filter.service.js'
 	map.officialMarkers = [];
@@ -74,37 +72,48 @@ function MapService(
     // this function is called from the 'finishFilterAndReloadMarkers()' of AppController, so is executed 
     // after the location filter has been applied (and the coordinates are already stored in 'FilteredPOIs')
     function showLocationMarker(){
-
     	// if previously the location marker is being shown, remove it
     	// (it will happen if another marker must be displayed because of the changing Google Places location )
-    	if(map.locationFilterPos.marker != null){
-    		map.locationFilterPos.marker.setMap(null);
+    	if(map.locationFilterPosMarker != null){
+    		map.locationFilterPosMarker.setMap(null);
     	}
 
     	// get location coords from 'FilteredPOIs' service
     	var coords = FilteredPOIs.getPositionFilterCoords();
-		if(coords.lat != null && coords.lng != null){
+		if(coords.latitude != null && coords.longitude != null){
 			// create and show the marker
-			map.locationFilterPos.marker = new google.maps.Marker({
-				position: new google.maps.LatLng(coords.lat, coords.lng),
+			map.locationFilterPosMarker = new google.maps.Marker({
+				position: new google.maps.LatLng(coords.latitude, coords.longitude),
 				map: getMap(),
 				icon: 'img/location_icon.png'
 			});
-			// center the map in the location marker
-			getMap().setCenter(map.locationFilterPos.marker.getPosition());
+	
+			// get the south-west latitude/longitude and the north-east latitude/longitude of the current viewport
+			// and extend it with the location marker
+			var bounds = getMap().getBounds();
+			bounds.extend(map.locationFilterPosMarker.getPosition());
+			getMap().fitBounds(bounds); // show Bilbao and the location marker if there are no any POI
+			// when creating all the POIs (see 'createCategoryMarkers(...)'), if any of them has the same
+			// coordinates as location marker, the location marker is moved a little bit to avoid to hide it
+			// (this is checked and done in this 'Map' service in 'createCategoryMarkers(...)')
+
+			// change flag to force the recalculation of the device's gps location if necessary
+			// (this flag is used to avoid to obtain the gps location for each category and type (official or not) 
+			// in the filter process)
+			FilteredPOIs.setPositionFilterCoordsStored(false);
+
 			console.log('Location marker showing in ', coords);
 			return true;
 		}
     	return false;
     }
 
-    // remove location marker from the map and from 'map.locationFilterPos' object. 
+    // remove location marker from the map and from 'map.locationFilterPosMarker' object. 
     // returns true if success (it is defined); false otherwise.
     function hideLocationMarker(){
-    	if(map.locationFilterPos.marker != null){
-    		map.locationFilterPos.marker.setMap(null);
-    		map.locationFilterPos.marker = null;
-    		map.locationFilterPos.latlng = null;
+    	if(map.locationFilterPosMarker != null){
+    		map.locationFilterPosMarker.setMap(null);
+    		map.locationFilterPosMarker = null;
     		return true;
     	}
     	return false;
@@ -240,6 +249,9 @@ function MapService(
 
     		var markersCount = 0;
 
+    		// get the location filter's marker to move it if any POI has the same coordinates and avoid to hide it
+    		var locationFilterCoords = FilteredPOIs.getPositionFilterCoords();
+
 	    	// create official or citizen POIs' markers, iterate over the array of dataset results of each category
 	    	angular.forEach(filteredPOIs, function(datasetItem, categoryKey){
 
@@ -251,6 +263,13 @@ function MapService(
 						var coordinatesLatLng =  POIitem.latitudelongitude.split(",");
 						var latitude = Number(coordinatesLatLng[0]);
 						var longitude = Number(coordinatesLatLng[1]);
+
+						// if the POI's coordinates are exactly the same as the location filter's marker,
+						// move a little bit the location marker to avoid to hide it 
+						if(locationFilterCoords != null &&
+							locationFilterCoords.latitude == latitude && locationFilterCoords.longitude == longitude){
+							FilteredPOIs.setPositionFilterCoords(latitude + 0.0003, longitude + 0.0003);
+						}
 
 						// get marker's icon (based on category and type (official or not))
 						var iconPath = null;

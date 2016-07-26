@@ -358,6 +358,12 @@ function AppController(
     return selectedCategories;
   };
 
+  // sets the position of the selected location filter (it is used in 'map.js' when Google Places'
+  // 'place_changed' event fires and that filter is selected)
+  $scope.setPositionFilterCoords = function(lat, lng){
+    FilteredPOIs.setPositionFilterCoords(lat, lng);
+  }
+
   // hide $ionicLoading panel after reloading the filter, and show the new POIs in the map
   function finishFilterAndReloadMarkers(){
     $ionicLoading.hide();
@@ -389,6 +395,7 @@ function AppController(
 
   // show category empty alert based on category and type (official or citizen)
   // if 'categoryName' parameter is null, get it from 'categoryCustomNumericId' parameter
+  // 'showCategoryEmptyResultsError' flag determines whether to display or not
   function showCategoryEmptyAlert(isOfficial, categoryName, categoryCustomNumericId){
 
     if(showCategoryEmptyResultsError){
@@ -440,6 +447,7 @@ function AppController(
 
   // show array of POIs empty alert because of location based on category and type (official or citizen)
   // if 'categoryName' parameter is null, get it from 'categoryCustomNumericId' parameter
+  // 'showCategoryEmptyResultsError' flag determines whether to display or not
   function showLocationEmptyAlert(isOfficial, categoryName, categoryCustomNumericId){
 
     if(showCategoryEmptyResultsError){

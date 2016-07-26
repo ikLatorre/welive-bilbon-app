@@ -79,7 +79,14 @@ function loadGooglePlacesAutocompleteFeature(domInputElement, MapFactory, $ionic
                     var bilbonAppScope = angular.element(appElement).scope();
                     var bilbonAppControllerScope = bilbonAppScope.$$childHead; // access AppCtrl's $scope
 
-                    if(bilbonAppControllerScope.filter.selectedLocation['google-places']){ 
+                    if(bilbonAppControllerScope.filter.selectedLocation['google-places']){
+                        // update location marker's position ('FilteredPOIs.setPositionFilterCoords(lat, lng);')
+                        var lat = autocompleteObj.getPlace().geometry.location.lat();
+                        var lng = autocompleteObj.getPlace().geometry.location.lng();
+                        bilbonAppControllerScope.setPositionFilterCoords(lat, lng);
+
+                        // apply location filter again because the user has selected another location from the 
+                        // Google Places' suggestion list
                         bilbonAppControllerScope.callLocationFilter('google-places', true);
                     }
             }

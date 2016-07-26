@@ -34,18 +34,20 @@ function MapController(
 	var autocomplete = loadGooglePlacesAutocompleteFeature(document.getElementById('location-input'), Map, $ionicPopup);
 	Map.setAutocomplete(autocomplete);
 
-	// load default filter when the app starts and shows the first page (the map)
-	$ionicPlatform.ready(function() {
-		// Enable the first category by default when the page loads (see config/categories.js).
-		// In this case loads the 'restaurantes-sidrerias-y-bodegas-de-euskadi' category (of a official dataset)
-		$scope.filter.selectedCategories[0] = true; // enable category's checkbox
-		$scope.callDatasetCategoriesFilter(0);      // apply the filter
+	// load default filter when the 'Map' page is opened the first time (see map.html, 'ng-init')
+	$scope.loadDefaultFilter = function(){
+		$ionicPlatform.ready(function() {
+			// Enable the first category by default when the page loads (see config/categories.js).
+			// In this case loads the 'restaurantes-sidrerias-y-bodegas-de-euskadi' category (of a official dataset)
+			$scope.filter.selectedCategories[0] = true; // enable category's checkbox
+			$scope.callDatasetCategoriesFilter(0);      // apply the filter
 
-		// Enable "also citizens' POIs filter" by default to search the created one when the page loads 
-		// (in this case of 'restaurantes-sidrerias-y-bodegas-de-euskadi' category)
-		$scope.filter.selectedCitizensPOIs = true; // enable filter's checkbox
-		$scope.citizenPOIsSelectionChanged();      // apply the filter
-	});
+			// Enable "also citizens' POIs filter" by default to search the created one when the page loads 
+			// (in this case of 'restaurantes-sidrerias-y-bodegas-de-euskadi' category)
+			$scope.filter.selectedCitizensPOIs = true; // enable filter's checkbox
+			$scope.citizenPOIsSelectionChanged();      // apply the filter
+		});
+	};
 
 	// run when map's red button is clicked 
 	$scope.createPOI = function(){
@@ -62,7 +64,7 @@ function MapController(
 		}else{
 			$state.go('app.create'); // go to form's page
 		}
-	}
+	};
 
 	// when this view is opened, resize map to avoid 'grey' parts on in 
 	// (it failed on return from '$state.go(app.map)' for example)

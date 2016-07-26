@@ -35,8 +35,8 @@
  "menu.filter.search.loading-text": "Informazioa filtratzen, itxaron mesedez...",
  "menu.filter.category-search.remove-text": "Kategoria kentzen, itxaron mesedez...",
  "menu.filter.category-search.error-popup-title": "Errorea",
- "menu.filter.category-search.error-official-popup-text": "Datu ofizialak lortzen errore bat gertatu da. Geroago berriz saiatu mesedez.",
- "menu.filter.category-search.error-citizen-popup-text": "Herritarrenn datuak lortzen errore bat gertatu da. Geroago berriz saiatu mesedez.",
+ "menu.filter.category-search.error-official-popup-text": "Datu ofizialak lortzen errore bat gertatu da (ziurtatu ea interneterako konexioa duzun). Geroago berriz saiatu mesedez.",
+ "menu.filter.category-search.error-citizen-popup-text": "Herritarrenn datuak lortzen errore bat gertatu da (ziurtatu ea interneterako konexioa duzun). Geroago berriz saiatu mesedez.",
  "menu.filter.category-search.info-popup-title": "Informazioa",
  "menu.filter.category-search.empty-official-popup-text": "Eskatutako parametroekin ez dira datu ofizialik aurkitu.",
  "menu.filter.category-search.empty-citizen-popup-text": "Eskatutako parametroekin ez dira herritarren daturik aurkitu.",
@@ -123,7 +123,7 @@
  "poi-create-page.location-gmaps-error-popup-text": "Ez dira aukeratutako kokapenaren koordenadak lortzerik izan! Berriz saiatu mesedez.",
  "poi-create-page.location-gmaps-error-ok-button-label": "Itxi",
  "poi-create-page.error-popup-title": "Errorea",
- "poi-create-page.error-popup-text": "Arazoren bat gertatu da interes puntu berria erregistratzen.",
+ "poi-create-page.error-popup-text": "Arazoren bat gertatu da interes puntu berria erregistratzen (ziurtatu ea interneterako konexioa duzun).",
  "poi-create-page.error-ok-button-label": "Itxi",
 
  "login.title": "Saio hasiera",
@@ -147,7 +147,7 @@
  "about-page.text-4": "Proiektuari buruzko informazio gehiago http://www.welive.eu-n aurki dezakezu.",
  "about.questionnaire.basque-not-supported-text": "Galdeketa ez dago euskaraz azaltzerik.",
  "about.questionnaire.succesfully-submitted-label": "Galdeketa ondo bidali da.",
- "about.questionnaire.submitted-error-label": "Errore bat gertatu da galdeketa bidaltzen. Geroago berriz saiatu, mesedez.",
+ "about.questionnaire.submitted-error-label": "Errore bat gertatu da galdeketa bidaltzen (ziurtatu ea interneterako konexioa duzun). Geroago berriz saiatu, mesedez.",
  "about.survey.text": "Zure iritzia eskertuko genuke",
  "about.survey.disabled-text": "Dagoeneko galdeketa bete daitekeen gehienezko kopurura iritsi zara.",
  "about.survey.button": "Formularioa bete"

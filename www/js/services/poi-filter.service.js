@@ -23,9 +23,13 @@ function FilteredPOIs(
 	var officialPOIs = [];
 	var citizenPOIs = [];
 
-	var locationFilterCoords = {}; // google.maps.LatLng object to store location filter's position (used in Map service to show the marker)
-	locationFilterCoords.lat = null;
-	locationFilterCoords.lng = null;
+	// object to store location filter's position (used in Map service to show the marker)
+	var locationFilterCoords = {}; 
+	locationFilterCoords.latitude = null;
+	locationFilterCoords.longitude = null;
+	// flag to avoid obtaining location coordinates for each category and type (official or not).
+	// get it only once in the filter process (see 'callSelectedLocationFilter()' and 'getDeviceLocation()')
+	locationFilterCoords.areCoordsStored = false; 
 
 	initializePOIs();
 
@@ -38,7 +42,10 @@ function FilteredPOIs(
 		getPOI: getPOI,
 		initializePOIs: initializePOIs,
 		removeCategoryPOIs: removeCategoryPOIs,
-		getPositionFilterCoords: getPositionFilterCoords
+		getPositionFilterCoords: getPositionFilterCoords,
+		setPositionFilterCoords: setPositionFilterCoords,
+		arePositionFilterCoordsStored: arePositionFilterCoordsStored,
+		setPositionFilterCoordsStored: setPositionFilterCoordsStored
     };
     return filter;
 
@@ -166,6 +173,11 @@ function FilteredPOIs(
     			});
     		}else{
     			// use already getted Google Autocomplete's location, apply the filter
+
+    			// store Google Places' coordinates to show the corresponding marker of the location filter
+    			setPositionFilterCoords(latitude, longitude);
+    			setPositionFilterCoordsStored(true);
+
     			applyLocationFilter(categoryCustomNumericId, isOfficial, latitude, longitude)
 				.then(function(filteredArray){ // success filtering
 					resolve(filteredArray); // resolve 'callSelectedLocationFilter()'s promise
@@ -234,12 +246,37 @@ function FilteredPOIs(
     	}
     }
 
-    // returns a google.maps.LatLng object representing the coordinates of the selected location filter position. null otherwise.
+    // returns an object representing the coordinates of the selected location filter position 
+    // in 'latitude' and 'longitude' properties if they're stored. null otherwise.
     function getPositionFilterCoords(){
-    	return locationFilterCoords;
+    	if(locationFilterCoords.latitude != null && locationFilterCoords.longitude != null){
+    		return locationFilterCoords;
+    	}else{
+    		return null;
+    	}
     }
 
+    // sets the positionn of the selected location filter (it is used in 'applyLocationFilter()' and 'place_changed'
+    // event of 'map.js')
+    function setPositionFilterCoords(lat, lng){
+    	locationFilterCoords.latitude = lat;
+    	locationFilterCoords.longitude = lng;
+    }
 
+    // returns true if the location filter's coords have been already obtained in the filter process; false otherwise.
+    // (used to avoid obtaining device's gps position for each category and type of the filter process)
+    // (once the device's gps position has been obtained at the begining of the filter process, 
+    // this position will be used elsewhere in the process)
+    function arePositionFilterCoordsStored(){
+    	return locationFilterCoords.areCoordsStored;
+    }
+
+    // sets if the location filter's coordinates are already stored or not (true | false)
+    // (used in 'Map' service once the filter process has finished, to force to get again
+    // the device's gps location in the next filter process if necessary)
+    function setPositionFilterCoordsStored(areStored){
+    	locationFilterCoords.areCoordsStored = areStored;
+    }
 
 
 
@@ -253,39 +290,55 @@ function FilteredPOIs(
     function getDeviceLocation(){
     	var promise;
     	promise = $q(function (resolve, reject) {
-    		ionic.Platform.ready(function(){
-				/*var deviceInformation = ionic.Platform.device();
-		        var isWebView = ionic.Platform.isWebView();
-		        var isIPad = ionic.Platform.isIPad();
-		        var isIOS = ionic.Platform.isIOS();
-		        var isAndroid = ionic.Platform.isAndroid();
-		        var isWindowsPhone = ionic.Platform.isWindowsPhone();
-		        var currentPlatform = ionic.Platform.platform();
-		        var currentPlatformVersion = ionic.Platform.version();*/
 
-				// will execute when device is ready, or immediately if the device is already ready.
-				var options = {
-				  enableHighAccuracy: true,
-				  timeout: 7500,
-				  maximumAge: 0
-				};
-				function success(position){
-					console.log('Device location: ', position.coords.latitude, position.coords.longitude);
-					resolve(position.coords);
-				};
-				function error(error){
-					// error.code = error.PERMISSION_DENIED | POSITION_UNAVAILABLE | TIMEOUT | UNKNOWN_ERROR
-				 	reject();
-				};
-				// Try HTML5 geolocation.
-				if ("geolocation" in navigator) { // Check if Geolocation is supported (also with 'navigator.geolocation')
-					// get device's location using GPS, IP or Wifi ('location' must be enabled on the device)
-					navigator.geolocation.getCurrentPosition(success, error, options);
-				}else{
-				  console.log('geolocaiton IS NOT available');
-				  reject();
-				}
-			});
+    		if(arePositionFilterCoordsStored() == false){
+
+    			ionic.Platform.ready(function(){
+					/*var deviceInformation = ionic.Platform.device();
+			        var isWebView = ionic.Platform.isWebView();
+			        var isIPad = ionic.Platform.isIPad();
+			        var isIOS = ionic.Platform.isIOS();
+			        var isAndroid = ionic.Platform.isAndroid();
+			        var isWindowsPhone = ionic.Platform.isWindowsPhone();
+			        var currentPlatform = ionic.Platform.platform();
+			        var currentPlatformVersion = ionic.Platform.version();*/
+
+					// will execute when device is ready, or immediately if the device is already ready.
+					var options = {
+					  enableHighAccuracy: true,
+					  timeout: 10000,
+					  maximumAge: 0
+					};
+					function success(position){
+						console.log('Device location: ', position.coords.latitude, position.coords.longitude);
+
+						// store Google Places' coordinates to show the corresponding marker of the location filter
+		    			setPositionFilterCoords(position.coords.latitude, position.coords.longitude);
+		    			setPositionFilterCoordsStored(true);
+
+						resolve(position.coords);
+					};
+					function error(error){
+						// error.code = error.PERMISSION_DENIED | POSITION_UNAVAILABLE | TIMEOUT | UNKNOWN_ERROR
+					 	reject();
+					};
+					// Try HTML5 geolocation.
+					if ("geolocation" in navigator) { // Check if Geolocation is supported (also with 'navigator.geolocation')
+						// get device's location using GPS, IP or Wifi ('location' must be enabled on the device)
+						navigator.geolocation.getCurrentPosition(success, error, options);
+					}else{
+					  console.log('geolocaiton IS NOT available');
+					  reject();
+					}
+				});
+
+			}else{
+				// the device's gps location has been obtained at the begining of the 'filter process',
+				// so avoid looking for it again
+				resolve(getPositionFilterCoords()); 
+			}
+
+    		
     	});
 
     	return promise;
@@ -298,8 +351,7 @@ function FilteredPOIs(
     	// in this point 'lat' and 'lng' parameters refers to the selected coordinates of location filter (gps|google places)
     	// store the coordinates to show the selected position as a marker in the map 
     	// (see 'Map' service using this service's 'getPositionFilterLatLng()')
-    	locationFilterCoords.lat = lat;
-    	locationFilterCoords.lng = lng;
+    	//setPositionFilterCoords(lat, lng);
 
     	var promise;
     	promise = $q(function (resolve, reject) {

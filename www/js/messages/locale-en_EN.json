@@ -35,8 +35,8 @@
  "menu.filter.search.loading-text": "Filtering information, please wait...",
  "menu.filter.category-search.remove-text": "Removing category, please wait...",
  "menu.filter.category-search.error-popup-title": "Error",
- "menu.filter.category-search.error-official-popup-text": "There has been a problem getting official data. Try again later please.",
- "menu.filter.category-search.error-citizen-popup-text": "There has been a problem getting citizens' data. Try again later please.",
+ "menu.filter.category-search.error-official-popup-text": "There has been a problem getting official data (make sure you have internet access). Try again later please.",
+ "menu.filter.category-search.error-citizen-popup-text": "There has been a problem getting citizens' data (make sure you have internet access). Try again later please.",
  "menu.filter.category-search.info-popup-title": "Information",
  "menu.filter.category-search.empty-official-popup-text": "There is no official data with the specified parameters.",
  "menu.filter.category-search.empty-citizen-popup-text": "There is no citizens' data with the specified parameters.",
@@ -123,7 +123,7 @@
  "poi-create-page.location-gmaps-error-popup-text": "There has been a problem getting the coordinates of the selected location! Please try again.",
  "poi-create-page.location-gmaps-error-ok-button-label": "Close",
  "poi-create-page.error-popup-title": "Error",
- "poi-create-page.error-popup-text": "There has been a problem registering the new point of interest.",
+ "poi-create-page.error-popup-text": "There has been a problem registering the new point of interest (make sure you have internet access).",
  "poi-create-page.error-ok-button-label": "Close",
 
  "login.title": "Login",
@@ -147,7 +147,7 @@
  "about-page.text-4": "More information about the project at http://www.welive.eu.",
  "about.questionnaire.basque-not-supported-text": "Basque is not supported by the questionnaire.",
  "about.questionnaire.succesfully-submitted-label": "The questionnaire has been sent successfully.",
- "about.questionnaire.submitted-error-label": "Error while sending the questionnaire. Please, try again later.",
+ "about.questionnaire.submitted-error-label": "Error while sending the questionnaire (make sure you have internet access). Please, try again later.",
  "about.survey.text": "Your feedback is very valuable for us",
  "about.survey.disabled-text": "You have already filled in the questionnaire the maximum allowed times.",
  "about.survey.button": "Fill in the questionnaire"

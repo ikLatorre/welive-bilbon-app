@@ -104,7 +104,7 @@ function AboutController(
 								+ "</center>",
 						cssClass: 'custom-class custom-class-popup'
 					});
-					$timeout(function() { myPopup.close(); }, 1800); //close the popup after 1.8 seconds 
+					$timeout(function() { myPopup.close(); }, 2500); //close the popup after 1.8 seconds 
 
 				}else if(result === 'ERROR'){
                     
@@ -113,7 +113,7 @@ function AboutController(
 								+ "</center>",
 						cssClass: 'custom-class custom-class-popup'
 					});
-					$timeout(function() { myPopup.close(); }, 1800); //close the popup after 1.8 seconds 
+					$timeout(function() { myPopup.close(); }, 4000); //close the popup after 1.8 seconds 
 
 				}else if(result === 'CANCEL'){
 					// close questionnaire without message

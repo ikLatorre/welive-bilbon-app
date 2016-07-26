@@ -4,12 +4,13 @@ angular
       .module('bilbonApp.services')
       .factory('Login', LoginService);
 
-LoginService.$inject = ['$http', '$state', '$q', '$ionicLoading', 'UserLocalStorage']; 
+LoginService.$inject = ['$ionicPlatform', '$http', '$state', '$q', '$ionicLoading', 'UserLocalStorage']; 
 
 /**
  * @desc Manage WeLive's login system
  */
 function LoginService(
+    $ionicPlatform,
     $http, 
     $state, 
     $q, 
@@ -170,54 +171,60 @@ function LoginService(
     function requestAuthorize() {
         var promise;
         promise = $q(function (resolve, reject) {
-            // generate the request URL
-            var requestUrl = 'https://dev.welive.eu/aac/eauth/authorize'
-                + '?'
-                + 'client_id=' + login.params.clientId
-                + '&'
-                + 'response_type=' + login.params.responseType
-                + '&'
-                + 'redirect_uri=' + login.params.redirectUri
-                + '&'
-                + 'scope=' + login.params.scope
-                + '&'
-                + 'state=' + login.params.state;
 
-            // open a new window (inside the app) with the request URL
-            var ref = window.open(requestUrl, '_blank', 'location=no,clearcache=yes');
-            // var ref = window.open(requestUrl, '_blank', 'location=no,clearsessioncache=yes');
-            console.log('Start URL:' + requestUrl + ' END URL');
+            $ionicPlatform.ready(function() {
+                // will execute when device is ready, or immediately if the device is already ready
 
-            // set a listener in order to manage the loadstart event
-            ref.addEventListener('loadstart', loadStartListener);
+                // generate the request URL
+                var requestUrl = 'https://dev.welive.eu/aac/eauth/authorize'
+                    + '?'
+                    + 'client_id=' + login.params.clientId
+                    + '&'
+                    + 'response_type=' + login.params.responseType
+                    + '&'
+                    + 'redirect_uri=' + login.params.redirectUri
+                    + '&'
+                    + 'scope=' + login.params.scope
+                    + '&'
+                    + 'state=' + login.params.state;
 
-            // set a listener in order to manage the loaderror event
-            ref.addEventListener('loaderror', refuseLoginFlow);
+                // open a new window (inside the app) with the request URL
+                var ref = window.open(requestUrl, '_blank', 'location=no,clearcache=yes');
+                // var ref = window.open(requestUrl, '_blank', 'location=no,clearsessioncache=yes');
+                console.log('Start URL:' + requestUrl + ' END URL');
 
-            // set a listener in order to manage the exit event
-            ref.addEventListener('exit', refuseLoginFlow);
+                // set a listener in order to manage the loadstart event
+                ref.addEventListener('loadstart', loadStartListener);
 
-            function loadStartListener(event) {
-                console.log('URL:' + event.url + ' END URL');
+                // set a listener in order to manage the loaderror event
+                ref.addEventListener('loaderror', refuseLoginFlow);
 
-                // check if the url is the same of the redirection
-                //if ((event.url).startsWith('http://localhost/callback')) { // String.prototype.startsWith() not supported by Android
-                if ((event.url).indexOf("http://localhost/callback") > -1){
-                    // take the requestToken from the url
-                    login.code = (event.url).split('code=')[1].split('&')[0];
-                    // close the opened window
-                    ref.close();
-                    // unsuscribe event
-                    ref.removeEventListener('loadstart', loadStartListener);
-                    // resolve promise
-                    resolve();
+                // set a listener in order to manage the exit event
+                ref.addEventListener('exit', refuseLoginFlow);
+
+                function loadStartListener(event) {
+                    console.log('URL:' + event.url + ' END URL');
+
+                    // check if the url is the same of the redirection
+                    //if ((event.url).startsWith('http://localhost/callback')) { // String.prototype.startsWith() not supported by Android
+                    if ((event.url).indexOf("http://localhost/callback") > -1){
+                        // take the requestToken from the url
+                        login.code = (event.url).split('code=')[1].split('&')[0];
+                        // close the opened window
+                        ref.close();
+                        // unsuscribe event
+                        ref.removeEventListener('loadstart', loadStartListener);
+                        // resolve promise
+                        resolve();
+                    }
                 }
-            }
 
-            function refuseLoginFlow(event){
-                ref.close();
-                reject();
-            }
+                function refuseLoginFlow(event){
+                    ref.close();
+                    reject();
+                }
+
+            });
 
         });
         
