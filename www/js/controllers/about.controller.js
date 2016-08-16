@@ -50,7 +50,7 @@ function AboutController(
             app: WELIVE_SERVICE_ID,
             callback : 'http://localhost/callback',
             lang: lang,
-            pilotId: 'bilbao'
+            pilotId: 'Bilbao'
         };
 
         // generate the request URL
