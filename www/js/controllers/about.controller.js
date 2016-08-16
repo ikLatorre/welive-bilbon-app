@@ -5,7 +5,7 @@ angular
     .controller('AboutCtrl', AboutController);
 
 AboutController.$inject = ['$scope', '$filter', '$ionicPopup', '$timeout', '$translate',
- 'UserLocalStorage', 'WELIVE_SERVICE_ID'];
+ 'UserLocalStorage', 'WELIVE_SERVICE_NAME'];
 
 /**
  * Controller - About
@@ -17,7 +17,7 @@ function AboutController(
     $timeout,
     $translate,
     UserLocalStorage,
-	WELIVE_SERVICE_ID) {
+	WELIVE_SERVICE_NAME) {
 	
 	$scope.launchSurvey = launchSurvey;
     $scope.showSurvey = true;
@@ -47,7 +47,7 @@ function AboutController(
         }
 
         var params = {
-            app: WELIVE_SERVICE_ID,
+            app: WELIVE_SERVICE_NAME,
             callback : 'http://localhost/callback',
             lang: lang,
             pilotId: 'Bilbao'
